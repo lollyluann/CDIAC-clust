@@ -1,10 +1,9 @@
-import numpy as np
-import sys
-import scipy.cluster.hierarchy
 from pyxdameraulevenshtein import damerau_levenshtein_distance
 from collections import defaultdict
+import scipy.cluster.hierarchy
 import generate_token_dict
-# import ngram_dist
+import numpy as np
+import sys
 
 def cluster_ngrams(ngrams, compute_distance, max_dist, method):
     """
@@ -93,8 +92,8 @@ token_length = int(sys.argv[2])
 file_pathtokens_dict = get_tokens(root_path, token_length)
 ngram_list = dict_vals_list(file_pathtokens_dict)
 
-# We cluster. 
-ngram_clusters = cluster_ngrams(ngram_list, dl_ngram_dist, 4, "average")
+# We cluster.
+ngram_clusters = cluster_ngrams(ngram_list, dl_ngram_dist, 10, "average")
 print(ngram_clusters)
 f = open("ngram_clusters_output.txt", "w")
 f.write(ngram_clusters)
