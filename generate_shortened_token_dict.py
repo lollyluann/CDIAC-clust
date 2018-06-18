@@ -69,18 +69,27 @@ def gen_tokens(pathname, length):
     return token_list
 
 
+
+def get_all_paths(input):
+    f = open("paths_as_tokens.txt", "w")   
+    for key, value in input.items():
+        f.write(value + "\n") 
+    f.close()    
+
+
 # MAIN PROGRAM
 
 root_path = sys.argv[1]
 token_length = int(sys.argv[2])
 
 allpaths = DFS(root_path, token_length)
-print(allpaths)
+#print(allpaths)
 
 os.chdir("/home/ljung/CDIAC-clust")
 
 file_pathtokens_dict = allpaths[0]
 file_path_dict = allpaths[1]
+get_all_paths(file_path_dict)
 
 f1 = open(root_path + "file_pathtokens_dict2.txt","w")
 f2 = open(root_path + "file_path_dict2.txt","w")

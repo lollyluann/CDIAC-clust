@@ -1,11 +1,10 @@
 from pyxdameraulevenshtein import damerau_levenshtein_distance
 from collections import defaultdict
-from sklearn.decomposition import PCA
 import scipy.cluster.hierarchy
-import generate_token_dict
+import generate_shortened_token_dict
 import numpy as np
-import matplotlib.pyplot as plt
 import sys
+import os
 
 def cluster_ngrams(n, ngrams, compute_distance, max_dist, method):
     """
@@ -57,7 +56,7 @@ def dl_ngram_dist(ngram1, ngram2):
 
 def get_tokens(root_path, n):
 
-    allpaths = generate_token_dict.DFS(root_path, n)
+    allpaths = generate_shortened_token_dict.DFS(root_path, n)
     # print(allpaths)
 
     #os.chdir(root_path)
@@ -84,13 +83,6 @@ def dict_vals_list(dictionary):
             ngram_list.append(x)
     return ngram_list
 
-
-def randomized_pca(data):
-    pca = PCA().fit(data)
-    plt.plot(np.cumsum(pca.explained_variance_ratio_))
-    plt.xlabel('number of components')
-    plt.ylabel('cumulative explained variance');
-           
 # We read in the path of the root directory and n
 root_path = sys.argv[1]
 token_length = int(sys.argv[2])
@@ -99,13 +91,14 @@ token_length = int(sys.argv[2])
 file_pathtokens_dict = get_tokens(root_path, token_length)
 ngram_list = dict_vals_list(file_pathtokens_dict)
 
-randomized_pca(ngram_list)
-
 # We cluster.
-'''ngram_clusters = cluster_ngrams(token_length, ngram_list, dl_ngram_dist, 4, "average")
+ngram_clusters = cluster_ngrams(token_length, ngram_list, dl_ngram_dist, 4, "average")
 print(ngram_clusters)
+
+os.chdir("/home/ljung/CDIAC-clust")
 f = open("ngram_clusters_output.txt", "w")
 for piece in ngram_clusters:
-    f.write(piece)
-f.close()'''
+    for x in piece:
+        f.write(x)
+f.close()
 
