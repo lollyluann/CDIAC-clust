@@ -39,11 +39,12 @@ for vector in reduced_path_vectors:
     x.append(vector[0])
     y.append(vector[1])
     z.append(vector[2])
-print(x)
+#print(x)
 
 # plot in 3D
 fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
+ax = Axes3D(fig)
+#ax = fig.add_subplot(111, projection='3d')
 ax.scatter(x, y, z)
 plt.savefig("embedding_3D", dpi=300)
 
