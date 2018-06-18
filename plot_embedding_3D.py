@@ -45,6 +45,6 @@ for vector in reduced_path_vectors:
 fig = plt.figure()
 ax = Axes3D(fig)
 #ax = fig.add_subplot(111, projection='3d')
-ax.scatter(x, y, z, s = 1)
-plt.savefig("embedding_3D", dpi=300)
+ax.scatter(x, y, z, s = 0.3)
+plt.savefig("embedding_3D", dpi=1000)
 
