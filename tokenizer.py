@@ -61,7 +61,7 @@ def count_and_sort_tokens(filenames):
         #print(w, token_count_dict[w])
 
     # log-scaled bins
-    bins = np.logspace(0, 3, 50)
+    bins = np.logspace(0, 4, 100)
     widths = (bins[1:] - bins[:-1])
 
     # Calculate histogram
