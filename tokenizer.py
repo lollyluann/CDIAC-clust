@@ -72,7 +72,7 @@ def count_and_sort_tokens(filenames):
     # plot it!
     plt.bar(bins[:-1], hist_norm, widths)
     plt.xscale('log')
-    
+    plt.yscale('log')
 
     plt.savefig("hist-o-gram")
 
