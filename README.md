@@ -24,13 +24,12 @@
 * main: maps file names to path tokens and writes to "file\_pathtokens\_dict.txt" AND maps file names to paths and writes to "file\_path\_dict.txt"
 
 ## ngram\_dist\_clust.py
-* get\_paths:
-* dict\_vals\_list:
-* lol
+* get\_paths: not finished yet
+* dict\_vals\_list: not finished yet
 
 ## ngram\_dist.py
-* pos\_ngram\_dist:
-* word\_dist:
+* pos\_ngram\_dist: an implementation of a positional n-gram distance metric
+* word\_dist: a word distance metric using the above metric, using affixing and normalization
 
 ## plot\_embedding\_3D.py
 * build\_word\_vector\_matrix: returns vectors and class labels from vector files
