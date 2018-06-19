@@ -71,7 +71,7 @@ def gen_tokens(pathname, length):
 
 
 def get_all_paths(input):
-    f = open("paths_as_tokens.txt", "w")   
+    f = open("paths.txt", "w")   
     for key, value in input.items():
         f.write(value + "\n") 
     f.close()    

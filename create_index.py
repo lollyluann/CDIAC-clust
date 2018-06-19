@@ -1,6 +1,9 @@
 import sys
 import os
 
+# This program generates an inverted index that maps n-grams tokens to 
+# paths. The index is called "token_path_dict". 
+
 # FIRST ARGUMENT: the root directory path.
 # SECOND ARGUMENT: the length of tokens cut from filenames.
 
