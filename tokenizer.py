@@ -77,13 +77,16 @@ def count_and_sort_tokens(filenames):
     hist_norm = hist[0]/widths
 
     # plot it!
-    '''
+    plt.figure("hist")
     plt.bar(bins[:-1], hist[0], widths)
     plt.xscale('log')
     plt.yscale('log')
+    plt.title("Token Document Frequency")
+    plt.xlabel("# of files a word appears in")
+    plt.ylabel("Word count")
 
     plt.savefig("hist-o-gram",dpi=500)
-    '''
+   
     return sorted_tokens, sorted_counts
 
 #=========1=========2=========3=========4=========5=========6=========7=
@@ -92,12 +95,14 @@ def plot_extension_pie(extensions, num_slices):
     sorted_exts, sorted_counts = count_and_sort_tokens(extensions)
     labels = []
     sizes = []
-    for x in range(len(sorted_exts)):
+    for x in range(num_slices):
         labels.append(sorted_exts[x])
         sizes.append(sorted_counts[x])
+    plt.figure("pie")
     plt.pie(sizes,labels=labels)
     plt.axis('equal')
-    plt.savefig("pie-full",dpi=300)
+    plt.title("Proportions of Extensions in CDIAC")
+    plt.savefig("pie",dpi=300)
 
 
 # MAIN FUNCTION
