@@ -101,7 +101,7 @@ def plot_extension_pie(extensions, num_slices):
     plt.figure("pie")
     plt.pie(sizes,labels=labels)
     plt.axis('equal')
-    plt.title("Proportions of Extensions in CDIAC")
+    plt.title(str(num_slices) + "Most Common Extensions in CDIAC")
     plt.savefig("pie",dpi=300)
 
 
@@ -122,8 +122,7 @@ for x in filenames_no_ext:
     f.write(x+ "\n")
     #print(generate_tokens(x))
 
-#count_and_sort_tokens(filenames_no_ext)
-count_and_sort_tokens(exts)
+count_and_sort_tokens(filenames_no_ext)
 
 plot_extension_pie(exts,15)
 
