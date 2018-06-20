@@ -92,12 +92,12 @@ def plot_extension_pie(extensions, num_slices):
     sorted_exts, sorted_counts = count_and_sort_tokens(extensions)
     labels = []
     sizes = []
-    for x in range(num_slices):
+    for x in range(len(sorted_exts)):
         labels.append(sorted_exts[x])
         sizes.append(sorted_counts[x])
     plt.pie(sizes,labels=labels)
     plt.axis('equal')
-    plt.savefig("pie",dpi=300)
+    plt.savefig("pie-full",dpi=300)
 
 
 # MAIN FUNCTION
