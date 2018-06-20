@@ -120,6 +120,6 @@ for x in filenames_no_ext:
 #count_and_sort_tokens(filenames_no_ext)
 count_and_sort_tokens(exts)
 
-plot_extension_pie(exts,20 )
+plot_extension_pie(exts,15)
 
 
