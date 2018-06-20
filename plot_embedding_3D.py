@@ -1,8 +1,11 @@
+from sklearn.feature_selection import VarianceThreshold
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
-import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
 from numpy import loadtxt
+import matplotlib.pyplot as plt
 import codecs
 import numpy
 import sys
@@ -32,9 +35,16 @@ vector_file = sys.argv[1]
 clusters = sys.argv[2]
 path_vectors, paths = build_word_vector_matrix(vector_file, 14869)
 
-# project the vectors down into R^3. 
+'''
+# project the vectors down into R^3 using PCA 
 pca = PCA(n_components=3)
 reduced_path_vectors = pca.fit_transform(path_vectors)
+'''
+
+# project the vectors down into R^3 using feature subset selection
+sel = VarianceThreshold(threshold=(.000001 * (1 - .000001)))
+reduced_path_vectors = sel.fit_transform(path_vectors)
+print(reduced_path_vectors.shape)
 
 # create a dict that maps paths to 3D vectors
 reduced_path_dict = {}
