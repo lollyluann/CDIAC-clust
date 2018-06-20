@@ -9,11 +9,13 @@ import sys
 import ast
 import os
 
+#=========1=========2=========3=========4=========5=========6=========7=
+
 # First argument is the vector file as a .txt
 
 # JUST A FUNCTION TO READ IN THE EMBEDDING TXT FILE
 def build_word_vector_matrix(vector_file, n_words):
-  '''Return the vectors and labels for the first n_words in vector file'''
+  # Return the vectors and labels for the first n_words in vector file
   numpy_arrays = []
   labels_array = []
   with codecs.open(vector_file, 'r', 'utf-8') as f:
@@ -45,6 +47,8 @@ for i in range(len(paths)):
 fig = plt.figure(figsize=(20,10))
 ax = Axes3D(fig)
 
+#=========1=========2=========3=========4=========5=========6=========7=
+
 with open(clusters) as f:
     cluster_list = f.readlines()
 # list of clusters, each cluster is a list of paths as strings
@@ -53,7 +57,8 @@ for cluster in cluster_list:
     cluster_path_list = ast.literal_eval(cluster)
     for path_name in cluster_path_list:
         vector = reduced_path_dict.get(path_name)    
-        ax.scatter(vector[0], vector[1], vector[2], s=fig.dpi/72., marker='.',c=color)
+        ax.scatter(vector[0], vector[1], vector[2],
+        s=fig.dpi/72., marker='.',c=color)
        
 plt.savefig("embedding_3D", dpi=1000)
 '''
