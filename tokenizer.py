@@ -58,7 +58,7 @@ def count_and_sort_tokens(filenames):
     for w in sorted(token_count_dict, key=token_count_dict.get, reverse=False):
         sorted_tokens.append(w)
         sorted_counts.append(token_count_dict[w])    
-        #print(w, token_count_dict[w])
+        print(w, token_count_dict[w])
 
     # log-scaled bins
     bins = np.logspace(0, 4, 100)
@@ -70,7 +70,7 @@ def count_and_sort_tokens(filenames):
     hist_norm = hist[0]/widths
 
     # plot it!
-    plt.bar(bins[:-1], hist_norm, widths)
+    plt.bar(bins[:-1], hist[0], widths)
     plt.xscale('log')
     plt.yscale('log')
 
