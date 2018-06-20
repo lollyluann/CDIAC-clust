@@ -23,7 +23,7 @@ def remove_file_extension(filenames):
             extension = ch + extension
             length = length - 1 
         filenames_no_extensions.append(filename[0:length-1])
-        extensions.append(extension)
+        extensions.append(extension.lower())
         print(filename)
         print(extension)
     
