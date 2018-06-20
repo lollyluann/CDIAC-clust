@@ -20,10 +20,13 @@ def remove_file_extension(filenames):
             if ch==".":
                 break
             # "extension" contains just the extension from a filename
-            extension = extension + ch
+            extension = ch + extension
             length = length - 1 
         filenames_no_extensions.append(filename[0:length-1])
         extensions.append(extension)
+        print(filename)
+        print(extension)
+    
     return filenames_no_extensions, extensions
 
 #=========1=========2=========3=========4=========5=========6=========7=
@@ -57,7 +60,7 @@ def count_and_sort_tokens(filenames):
                 token_count_dict.update({token:1})
     sorted_tokens = []
     sorted_counts = []
-    for w in sorted(token_count_dict, key=token_count_dict.get, reverse=False):
+    for w in sorted(token_count_dict, key=token_count_dict.get, reverse=True):
         sorted_tokens.append(w)
         sorted_counts.append(token_count_dict[w])    
         print(w, token_count_dict[w])
@@ -74,28 +77,24 @@ def count_and_sort_tokens(filenames):
     hist_norm = hist[0]/widths
 
     # plot it!
+    '''
     plt.bar(bins[:-1], hist[0], widths)
     plt.xscale('log')
     plt.yscale('log')
 
     plt.savefig("hist-o-gram",dpi=500)
-
+    '''
     return sorted_tokens, sorted_counts
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-def plot_extension_pie(extensions):
-    ext_counts = {}
-    for x in extensions:
-        if x in ext_counts.keys():
-            ext_counts.update({x:ext_counts.get(x)})
-        else: 
-            ext_counts.update({x:1})
+def plot_extension_pie(extensions, num_slices):
+    sorted_exts, sorted_counts = count_and_sort_tokens(extensions)
     labels = []
     sizes = []
-    for key, value in ext_counts.items():
-        labels.append(key)
-        sizes.append(value)         
+    for x in range(num_slices):
+        labels.append(sorted_exts[x])
+        sizes.append(sorted_counts[x])
     plt.pie(sizes,labels=labels)
     plt.axis('equal')
     plt.savefig("pie",dpi=300)
@@ -119,7 +118,8 @@ for x in filenames_no_ext:
     #print(generate_tokens(x))
 
 #count_and_sort_tokens(filenames_no_ext)
+count_and_sort_tokens(exts)
 
-plot_extension_pie(exts)
+plot_extension_pie(exts,20 )
 
 
