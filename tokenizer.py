@@ -12,6 +12,7 @@ import os
     RETURNS: a list of filenames without the extensions '''
 def remove_file_extension(filenames):
     filenames_no_extensions = []
+    extensions = []
     for filename in filenames:
         extension = ""
         length = len(filename)
@@ -22,7 +23,8 @@ def remove_file_extension(filenames):
             extension = extension + ch
             length = length - 1 
         filenames_no_extensions.append(filename[0:length-1])
-    return filenames_no_extensions
+        extensions.append(extension)
+    return filenames_no_extensions, extensions
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -63,6 +65,8 @@ def count_and_sort_tokens(filenames):
     # log-scaled bins
     bins = np.logspace(0, 4, 100)
     widths = (bins[1:] - bins[:-1])
+    #print(bins)
+    #print(widths)
 
     # Calculate histogram
     hist = np.histogram(sorted_counts, bins=bins)
@@ -74,11 +78,28 @@ def count_and_sort_tokens(filenames):
     plt.xscale('log')
     plt.yscale('log')
 
-    plt.savefig("hist-o-gram")
+    plt.savefig("hist-o-gram",dpi=500)
 
     return sorted_tokens, sorted_counts
 
 #=========1=========2=========3=========4=========5=========6=========7=
+
+def plot_extension_pie(extensions):
+    ext_counts = {}
+    for x in extensions:
+        if x in ext_counts.keys():
+            ext_counts.update({x:ext_counts.get(x)})
+        else: 
+            ext_counts.update({x:1})
+    labels = []
+    sizes = []
+    for key, value in ext_counts.items():
+        labels.append(key)
+        sizes.append(value)         
+    plt.pie(sizes,labels=labels)
+    plt.axis('equal')
+    plt.savefig("pie",dpi=300)
+
 
 # MAIN FUNCTION
 
@@ -88,7 +109,7 @@ allpaths = generate_shortened_token_dict.DFS(root_path, token_length)
 
 # a list of all the file names (without the paths)
 filenames = list(allpaths[1].keys())
-filenames_no_ext = remove_file_extension(filenames)
+filenames_no_ext, exts = remove_file_extension(filenames)
 
 
 os.chdir("/home/ljung/CDIAC-clust/")
@@ -97,8 +118,8 @@ for x in filenames_no_ext:
     f.write(x+ "\n")
     #print(generate_tokens(x))
 
-count_and_sort_tokens(filenames_no_ext)
+#count_and_sort_tokens(filenames_no_ext)
 
-
+plot_extension_pie(exts)
 
 
