@@ -78,6 +78,7 @@ def count_and_sort_tokens(filenames):
 
     # plot it!
     plt.figure("hist")
+    plt.clf()
     plt.bar(bins[:-1], hist[0], widths)
     plt.xscale('log')
     plt.yscale('log')
@@ -99,6 +100,7 @@ def plot_extension_pie(extensions, num_slices):
         labels.append(sorted_exts[x])
         sizes.append(sorted_counts[x])
     plt.figure("pie")
+    plt.clf()
     plt.pie(sizes,labels=labels)
     plt.axis('equal')
     plt.title(str(num_slices) + "Most Common Extensions in CDIAC")
