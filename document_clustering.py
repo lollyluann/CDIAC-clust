@@ -1,21 +1,22 @@
-from sklearn.decomposition import TruncatedSVD
-from sklearn.feature_extraction.text import TfidfVectorizer
+from nltk.corpus.reader.plaintext import PlaintextCorpusReader
+
 from sklearn.feature_extraction.text import HashingVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import Normalizer
-from sklearn import metrics
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans, MiniBatchKMeans
+from sklearn.decomposition import TruncatedSVD
+from sklearn.preprocessing import Normalizer
+from sklearn.pipeline import make_pipeline
+from sklearn import metrics
 
 import sys, logging, os
 from time import time
 import numpy as np
-from nltk.corpus.reader.plaintext import PlaintextCorpusReader
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
 #f = open("doc_cluster_output.txt","w")
-corpusdir = "/home/ljung/extension_sorted_data/converted_pdfs/"
+corpusdir = "/home/ljung/extension_sorted_data/test_pdfs/"
 newcorpus = PlaintextCorpusReader(corpusdir, '.*')
 dataset = newcorpus.words()
 
@@ -65,29 +66,12 @@ if n_comp>0:
     print("done in %fs" % (time() - t0))
     explained_variance = svd.explained_variance_ratio_.sum()
 
-if not hashing:
-    print("Top terms per cluster:")
-
-    if n_comp:
-        original_space_centroids = svd.inverse_transform(km.cluster_centers_)
-        order_centroids = original_space_centroids.argsort()[:, ::-1]
-    else:
-        order_centroids = km.cluster_centers_.argsort()[:, ::-1]
-
-    terms = vectorizer.get_feature_names()
-    for i in range(new_k):
-        print("Cluster %d:" % i, end='')
-        for ind in order_centroids[i, :10]:
-            print(' %s' % terms[ind], end='')
-        print()
-        print("Explained variance of the SVD step: {}%".format(
-        int(explained_variance * 100)))
-
 #=========1=========2=========3=========4=========5=========6=========7=
 
+# ACTUAL CLUSTERING
 if minibatch:
     km = MiniBatchKMeans(n_clusters=new_k, init='k-means++', n_init=1,
-                  init_size=1000, batch_size=1000, verbose=vbs)
+                init_size=1000, batch_size=1000, verbose=vbs)
 else:
     km = KMeans(n_clusters=new_k, init='k-means++', max_iter=100, n_init=1,
                 verbose=vbs)
@@ -98,11 +82,6 @@ km.fit(X)
 print("done in %0.3fs" % (time() - t0))
 print()
 
-print("Homogeneity: %0.3f" % metrics.homogeneity_score(labels, km.labels_))
-print("Completeness: %0.3f" % metrics.completeness_score(labels, km.labels_))
-print("V-measure: %0.3f" % metrics.v_measure_score(labels, km.labels_))
-print("Adjusted Rand-Index: %.3f"
-      % metrics.adjusted_rand_score(labels, km.labels_))
 print("Silhouette Coefficient: %0.3f"
       % metrics.silhouette_score(X, km.labels_, sample_size=1000))
 
