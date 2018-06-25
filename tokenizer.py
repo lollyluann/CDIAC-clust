@@ -70,6 +70,7 @@ def generate_tokens(filename):
         
 #=========1=========2=========3=========4=========5=========6=========7=
 
+
 ''' PARAMETER: a list of filenames
     DOES: sorts a dictionary with the counts of each token
     RETURNS: a list of sorted tokens and a list of sorted counts '''
@@ -126,10 +127,40 @@ def count_and_sort_tokens(filenames):
    
     return sorted_tokens, sorted_counts
 
+
+''' PARAMETER: a list of extensions
+    DOES: sorts a dictionary with the counts of each token
+    RETURNS: a list of sorted tokens and a list of sorted counts '''
+def count_and_sort_exts(filenames):
+    # a dict mapping tokens to the count of how many times they appear
+    token_count_dict = {}
+    # for each filename
+    for fn in filenames:             
+        # if the token is already in our dict
+        if fn in token_count_dict.keys():
+            # grab the old count
+            old_count = token_count_dict.get(fn)
+            # increment and update the count in the dict              
+            token_count_dict.update({fn:old_count+1})
+        else:
+            # otherwise, add a key,value pair with a count of 1
+            token_count_dict.update({fn:1})
+    sorted_tokens = []
+    sorted_counts = []
+    # for each token in the dict, iterating from largest to smallest count 
+    for w in sorted(token_count_dict, key=token_count_dict.get, reverse=True):
+        # add the token to a sorted list of tokens
+        sorted_tokens.append(w)
+        # add the corresponding count to a list of counts
+        sorted_counts.append(token_count_dict[w])    
+        print(w, token_count_dict[w])
+
+    return sorted_tokens, sorted_counts
+
 #=========1=========2=========3=========4=========5=========6=========7=
 
 def plot_extension_pie(extensions, num_slices):
-    sorted_exts, sorted_counts = count_and_sort_tokens(extensions)
+    sorted_exts, sorted_counts = count_and_sort_exts(extensions)
     labels = []
     sizes = []
     for x in range(num_slices):
@@ -165,8 +196,16 @@ f = open("filenames.txt", "w")
 for x in filenames_no_ext:
     f.write(x+ "\n")
     #print(generate_tokens(x))
+f.close()
 
-count_and_sort_tokens(filenames_no_ext)
+sorted_tokens, sorted_counts = count_and_sort_tokens(filenames_no_ext)
+
+token_file = open("variable_length_tokens.txt", "w")
+for token in sorted_tokens:
+    token_file.write(token + "\n")
+token_file.close()
+
+
 
 plot_extension_pie(exts,15)
 

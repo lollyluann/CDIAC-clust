@@ -42,7 +42,7 @@ reduced_path_vectors = pca.fit_transform(path_vectors)
 '''
 
 # project the vectors down into R^3 using feature subset selection
-sel = VarianceThreshold(threshold=(.000001 * (1 - .000001)))
+sel = VarianceThreshold(threshold=(.00001 * (1 - .00001)))
 reduced_path_vectors = sel.fit_transform(path_vectors)
 print(reduced_path_vectors.shape)
 
