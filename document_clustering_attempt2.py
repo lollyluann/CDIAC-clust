@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import nltk, re, os, codecs, mpld3, sys
-from os.path import isfile, join
+from time import time
 from six import string_types
 from sklearn.cluster import KMeans
 from sklearn.externals import joblib
@@ -12,103 +12,140 @@ from nltk.stem.snowball import SnowballStemmer
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
+num_clusters = int(sys.argv[1])
+# the directory of the files you want to cluster
 corpusdir = "/home/ljung/extension_sorted_data/test_pdfs/"
 
+
+''' PARAM: a string containing the directory of .txt files
+    RETURNS: a list of filenames and a list of the contents of the files 
+    DOES: gets all the filenames and their contents of a directory'''   
 def get_document_contents(directory):
     filenames = []
     data = []
+    # for every file in the given directory
     for filename in os.listdir(directory):
-        current_file = join(directory,filename)
-        if isfile(current_file):
+        current_file = os.path.join(directory,filename)
+        if os.path.isfile(current_file):
+            # add the filename to "filenames" 
             filenames.append(filename)
+            # read the contents of the file and remove newlines
             freader = open(current_file, "r")
             contents = freader.read()
             freader.close()
             contents = contents.replace("\n","")
-            #contents.replace(" ","")
+            # add the string of the contents of the file to "data"
             data.append(contents)
     return filenames, data
 
-fnames, dataset = get_document_contents(corpusdir)
-#stopwords = nltk.download('stopwords')
-#nltk.download('punkt')
-#stopwords = nltk.corpus.stopwords.words('english')
-stemmer = SnowballStemmer("english")
-
+''' PARAM: the text of a document
+    RETURN: list of stems
+    DOES: splits a document into a list of tokens & stems each token '''
 def tokenize_and_stem(text):
-    # first tokenize by sentence, then by word to ensure that punctuation is caught as it's own token
+    # tokenize by sentence, then by word so punctuation is its own token
     tokens = [word for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
     filtered_tokens = []
-    # filter out any tokens not containing letters (e.g., numeric tokens, raw punctuation)
+    # filter out tokens without letters (e.g., numbers, punctuation)
     for token in tokens:
         if re.search('[a-zA-Z]', token):
             filtered_tokens.append(token)
     stems = [stemmer.stem(t) for t in filtered_tokens]
     return stems
 
+''' PARAM: the text of a document
+    RETURN: a list of filtered tokens
+    DOES: tokenizes the document only (doesn't stem) '''
 def tokenize_only(text):
-    # first tokenize by sentence, then by word to ensure that punctuation is caught as it's own token
+    # tokenize by sentence, then by word so punctuation is its own token
     tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
     filtered_tokens = []
-    # filter out any tokens not containing letters (e.g., numeric tokens, raw punctuation)
+    # filter out tokens without letters (e.g., numbers, punctuation)
     for token in tokens:
         if re.search('[a-zA-Z]', token):
             filtered_tokens.append(token)
     return filtered_tokens
 
+#=========1=========2=========3=========4=========5=========6=========7=
+
+# record initial time that program started
+t0 = time()
+
+# gets the filenames and their contents
+fnames, dataset = get_document_contents(corpusdir)
+#stopwords = nltk.download('stopwords')
+#nltk.download('punkt')
+#stopwords = nltk.corpus.stopwords.words('english')
+stemmer = SnowballStemmer("english")
+
+#=========1=========2=========3=========4=========5=========6=========7=
+
 totalvocab_stemmed = []
 totalvocab_tokenized = []
 for i in dataset:
-    allwords_stemmed = tokenize_and_stem(i) #for each item in 'synopses', tokenize/stem
-    totalvocab_stemmed.extend(allwords_stemmed) #extend the 'totalvocab_stemmed' list
+    # for each item in the dataset, tokenize/stem
+    allwords_stemmed = tokenize_and_stem(i)
+    # extend "totalvocab_stemmed" 
+    totalvocab_stemmed.extend(allwords_stemmed)
     
+    # for each item in the dataset, tokenize only
     allwords_tokenized = tokenize_only(i)
     totalvocab_tokenized.extend(allwords_tokenized)
 
-vocab_frame = pd.DataFrame({'words': totalvocab_tokenized}, index = totalvocab_stemmed)
+# create vocab_frame with "totalvocab_stemmed" or "totalvocab_tokenized"
+vocab_frame = pd.DataFrame({'words': totalvocab_tokenized}, 
+            index = totalvocab_stemmed)
 print('there are ' + str(vocab_frame.shape[0]) + ' items in vocab_frame')
 
 #define vectorizer parameters
 tfidf_vectorizer = TfidfVectorizer(max_df=0.8, max_features=200000,
-                                 min_df=0.2, stop_words='english',
-                                 use_idf=True, tokenizer=tokenize_and_stem, ngram_range=(1,3))
+                      min_df=0.2, stop_words='english', use_idf=True, 
+                      tokenizer=tokenize_and_stem, ngram_range=(1,3))
 
-tfidf_matrix = tfidf_vectorizer.fit_transform(dataset) #fit the vectorizer to synopses
+#fits the vectorizer to the dataset
+tfidf_matrix = tfidf_vectorizer.fit_transform(dataset) 
 terms = tfidf_vectorizer.get_feature_names()
 dist = 1 - cosine_similarity(tfidf_matrix)
 
+#=========1=========2=========3=========4=========5=========6=========7=
 
-num_clusters = int(sys.argv[1])
+# cluster using KMeans on the tfidf matrix
 km = KMeans(n_clusters=num_clusters)
 km.fit(tfidf_matrix)
 clusters = km.labels_.tolist()
 
+# pickle the model, reload the model/reassign the labels as the clusters
 joblib.dump(km,  'doc_cluster.pkl')
 km = joblib.load('doc_cluster.pkl')
 clusters = km.labels_.tolist()
 
-db = { 'filename': fnames, 'content': dataset, 'cluster': clusters}
-frame = pd.DataFrame(db, index = [clusters] , columns = ['filename', 'cluster'])
+# create a dictionary "db" of filenames, contents, and clusters
+db = {'filename': fnames, 'content': dataset, 'cluster': clusters}
+# convert "db" to a pandas datafram
+frame = pd.DataFrame(db, index=[clusters], columns=['filename','cluster'])
+# print the number of files in each cluster
 print(frame['cluster'].value_counts())
 
+#=========1=========2=========3=========4=========5=========6=========7=
 
-print("Top terms per cluster:")
-print()
+print("Top terms per cluster: \n")
 #sort cluster centers by proximity to centroid
 order_centroids = km.cluster_centers_.argsort()[:, ::-1] 
 
 for i in range(num_clusters):
     print("Cluster %d words:" % i, end='')
     
-    for ind in order_centroids[i, :10]: #replace 6 with n words per cluster
-        print(' %s' % vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0], end=",") #.encode('utf-8', 'ignore'), end=',')
+    # print the first "n_words" words in a cluster
+    n_words = 10
+    for ind in order_centroids[i, : n_words]:
+        print(' %s' % vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0],
+                end=",") 
     print()
     
+    # print out the filenames in the cluster
     print("Cluster %d filenames:" % i, end='')
     for filename in frame.ix[i]['filename'].values.tolist():
         print(' %s,' % filename, end='')
-    print()
+    print("\n")
 
-    print() 
-print()
-print()
+# print total time taken to run program
+print("time taken: ", time()-t0)
