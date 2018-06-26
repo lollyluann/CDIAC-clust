@@ -1,3 +1,4 @@
+from sklearn.neighbors import kneighbors_graph
 from tqdm import tqdm
 import sys
 import csv
@@ -82,7 +83,6 @@ def get_valid_filenames(directory):
 # resultant files in out_dir. 
 def convert_those_files(valid_list, directory, out_dir):
     for filename in tqdm(valid_list):
-    
         # getting the filename without file extension
         length = len(filename)
         pos = length - 1
@@ -97,7 +97,8 @@ def convert_those_files(valid_list, directory, out_dir):
         # converting
         in_path = os.path.join(directory, filename)
         out_path = os.path.join(out_dir, fn_no_ext)
-        if not os.path.isfile(out_path + ".0"):
+        if not os.path.isfile(out_path + ".csv.0"):
+            print("converting")
             os.system("ssconvert " + in_path + " " + out_path + ".csv > /dev/null 2>&1 -S")
 
 #=========1=========2=========3=========4=========5=========6=========7=
@@ -107,32 +108,36 @@ def get_header_dict(csv_dir):
     header_dict = {}
     # get a list of all files in the directory
     dir_list = os.listdir(csv_dir)
-    for filename in dir_list:
+    for filename in tqdm(dir_list):
         # get the path of the current file
         path = os.path.join(csv_dir, filename) 
-        with open(path, "rb") as f:
+        with open(path, "r") as f:
             # read csv and get the header as a list
             reader = csv.reader(f)
-            header_list = reader.next()
+            header_list = next(reader)
             # throw a key value pair in the dict, with filename as key
             header_dict.update({filename:header_list})
     return header_dict
     
 #=========1=========2=========3=========4=========5=========6=========7=
 
+def ghost(header_dict, num_NN, num_clusters):
+    list_of_headers = []
+    for filename, header_list in header_dict.iteritems():
+        list_of_headers.append(header_list)
+    schema_matrix = np.asarray(list_of_headers)
+    NN_matrix = kneighbors_graph(schema_matrix, num_NN, mode='distance')
+    labels = spectral_clustering(NN_matrix, n_clusters=num_clusters, eigen_solver='arpack')
+    print(labels)
+
+#=========1=========2=========3=========4=========5=========6=========7=
+
+
 # MAIN PROGRAM: 
 valid_list = get_valid_filenames(directory)
 convert_those_files(valid_list, directory, out_dir)
 header_dict = get_header_dict(out_dir)
-
-
-
-
-
-
-
-
-
+ghost(header_dict, 15, 15)
 
 
 

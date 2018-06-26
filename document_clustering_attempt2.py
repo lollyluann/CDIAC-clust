@@ -20,7 +20,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 num_clusters = int(sys.argv[1])
 # the directory of the files you want to cluster
-corpusdir = "/home/ljung/extension_sorted_data/test_pdfs/"
+corpusdir = "/home/ljung/extension_sorted_data/converted_pdfs/"
 
 
 ''' PARAM: a string containing the directory of .txt files
@@ -188,25 +188,16 @@ mds = MDS(n_components=3, dissimilarity="precomputed", random_state=1)
 pos = mds.fit_transform(dist)  # shape (n_components, n_samples)
 xs, ys, zs = pos[:, 0], pos[:, 1], pos[:, 2]
 
-'''cluster_colors = {}
-for r in range(num_clusters):
-    color = ('#%06X' % random.randint(0,256**3-1))
-    cluster_colors.update({r:color})
-    print(color)
-'''
-
+# set up plot
 fig = plt.figure(figsize=(17,9))
 ax = Axes3D(fig)
-#ax.scatter(xs, ys, zs, s=fig.dpi/72., marker='.')
 
 #create data frame that has the result of the MDS plus the cluster numbers and titles
 df = pd.DataFrame(dict(x=xs, y=ys, z=zs, label=clusters, filename=fnames)) 
 #group by cluster
 groups = df.groupby('label')
-# set up plot
-#fig, ax = plt.subplots(figsize=(17, 9)) # set size
 
-#iterate through groups to layer the plot
+# for each cluster, plot the files
 for name, group in groups:
     color = ('#%06X' % random.randint(0,256**3-1))
     for t in range(group.shape[0]):
