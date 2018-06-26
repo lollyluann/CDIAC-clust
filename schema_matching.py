@@ -34,8 +34,9 @@ dir_list = os.listdir(directory)
 
 # RETURNS: list of filenames which are candidates for conversion.
 
-def get_valid_filenames(dir_list):
+def get_valid_filenames(dir_list, directory):
     list_valid_exts = [".xls", ".xlsx"]
+    list_caps_exts = {".XLS":".xls", ".XLSX":".xlsx"}
     valid_list = []
     # for each filename in the directory...
     for filename in tqdm(dir_list):
@@ -57,6 +58,13 @@ def get_valid_filenames(dir_list):
             extension = filename[dot_pos:length]
             if extension in list_valid_exts:
                 valid_list.append(filename)
+                valid = True
+            # if the extension is an ALLCAPS version...
+            elif extension in list_caps_exts.keys():
+                new_filename = filename[0:dot_pos] + list_caps_exts[extension]
+                # change it to lowercase and add it to valid_list
+                os.system("mv " + os.path.join(directory, filename) + " " + os.path.join(directory, new_filename))
+                valid_list.append(new_filename)
                 valid = True
         if (valid == False):
             print("This filename is invalid: ", filename)
@@ -88,7 +96,7 @@ def convert_those_files(valid_list, directory, out_dir):
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # MAIN PROGRAM: 
-valid_list = get_valid_filenames(dir_list)
+valid_list = get_valid_filenames(dir_list, directory)
 convert_those_files(valid_list, directory, out_dir)
 
 
