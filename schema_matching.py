@@ -51,6 +51,7 @@ def get_valid_filenames(dir_list, directory):
         while (pos >= 0):
             if (filename[pos] == "."):
                 dot_pos = pos
+                break
             pos = pos - 1
         # if there is a dot somewhere in filename, i.e. if there is an
         # extension...
@@ -67,7 +68,9 @@ def get_valid_filenames(dir_list, directory):
                 valid_list.append(new_filename)
                 valid = True
         if (valid == False):
+            print(extension)
             print("This filename is invalid: ", filename)
+        
     print("There are ", len(valid_list), " candidates for conversion. ")
     return valid_list
 
@@ -85,13 +88,15 @@ def convert_those_files(valid_list, directory, out_dir):
         while (pos >= 0):
             if (filename[pos] == "."):
                 dot_pos = pos
+                break
             pos = pos - 1
         fn_no_ext = filename[0:dot_pos]
 
         # converting
         in_path = os.path.join(directory, filename)
         out_path = os.path.join(out_dir, fn_no_ext)
-        os.system("ssconvert " + in_path + " " + out_path + ".csv > /dev/null 2>&1 -S")
+        if not os.path.isfile(out_path + ".0"):
+            os.system("ssconvert " + in_path + " " + out_path + ".csv > /dev/null 2>&1 -S")
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
