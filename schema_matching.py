@@ -40,6 +40,7 @@ def get_valid_filenames(dir_list):
     # for each filename in the directory...
     for filename in tqdm(dir_list):
         length = len(filename)
+        valid = False
         # we iterate on the characters starting from end of the string
         pos = length - 1
         # dot pos will be position of the first period from the end,
@@ -56,6 +57,9 @@ def get_valid_filenames(dir_list):
             extension = filename[dot_pos:length]
             if extension in list_valid_exts:
                 valid_list.append(filename)
+                valid = True
+        if (valid == False):
+            print("This filename is invalid: ", filename)
     print("There are ", len(valid_list), " candidates for conversion. ")
     return valid_list
 
