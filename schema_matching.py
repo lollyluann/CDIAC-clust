@@ -1,5 +1,5 @@
-from sklearn.neighbors import kneighbors_graph
 from tqdm import tqdm
+import numpy as np
 import sys
 import csv
 import os
@@ -114,21 +114,54 @@ def get_header_dict(csv_dir):
         with open(path, "r") as f:
             # read csv and get the header as a list
             reader = csv.reader(f)
-            header_list = next(reader)
+            try:
+                header_list = next(reader)
+            except StopIteration:
+                print("This csv file is shit, no header. ")
+                continue
             # throw a key value pair in the dict, with filename as key
             header_dict.update({filename:header_list})
     return header_dict
+
+#=========1=========2=========3=========4=========5=========6=========7=
+
+def jaccard_similarity(list1, list2):
+    intersection = len(list(set(list1).intersection(list2)))
+    #print(list(set(list1).intersection(list2)))
+    union = (len(list1) + len(list2)) - intersection
+    return float(intersection / union)
     
 #=========1=========2=========3=========4=========5=========6=========7=
 
-def ghost(header_dict, num_NN, num_clusters):
+def jaccard_dist_mat_generator(header_dict, num_NN, dist_mat_path):
     list_of_headers = []
-    for filename, header_list in header_dict.iteritems():
-        list_of_headers.append(header_list)
-    schema_matrix = np.asarray(list_of_headers)
-    NN_matrix = kneighbors_graph(schema_matrix, num_NN, mode='distance')
-    labels = spectral_clustering(NN_matrix, n_clusters=num_clusters, eigen_solver='arpack')
-    print(labels)
+    max_attributes = 0
+    for filename, header_list in header_dict.items():
+        if (len(header_list) > max_attributes):
+            max_attributes = len(header_list)
+    for filename, header_list in header_dict.items():
+        length = len(header_list)
+        diff = max_attributes - length
+        for x in range(diff):
+            header_list.append("")
+        list_of_headers.append(np.array(header_list))
+     
+    schema_matrix = np.array(list_of_headers)
+    schema_matrix = np.stack(schema_matrix, axis=0)
+    print(schema_matrix.shape)
+    num_headers = schema_matrix.shape[0]
+
+    dist_mat_list = []
+    for header_a in tqdm(schema_matrix):
+        single_row = []
+        for header_b in schema_matrix:
+            jacc = jaccard_similarity(header_a, header_b)
+            single_row.append(jacc)
+        dist_mat_list.append(np.array(single_row))
+    jacc_matrix = np.array(dist_mat_list)
+    jacc_matrix = np.stack(jacc_matrix, axis=0)
+    print(jacc_matrix.shape)
+    np.save(dist_mat_path, jacc_matrix)
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -137,11 +170,18 @@ def ghost(header_dict, num_NN, num_clusters):
 valid_list = get_valid_filenames(directory)
 convert_those_files(valid_list, directory, out_dir)
 header_dict = get_header_dict(out_dir)
-ghost(header_dict, 15, 15)
+dist_mat_path = directory[0:len(directory) - 1] + ".npy"
+print(dist_mat_path)
+if not os.path.isfile(dist_mat_path):
+    print("No existing distance matrix for this directory. ")
+    print("Generating distance matrix using jaccard similarity. ")
+    print("This could take a while... ")
+    dist_mat = jaccard_dist_mat_generator(header_dict, 15, dist_mat_path)
+else:
+    dist_mat = np.load(dist_mat_path)
 
 
-
-
-
+#labels = spectral_clustering(NN_matrix, n_clusters=num_clusters, eigen_solver='arpack')
+#print(labels)
 
 

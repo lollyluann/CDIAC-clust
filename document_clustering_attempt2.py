@@ -20,7 +20,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 num_clusters = int(sys.argv[1])
 # the directory of the files you want to cluster
-corpusdir = "/home/ljung/extension_sorted_data/converted_pdfs/"
+corpusdir = "/home/ljung/extension_sorted_data/txt/"
 
 
 ''' PARAM: a string containing the directory of .txt files
@@ -40,8 +40,8 @@ def get_document_contents(directory):
             # add the filename to "filenames" 
             filenames.append(filename)
             # read the contents of the file and remove newlines
-            freader = open(current_file, "r")
-            contents = freader.read()
+            freader = open(current_file, "r", errors='backslashreplace')
+            contents = freader.read()#.encode("utf-8").decode('utf-8', 'backslashreplace')
             freader.close()
             contents = contents.replace("\n","")
             # add the string of the contents of the file to "data"
@@ -147,9 +147,10 @@ print(frame['cluster'].value_counts())
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # open file writer for result output
-os.chdir("/home/ljung/CDIAC-clust/")
-fwriter = open("pdf_clusters.txt", "w")
-fwriter.write("clusters from pdf files in: " + corpusdir)
+os.mkdir(os.path.join(corpusdir, "results/"))
+os.chdir(os.path.join(corpusdir, "results/"))
+fwriter = open("doc_clusters.txt", "w")
+fwriter.write("clusters from .txt files in: " + corpusdir)
 
 fwriter.write("\nTop terms per cluster: \n\n")
 print("Top terms per cluster: \n")
@@ -157,6 +158,7 @@ print("Top terms per cluster: \n")
 #sort cluster centers by proximity to centroid
 order_centroids = km.cluster_centers_.argsort()[:, ::-1] 
 
+# for each cluster
 for i in range(num_clusters):
     fwriter.write("Cluster " + str(i) + " words: ")
     print("Cluster %d words:" % i, end='')
@@ -180,10 +182,11 @@ for i in range(num_clusters):
     fwriter.write("\n\n")
 
 fwriter.close()
-print("output written to \"pdf_clusters.txt\"")
+print("output written to \"doc_clusters.txt\" in \"results\" of the original directory")
 
+#=========1=========2=========3=========4=========5=========6=========7=
 
-
+# multidimensional scaling to convert distance matrix into 3 dimensions
 mds = MDS(n_components=3, dissimilarity="precomputed", random_state=1)
 pos = mds.fit_transform(dist)  # shape (n_components, n_samples)
 xs, ys, zs = pos[:, 0], pos[:, 1], pos[:, 2]
@@ -192,24 +195,22 @@ xs, ys, zs = pos[:, 0], pos[:, 1], pos[:, 2]
 fig = plt.figure(figsize=(17,9))
 ax = Axes3D(fig)
 
-#create data frame that has the result of the MDS plus the cluster numbers and titles
+# create data frame with MDS results, cluster numbers, and filenames
 df = pd.DataFrame(dict(x=xs, y=ys, z=zs, label=clusters, filename=fnames)) 
-#group by cluster
+# group by cluster
 groups = df.groupby('label')
 
-# for each cluster, plot the files
+# for each cluster, plot the files in that cluster
 for name, group in groups:
     color = ('#%06X' % random.randint(0,256**3-1))
     for t in range(group.shape[0]):
-        ax.scatter(group.x.iloc[t], group.y.iloc[t], group.z.iloc[t], c=color, marker='o')
+        ax.scatter(group.x.iloc[t], group.y.iloc[t], group.z.iloc[t], 
+            c=color, marker='o')
         ax.set_aspect('auto')
 
-plt.savefig("pdf_3D_cluster", dpi=300)
+plt.savefig("3D_document_cluster", dpi=300)
 
-
-
-
-
+#=========1=========2=========3=========4=========5=========6=========7=
 
 # print total time taken to run program
 print("time taken: ", time()-t0)
