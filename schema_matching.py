@@ -35,7 +35,8 @@ dir_list = os.listdir(directory)
 
 # RETURNS: list of filenames which are candidates for conversion.
 
-def get_valid_filenames(dir_list, directory):
+def get_valid_filenames(directory):
+    dir_list = os.listdir(directory)
     list_valid_exts = [".xls", ".xlsx"]
     list_caps_exts = {".XLS":".xls", ".XLSX":".xlsx"}
     valid_list = []
@@ -101,19 +102,35 @@ def convert_those_files(valid_list, directory, out_dir):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-def get_header_dict(valid_list, csv_dir):
-    with open("C:/path/to/.filecsv", "rb") as f:
-        reader = csv.reader(f)
-        i = reader.next()
-        rest = [row for row in reader]
+#RETURNS: a dictionary which maps filenames to csvs header lists. 
+def get_header_dict(csv_dir):
+    header_dict = {}
+    # get a list of all files in the directory
+    dir_list = os.listdir(csv_dir)
+    for filename in dir_list:
+        # get the path of the current file
+        path = os.path.join(csv_dir, filename) 
+        with open(path, "rb") as f:
+            # read csv and get the header as a list
+            reader = csv.reader(f)
+            header_list = reader.next()
+            # throw a key value pair in the dict, with filename as key
+            header_dict.update({filename:header_list})
+    return header_dict
     
-
-
-
+#=========1=========2=========3=========4=========5=========6=========7=
 
 # MAIN PROGRAM: 
-valid_list = get_valid_filenames(dir_list, directory)
+valid_list = get_valid_filenames(directory)
 convert_those_files(valid_list, directory, out_dir)
+header_dict = get_header_dict(out_dir)
+
+
+
+
+
+
+
 
 
 
