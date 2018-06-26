@@ -148,7 +148,7 @@ def count_and_sort_exts(filenames):
     sorted_tokens = []
     sorted_counts = []
     # for each token in the dict, iterating from largest to smallest count 
-    for w in sorted(token_count_dict, key=token_count_dict.get, reverse=True):
+    for w in sorted(token_count_dict, key=token_count_dict.get, reverse=False):
         # add the token to a sorted list of tokens
         sorted_tokens.append(w)
         # add the corresponding count to a list of counts
