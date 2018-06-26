@@ -209,8 +209,9 @@ groups = df.groupby('label')
 #iterate through groups to layer the plot
 for name, group in groups:
     color = ('#%06X' % random.randint(0,256**3-1))
-    ax.scatter(group.x.iloc[0], group.y.iloc[0], group.z.iloc[0], c=color, marker='o')
-    ax.set_aspect('auto')
+    for t in range(group.shape[0]):
+        ax.scatter(group.x.iloc[t], group.y.iloc[t], group.z.iloc[t], c=color, marker='o')
+        ax.set_aspect('auto')
 
 plt.savefig("pdf_3D_cluster", dpi=300)
 
