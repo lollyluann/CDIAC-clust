@@ -4,9 +4,9 @@ Top terms per cluster:
 Cluster 0 words: data, sea, north, north, cruises, carbon, salinities, equilibrator, carina, adjustment, 
 Cluster 0 filenames: thomasetal2005_new.txt, Tanhua_et.al_2009a.txt, GOULD_02_01_data_report.txt, 
 
-Cluster 1 words: gps, ros, s, s, w, s, p06, s, e, s, 
-Cluster 1 filenames: volume1.txt, 
+Cluster 1 words: sop, page, f, h, k, sop, t, equation, hi−, guide, 
+Cluster 1 filenames: Errata.txt, 
 
-Cluster 2 words: sop, page, f, h, k, sop, t, equation, hi−, guide, 
-Cluster 2 filenames: Errata.txt, 
+Cluster 2 words: gps, ros, s, s, w, s, p06, s, e, s, 
+Cluster 2 filenames: volume1.txt, 
 

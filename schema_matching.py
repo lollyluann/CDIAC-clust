@@ -1,5 +1,6 @@
 from tqdm import tqdm
 import sys
+import csv
 import os
 
 # Converts all the .xls or .xlsx files in a directory to .csv files. 
@@ -100,9 +101,20 @@ def convert_those_files(valid_list, directory, out_dir):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
+def get_header_dict(valid_list, csv_dir):
+    with open("C:/path/to/.filecsv", "rb") as f:
+        reader = csv.reader(f)
+        i = reader.next()
+        rest = [row for row in reader]
+    
+
+
+
+
 # MAIN PROGRAM: 
 valid_list = get_valid_filenames(dir_list, directory)
 convert_those_files(valid_list, directory, out_dir)
+
 
 
 

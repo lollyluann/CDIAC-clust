@@ -210,7 +210,7 @@ groups = df.groupby('label')
 for name, group in groups:
     print("name: ", name, " group: ", group)
     color = ('#%06X' % random.randint(0,256**3-1))
-    ax.scatter(group.x, group.y, group.z, marker='.', color=color)
+    ax.scatter(group.x, group.y, group.z, c=color, marker='.')
     #ax.set_aspect('auto')
 
 plt.savefig("pdf_3D_cluster", dpi=1000)
