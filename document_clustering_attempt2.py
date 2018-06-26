@@ -195,7 +195,7 @@ for r in range(num_clusters):
     print(color)
 '''
 
-fig = plt.figure(figsize=(20,10))
+fig = plt.figure(figsize=(17,9))
 ax = Axes3D(fig)
 #ax.scatter(xs, ys, zs, s=fig.dpi/72., marker='.')
 
@@ -209,10 +209,10 @@ groups = df.groupby('label')
 #iterate through groups to layer the plot
 for name, group in groups:
     color = ('#%06X' % random.randint(0,256**3-1))
-    ax.scatter(group.x.iloc[0], group.y.iloc[0], group.z.iloc[0], c=color, marker='.')
-    #ax.set_aspect('auto')
+    ax.scatter(group.x.iloc[0], group.y.iloc[0], group.z.iloc[0], c=color, marker='o')
+    ax.set_aspect('auto')
 
-plt.savefig("pdf_3D_cluster", dpi=1000)
+plt.savefig("pdf_3D_cluster", dpi=300)
 
 
 
