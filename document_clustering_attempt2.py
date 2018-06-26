@@ -188,11 +188,12 @@ mds = MDS(n_components=3, dissimilarity="precomputed", random_state=1)
 pos = mds.fit_transform(dist)  # shape (n_components, n_samples)
 xs, ys, zs = pos[:, 0], pos[:, 1], pos[:, 2]
 
-cluster_colors = {}
+'''cluster_colors = {}
 for r in range(num_clusters):
     color = ('#%06X' % random.randint(0,256**3-1))
     cluster_colors.update({r:color})
     print(color)
+'''
 
 fig = plt.figure(figsize=(20,10))
 ax = Axes3D(fig)
@@ -206,10 +207,11 @@ groups = df.groupby('label')
 #fig, ax = plt.subplots(figsize=(17, 9)) # set size
 
 #iterate through groups to layer the plot
-#note that I use the cluster_name and cluster_color dicts with the 'name' lookup to return the appropriate color/label
 for name, group in groups:
-    ax.scatter(group.x, group.y, group.z, marker='.', color=cluster_colors[name])
-    ax.set_aspect('auto')
+    color = ('#%06X' % random.randint(0,256**3-1))
+    print("x ",group.x,", y ", group.y,", z ",group.z)
+    ax.scatter(group.x, group.y, group.z, marker='.', color=color)
+    #ax.set_aspect('auto')
 
 plt.savefig("pdf_3D_cluster", dpi=1000)
 
