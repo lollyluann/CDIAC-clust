@@ -200,7 +200,7 @@ ax = Axes3D(fig)
 #ax.scatter(xs, ys, zs, s=fig.dpi/72., marker='.')
 
 #create data frame that has the result of the MDS plus the cluster numbers and titles
-df = pd.DataFrame(dict(x=xs, y=ys, z=zs, label=clusters, filename=filename)) 
+df = pd.DataFrame(dict(x=xs, y=ys, z=zs, label=clusters, filename=fnames)) 
 #group by cluster
 groups = df.groupby('label')
 # set up plot
@@ -208,9 +208,10 @@ groups = df.groupby('label')
 
 #iterate through groups to layer the plot
 for name, group in groups:
+    print("name: ", name, " group: ", group)
     color = ('#%06X' % random.randint(0,256**3-1))
-    print("x ",group.x,", y ", group.y,", z ",group.z)
-    ax.scatter(group.x, group.y, group.z, marker='.', color=color)
+    for piece in group:
+        ax.scatter(group.x, group.y, group.z, marker='.', color=color)
     #ax.set_aspect('auto')
 
 plt.savefig("pdf_3D_cluster", dpi=1000)

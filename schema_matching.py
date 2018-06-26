@@ -6,19 +6,25 @@ import os
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # ARGUMENTS
-# the directory from which we're removing hidden files
+# source directory and output directory
 directory = sys.argv[1]
-if not os.path.isdir(directory):
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    print("")
-    print("DIES IST EIN UNGÜLTIGES VERZEICHNIS!!!!")
-    print("")
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    exit()
+out_dir = sys.argv[2]
+
+def check_valid_dir(some_dir):
+    if not os.path.isdir(directory):
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("")
+        print("DIES IST EIN UNGÜLTIGES VERZEICHNIS!!!!")
+        print("")
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        exit()
+
+check_valid_dir(directory)
+check_valid_dir(out_dir)
 
 # grab the contents of the directory
 dir_list = os.listdir(directory)
@@ -53,10 +59,28 @@ def get_valid_filenames(dir_list):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
+# DOES: converts all the files in valid list to csv, and puts the
+# resultant files in out_dir. 
+def convert_those_files(valid_list, out_dir):
+    for filename in valid_list:
+    
+        # getting the filename without file extension
+        length = len(filename)
+        pos = length - 1
+        dot_pos = length
+        while (pos >= 0):
+            if (filename[pos] == "."):
+                dot_pos = pos
+        fn_no_ext = filename[0:dot_pos]
 
+        # converting
+        os.system("ssconvert " + filename + " " + os.path.join(out_dir, fn_no_ext) + ".csv > /dev/null 2>&1 -S")
 
+#=========1=========2=========3=========4=========5=========6=========7=
 
-
+# MAIN PROGRAM: 
+valid_list = get_valid_filenames(dir_list)
+convert_those_files(valid_list, out_dir)
 
 
 
