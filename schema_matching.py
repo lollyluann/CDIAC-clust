@@ -1,3 +1,4 @@
+from tqdm import tqdm
 import sys
 import os
 
@@ -37,7 +38,7 @@ def get_valid_filenames(dir_list):
     list_valid_exts = [".xls", ".xlsx"]
     valid_list = []
     # for each filename in the directory...
-    for filename in dir_list:
+    for filename in tqdm(dir_list):
         length = len(filename)
         # we iterate on the characters starting from end of the string
         pos = length - 1
@@ -48,6 +49,7 @@ def get_valid_filenames(dir_list):
         while (pos >= 0):
             if (filename[pos] == "."):
                 dot_pos = pos
+            pos = pos - 1
         # if there is a dot somewhere in filename, i.e. if there is an
         # extension...
         if (dot_pos < length):
@@ -61,8 +63,8 @@ def get_valid_filenames(dir_list):
 
 # DOES: converts all the files in valid list to csv, and puts the
 # resultant files in out_dir. 
-def convert_those_files(valid_list, out_dir):
-    for filename in valid_list:
+def convert_those_files(valid_list, directory, out_dir):
+    for filename in tqdm(valid_list):
     
         # getting the filename without file extension
         length = len(filename)
@@ -71,16 +73,19 @@ def convert_those_files(valid_list, out_dir):
         while (pos >= 0):
             if (filename[pos] == "."):
                 dot_pos = pos
+            pos = pos - 1
         fn_no_ext = filename[0:dot_pos]
 
         # converting
-        os.system("ssconvert " + filename + " " + os.path.join(out_dir, fn_no_ext) + ".csv > /dev/null 2>&1 -S")
+        in_path = os.path.join(directory, filename)
+        out_path = os.path.join(out_dir, fn_no_ext)
+        os.system("ssconvert " + in_path + " " + out_path + ".csv > /dev/null 2>&1 -S")
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # MAIN PROGRAM: 
 valid_list = get_valid_filenames(dir_list)
-convert_those_files(valid_list, out_dir)
+convert_those_files(valid_list, directory, out_dir)
 
 
 
