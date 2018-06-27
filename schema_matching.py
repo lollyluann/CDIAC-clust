@@ -1,5 +1,8 @@
+from sklearn.cluster import AgglomerativeClustering
+from sklearn.neighbors import kneighbors_graph
 from tqdm import tqdm
 import numpy as np
+import sklearn
 import sys
 import csv
 import os
@@ -108,6 +111,8 @@ def get_header_dict(csv_dir):
     header_dict = {}
     # get a list of all files in the directory
     dir_list = os.listdir(csv_dir)
+    # number of files with no valid header
+    bad_files = 0
     for filename in tqdm(dir_list):
         # get the path of the current file
         path = os.path.join(csv_dir, filename) 
@@ -116,11 +121,42 @@ def get_header_dict(csv_dir):
             reader = csv.reader(f)
             try:
                 header_list = next(reader)
+                # if the header is empty, try the next line
+                if (len(header_list) == 0):
+                    header_list = next(reader)
+
+                
+                # number of nonempty attribute strings
+                num_nonempty = 0
+                for attribute in header_list:
+                    if not (attribute == ""):
+                        num_nonempty = num_nonempty + 1
+                fill_ratio = num_nonempty / len(header_list)                
+
+                # keep checking lines until you get one where there
+                # are enough nonempty attributes
+                while (fill_ratio <= 0.4):
+                    # if there's only one nonempty attribute, it's
+                    # probably just a descriptor of the table, so try the
+                    # next line. 
+                    header_list = next(reader)
+                    num_nonempty = 0
+                    for attribute in header_list:
+                        if not (attribute == ""):
+                            num_nonempty = num_nonempty + 1
+                    fill_ratio = num_nonempty / len(header_list)
+                    # people seem to denote pre-header stuff with a *
+                    for attribute in header_list:
+                        if (attribute != "" and attribute[-1] == "*"):
+                            fill_ratio = -1
+                    if (header_list[0] == ""):
+                        fill_ratio = -1
             except StopIteration:
-                print("This csv file is shit, no header. ")
+                bad_files = bad_files + 1
                 continue
             # throw a key value pair in the dict, with filename as key
             header_dict.update({filename:header_list})
+    print("Throwing out this number of files, all have less than 10% nonempty cells in every row: ", bad_files)    
     return header_dict
 
 #=========1=========2=========3=========4=========5=========6=========7=
@@ -133,38 +169,79 @@ def jaccard_similarity(list1, list2):
     
 #=========1=========2=========3=========4=========5=========6=========7=
 
-def jaccard_dist_mat_generator(header_dict, num_NN, dist_mat_path):
+# DOES: computes the jaccard distance matrix of the headers in 
+# header_dict. 
+# RETURNS: a tuple with the first element being an array of all the 
+# headers in numpy array form, and the secnond being the jaccard dist
+# matrix. 
+def dist_mat_generator(header_dict, dist_mat_path):
     list_of_headers = []
+    # we're keeping track of the max number of attributes in any header
+    # so we know how big to make the second axis of the numpy array
     max_attributes = 0
+    # for each key value pair, maps filenames to headers as lists of 
+    # strings...
     for filename, header_list in header_dict.items():
+        # just find the max_attributes value
         if (len(header_list) > max_attributes):
             max_attributes = len(header_list)
+    # again for each key value pair...
     for filename, header_list in header_dict.items():
         length = len(header_list)
+        print(header_list)
         diff = max_attributes - length
+        # add in empty strings until all headers have max length
         for x in range(diff):
             header_list.append("")
+        # add each header to a list as a numpy array
         list_of_headers.append(np.array(header_list))
-     
+    # convert list of numpy arrays to numpy array 
     schema_matrix = np.array(list_of_headers)
     schema_matrix = np.stack(schema_matrix, axis=0)
     print(schema_matrix.shape)
     num_headers = schema_matrix.shape[0]
+    
+    jacc_matrix = np.zeros((2,1))
 
-    dist_mat_list = []
-    for header_a in tqdm(schema_matrix):
-        single_row = []
-        for header_b in schema_matrix:
-            jacc = jaccard_similarity(header_a, header_b)
-            single_row.append(jacc)
-        dist_mat_list.append(np.array(single_row))
-    jacc_matrix = np.array(dist_mat_list)
-    jacc_matrix = np.stack(jacc_matrix, axis=0)
-    print(jacc_matrix.shape)
-    np.save(dist_mat_path, jacc_matrix)
+    if not os.path.isfile(dist_mat_path):
+        print("No existing distance matrix for this directory. ")
+        print("Generating distance matrix using jaccard similarity. ")
+        print("This could take a while... ")
+
+        # we generate the distance matrix as a list
+        dist_mat_list = []
+        # iterating over the header array once...
+        for header_a in tqdm(schema_matrix):
+            # storing distances for a single header
+            single_row = []
+            # iterating again...
+            for header_b in schema_matrix:
+                jacc = jaccard_similarity(header_a, header_b)
+                single_row.append(jacc)
+            # add one row to the list
+            dist_mat_list.append(np.array(single_row))
+        # convert list to numpy array
+        jacc_matrix = np.array(dist_mat_list)
+        jacc_matrix = np.stack(jacc_matrix, axis=0)
+        print(jacc_matrix.shape)
+        # save on disk, because computation is expensive
+        np.save(dist_mat_path, jacc_matrix)
+
+    else:
+        jacc_matrix = np.load(dist_mat_path)
+
+
+    return schema_matrix, jacc_matrix
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
+def agglomerative(jacc_matrix, num_clusters):
+    clustering = AgglomerativeClustering(n_clusters=num_clusters, affinity='precomputed', linkage='average')
+    clustering.fit(jacc_matrix)
+    labels = clustering.labels_
+    print(labels)
+
+#=========1=========2=========3=========4=========5=========6=========7=
 
 # MAIN PROGRAM: 
 valid_list = get_valid_filenames(directory)
@@ -172,14 +249,9 @@ convert_those_files(valid_list, directory, out_dir)
 header_dict = get_header_dict(out_dir)
 dist_mat_path = directory[0:len(directory) - 1] + ".npy"
 print(dist_mat_path)
-if not os.path.isfile(dist_mat_path):
-    print("No existing distance matrix for this directory. ")
-    print("Generating distance matrix using jaccard similarity. ")
-    print("This could take a while... ")
-    dist_mat = jaccard_dist_mat_generator(header_dict, 15, dist_mat_path)
-else:
-    dist_mat = np.load(dist_mat_path)
-
+schema_matrix, jacc_matrix = dist_mat_generator(header_dict, dist_mat_path)
+print(jacc_matrix)
+agglomerative(jacc_matrix, 10)
 
 #labels = spectral_clustering(NN_matrix, n_clusters=num_clusters, eigen_solver='arpack')
 #print(labels)

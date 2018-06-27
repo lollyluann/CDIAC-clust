@@ -20,7 +20,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 num_clusters = int(sys.argv[1])
 # the directory of the files you want to cluster
-corpusdir = "/home/ljung/extension_sorted_data/txt/"
+corpusdir = "/home/ljung/extension_sorted_data/all_text/"
 
 
 ''' PARAM: a string containing the directory of .txt files
