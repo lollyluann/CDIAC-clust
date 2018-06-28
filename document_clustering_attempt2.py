@@ -3,6 +3,7 @@ matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 import numpy as np
 import random
+from generate_token_dict import DFS
 import pandas as pd
 import nltk, re, os, codecs, mpld3, sys
 from time import time
@@ -33,7 +34,7 @@ def get_document_contents(directory):
         current_file = os.path.join(directory,filename)
         if os.path.isfile(current_file):
             # add the filename to "filenames" 
-            filenames.append([filename,current_file])
+            filenames.append(filename)
             # read the contents of the file and remove newlines
             freader = open(current_file, "r", errors='backslashreplace')
             contents = freader.read()#.encode("utf-8").decode('utf-8', 'backslashreplace')
@@ -143,14 +144,14 @@ def main_function(num_clusters, retokenize, corpusdir):
     clusters = km.labels_.tolist()
 
     # create a dictionary "db" of filenames, contents, and clusters
-    db = {'filename': [fn for fn in fnames], 'content': dataset, 'cluster': clusters}
+    db = {'filename': fnames, 'content': dataset, 'cluster': clusters}
     # convert "db" to a pandas datafram
     frame = pd.DataFrame(db, index=[clusters], columns=['filename','cluster'])
     # print the number of files in each cluster
     print(frame['cluster'].value_counts())
 
     #=========1=========2=========3=========4=========5=========6=========
-
+    '''
     # open file writer for result output
     output_path = os.path.join(corpusdir, "results/")
     if not os.path.isdir(output_path):
@@ -167,8 +168,8 @@ def main_function(num_clusters, retokenize, corpusdir):
 
     # for each cluster
     for i in range(num_clusters):
-        fwriter.write("Cluster " + str(i+1) + " words: ")
-        print("Cluster %d words:" % i+1, end='')
+        fwriter.write("Cluster " + str(i) + " words: ")
+        print("Cluster %d words:" % i, end='')
         
         # print the first "n_words" words in a cluster
         n_words = 10
@@ -180,8 +181,8 @@ def main_function(num_clusters, retokenize, corpusdir):
         fwriter.write("\n")
         
         # print out the filenames in the cluster
-        print("Cluster %d filenames:" % (i+1), end='')
-        fwriter.write("Cluster " + str(i+1) + " filenames: ")
+        print("Cluster %d filenames:" % i, end='')
+        fwriter.write("Cluster " + str(i) + " filenames: ")
         for filename in frame.ix[i]['filename'].values.tolist():
             print(' %s,' % filename, end='')
             fwriter.write(filename.rstrip('\n') + ", ")
@@ -203,7 +204,7 @@ def main_function(num_clusters, retokenize, corpusdir):
     ax = Axes3D(fig)
 
     # create data frame with MDS results, cluster numbers, and filenames
-    df = pd.DataFrame(dict(x=xs, y=ys, z=zs, label=clusters, filename=[fn for fn in fnames])) 
+    df = pd.DataFrame(dict(x=xs, y=ys, z=zs, label=clusters, filename=fnames)) 
     # group by cluster
     groups = df.groupby('label')
 
@@ -218,11 +219,46 @@ def main_function(num_clusters, retokenize, corpusdir):
 
     plt.savefig("3D_document_cluster", dpi=300)
     print("scatter plot written to \"3D_document_cluster.png\"")
-
-    #=========1=========2=========3=========4=========5=========6=========7=
-
+    '''
     # print total time taken to run program
     print("time taken: ", time()-t0)
+    
+    return frame
+
+
+def histogram_clusters(frame, path, num_clusters):
+    file_pathtokens_dict, file_path_dict = DFS(path,1)
+    plt.figure("hist")
+    
+    for i in range(num_clusters):
+        plt.clf()
+        paths_in_cluster = {}
+        print(frame.loc[frame['cluster']==1])
+        count = 0    
+        for row in frame.loc[frame['cluster']==i]:
+            if count>1:
+                print(row)
+                fna = row['filename']
+                path = file_path_dict.get(fna)
+                if path in paths_in_cluster:
+                    paths_in_cluster.update({path:paths_in_cluster.get(path)+1})
+                else:
+                    paths_in_cluster.update({path:1})
+            count+=1
+        sorted_names = []
+        sorted_counts = []
+        for e in sorted(paths_in_cluster, key=paths_in_cluster.get, reverse=True):
+            sorted_names.append(e)
+            sorted_counts.append(paths_in_cluster[e])
+        y_pos = np.arange(len(sorted_names))
+
+        plt.bar(y_pos, sorted_counts, align='center', alpha=0.5)
+        plt.xticks(y_pos, sorted_names)
+        plt.ylabel('Number of files')
+        plt.title('Directories in Cluster ' + str(i))
+        save_name = "histogram_cluster"+str(i)
+        os.chdir("/home/ljung/CDIAC-clust/txt_cluster_hists/")
+        plt.savefig(save_name, dpi=200)
 
 
 # MAIN PROGRAM
@@ -232,5 +268,5 @@ retokenize = sys.argv[2]
 # the directory of the files you want to cluster
 corpusdir = "/home/ljung/extension_sorted_data/all_text/"
 corpusdir = sys.argv[3]
-main_function(num_clusters, retokenize, corpusdir)
-
+fr = main_function(num_clusters, retokenize, corpusdir)
+histogram_clusters(fr, "/home/ljung/pub8/", num_clusters)

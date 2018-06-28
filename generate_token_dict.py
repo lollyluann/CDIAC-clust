@@ -68,24 +68,35 @@ def gen_tokens(pathname, length):
         token_list.append(pathname[pos:pos+length])
     return token_list
 
+#=========1=========2=========3=========4=========5=========6=========7=
 
+def parse_args():
+    root_path = sys.argv[1]
+    token_length = int(sys.argv[2])
+    return root_path, token_length
+
+#=========1=========2=========3=========4=========5=========6=========7=
 # MAIN PROGRAM
 
-root_path = sys.argv[1]
-token_length = int(sys.argv[2])
+def main():
+    root_path, token_length = parse_args()
 
-allpaths = DFS(root_path, token_length)
-# print(allpaths)
+    allpaths = DFS(root_path, token_length)
+    # print(allpaths)
 
-os.chdir(root_path)
+    os.chdir(root_path)
 
-file_pathtokens_dict = allpaths[0]
-file_path_dict = allpaths[1]
+    file_pathtokens_dict = allpaths[0]
+    file_path_dict = allpaths[1]
 
-f1 = open(root_path + "file_pathtokens_dict.txt","w")
-f2 = open(root_path + "file_path_dict.txt","w")
+    f1 = open(root_path + "file_pathtokens_dict.txt","w")
+    f2 = open(root_path + "file_path_dict.txt","w")
 
-f1.write( str(file_pathtokens_dict) )
-f2.write( str(file_path_dict) )
-f1.close()
-f2.close() 
+    f1.write( str(file_pathtokens_dict) )
+    f2.write( str(file_path_dict) )
+    f1.close()
+    f2.close()
+
+if __name__ == "__main__":
+   # stuff only to run when not called via 'import' here
+   main() 

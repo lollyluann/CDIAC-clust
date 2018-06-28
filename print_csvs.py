@@ -7,10 +7,6 @@ import sys
 import csv
 import os
 
-# Converts all the .xls or .xlsx files in a directory to .csv files. 
-# Then it clusters the schemas of these .csv files using agglomerative
-# clustering. 
-
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # ARGUMENTS

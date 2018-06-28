@@ -1,11 +1,14 @@
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.neighbors import kneighbors_graph
+import generate_token_dict
 from tqdm import tqdm
 import numpy as np
 import sklearn
 import sys
 import csv
 import os
+
+np.set_printoptions(threshold=np.nan)
 
 # Converts all the .xls or .xlsx files in a directory to .csv files. 
 # Then it clusters the schemas of these .csv files using agglomerative
@@ -17,7 +20,8 @@ import os
 # source directory and output directory
 directory = sys.argv[1]
 out_dir = sys.argv[2]
-overwrite = sys.argv[3]
+dataset_dir = sys.argv[3]
+overwrite = sys.argv[4]
 # overwrite is a string, should be "0" for don't overwrite, and "1"
 # for do
 
@@ -36,6 +40,7 @@ def check_valid_dir(some_dir):
 
 check_valid_dir(directory)
 check_valid_dir(out_dir)
+check_valid_dir(dataset_dir)
 xls_path = os.path.join(directory, "xls/")
 xlsx_path = os.path.join(directory, "xlsx/")
 csv_path = os.path.join(directory, "csv/")
@@ -123,6 +128,7 @@ def get_header_dict(csv_dir, fill_threshold):
     dir_list = os.listdir(csv_dir)
     # number of files with no valid header
     bad_files = 0
+    decode_probs = 0
     for filename in tqdm(dir_list):
         # get the path of the current file
         path = os.path.join(csv_dir, filename) 
@@ -156,7 +162,10 @@ def get_header_dict(csv_dir, fill_threshold):
                     for attribute in header_list:
                         if not (attribute == ""):
                             num_nonempty = num_nonempty + 1
-                    fill_ratio = num_nonempty / len(header_list)
+                    if (len(header_list) == 0):
+                        fill_ratio = -1
+                    else:
+                        fill_ratio = num_nonempty / len(header_list)
 
                     #================================================
                     # Here we've hardcoded some information about 
@@ -167,14 +176,15 @@ def get_header_dict(csv_dir, fill_threshold):
                     for attribute in header_list:
                         if (attribute != "" and attribute[-1] == "*"):
                             fill_ratio = -1
-                    
-                    if (header_list[0] == "Year" and header_list[2] != ""):
-                        break
-                    if (header_list[0] == "Citation"):
-                        fill_ratio = -1
+                    if (len(header_list) > 3):
+                        if (header_list[0] == "Year" and header_list[2] != ""):
+                            break
+                        if (header_list[0] == "Citation"):
+                            fill_ratio = -1
                         
                     #================================================
-                    
+            except UnicodeDecodeError:
+                decode_probs = decode_probs + 1                    
             except StopIteration:
                 bad_files = bad_files + 1
                 #os.system("cp " + path + " ~/bad_csvs/")
@@ -182,6 +192,7 @@ def get_header_dict(csv_dir, fill_threshold):
             # throw a key value pair in the dict, with filename as key
             header_dict.update({filename:header_list})
     print("Throwing out this number of files, all have less than ", fill_threshold*100, "% nonempty cells in every row: ", bad_files)    
+    print("Number of UnicodeDecodeErrors: ", decode_probs)
     return header_dict
 
 #=========1=========2=========3=========4=========5=========6=========7=
@@ -190,6 +201,8 @@ def jaccard_similarity(list1, list2):
     intersection = len(list(set(list1).intersection(list2)))
     #print(list(set(list1).intersection(list2)))
     union = (len(list1) + len(list2)) - intersection
+    if (union == 0):
+        union = 1
     return 1 - float(intersection / union)
     
 #=========1=========2=========3=========4=========5=========6=========7=
@@ -200,30 +213,14 @@ def jaccard_similarity(list1, list2):
 # headers in numpy array form, and the secnond being the jaccard dist
 # matrix. 
 def dist_mat_generator(header_dict, dist_mat_path, overwrite):
-    list_of_headers = []
-    # we're keeping track of the max number of attributes in any header
-    # so we know how big to make the second axis of the numpy array
-    max_attributes = 0
-    # for each key value pair, maps filenames to headers as lists of 
-    # strings...
+    schema_matrix = []
+    filename_header_pairs = []
+
     for filename, header_list in header_dict.items():
-        print(header_list)
-        # just find the max_attributes value
-        if (len(header_list) > max_attributes):
-            max_attributes = len(header_list)
-    # again for each key value pair...
-    for filename, header_list in header_dict.items():
-        length = len(header_list)
-        diff = max_attributes - length
-        # add in empty strings until all headers have max length
-        for x in range(diff):
-            header_list.append("")
-        # add each header to a list as a numpy array
-        list_of_headers.append(header_list)
-    # convert list of numpy arrays to numpy array 
-    schema_matrix = list_of_headers
-    num_headers = len(schema_matrix)
-    
+        schema_matrix.append(header_list)
+        filename_header_pairs.append([filename, header_list])
+   
+    # we just need an empty numpy array 
     jacc_matrix = np.zeros((2,1))
 
     if not os.path.isfile(dist_mat_path) or overwrite == "1":
@@ -254,17 +251,58 @@ def dist_mat_generator(header_dict, dist_mat_path, overwrite):
         jacc_matrix = np.load(dist_mat_path)
 
 
-    return schema_matrix, jacc_matrix
+    return schema_matrix, jacc_matrix, filename_header_pairs
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-def agglomerative(jacc_matrix, num_clusters):
+def agglomerative(jacc_matrix, num_clusters, filename_header_pairs):
     clustering = AgglomerativeClustering(n_clusters=num_clusters, affinity='precomputed', linkage='complete')
     clustering.fit(jacc_matrix)
     labels = clustering.labels_
     print(labels)
 
+    clust_label_dict = {}
+    print("length of labels is: ", len(labels))
+    print("length of filename_header_pairs is: ", len(filename_header_pairs))
+    for i in range(len(labels)):
+        label = labels[i]
+        pair = filename_header_pairs[i]
+        filename = pair[0]
+        
+        length = len(filename)
+        # we iterate on the characters starting from end of the string
+        pos = length - 1
+        # dot pos will be position of the first period from the end,
+        # i.e. the file extension dot. If it is still "length" at end,
+        # we know that there are no dots in the filename. 
+        dot_pos = length
+        while (pos >= 0):
+            if (filename[pos] == "."):
+                dot_pos = pos
+                break
+            pos = pos - 1
+        extension = filename[dot_pos:length]
+        
+        
+
+
+
+
+
+
+
+
+        clust_label_dict.update({filename:label})
+
+    return clust_label_dict
+
 #=========1=========2=========3=========4=========5=========6=========7=
+
+def create_unconvert_dict(directory, out_dir, xls_valid_list, xlsx_valid_list, tsv_valid_list, file_path_dict):
+    converted_list = os.listdir(out_dir)
+    for filename in converted_list:  
+
+                   
 
 # MAIN PROGRAM: 
 xls_valid_list = get_valid_filenames(xls_path)
@@ -274,19 +312,20 @@ convert_those_files(xls_valid_list, xls_path, out_dir)
 convert_those_files(xlsx_valid_list, xlsx_path, out_dir)
 convert_those_files(tsv_valid_list, tsv_path, out_dir)
 csv_files_path = os.path.join(csv_path, "*.csv")
-os.system(csv_path + "cp " + csv_files_path + " " + out_dir)
+os.system("cp -R -u -p " + csv_files_path + " " + out_dir)
+
+# gets a dictionary of the files to their paths
+file_pathtokens_dict, file_path_dict = generate_token_dict.DFS(dataset_dir,1)
 
 # if csvs have less than fill_threshold*100% nonempty cells in every row
 # then we throw them out of our clustering. 
 fill_threshold = 0.4
 header_dict = get_header_dict(out_dir, fill_threshold)
 dist_mat_path = directory[0:len(directory) - 1] + ".npy"
-print(dist_mat_path)
-schema_matrix, jacc_matrix = dist_mat_generator(header_dict, dist_mat_path, overwrite)
+print("We are storing the distance matrix is the following file: ", dist_mat_path)
+schema_matrix, jacc_matrix, filename_header_pairs = dist_mat_generator(header_dict, dist_mat_path, overwrite)
 length = jacc_matrix.shape[0]
-#for i in range(length):
-    #print(jacc_matrix[i,:])
-agglomerative(jacc_matrix, 15)
+clust_label_dict = agglomerative(jacc_matrix, 15, filename_header_pairs)
 
 
 
