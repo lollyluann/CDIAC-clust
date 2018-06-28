@@ -18,13 +18,6 @@ from mpl_toolkits.mplot3d import Axes3D
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-num_clusters = int(sys.argv[1])
-retokenize = sys.argv[2]
-# the directory of the files you want to cluster
-corpusdir = "/home/ljung/extension_sorted_data/all_text/"
-corpusdir = sys.argv[3]
-main_function(num_clusters, retokenize, corpusdir)
-
 ''' PARAM: a string containing the directory of .txt files
     RETURNS: a list of filenames and a list of the contents of the files 
     DOES: gets all the filenames and their contents of a directory'''   
@@ -40,7 +33,7 @@ def get_document_contents(directory):
         current_file = os.path.join(directory,filename)
         if os.path.isfile(current_file):
             # add the filename to "filenames" 
-            filenames.append(filename)
+            filenames.append([filename,current_file])
             # read the contents of the file and remove newlines
             freader = open(current_file, "r", errors='backslashreplace')
             contents = freader.read()#.encode("utf-8").decode('utf-8', 'backslashreplace')
@@ -145,11 +138,12 @@ def main_function(num_clusters, retokenize, corpusdir):
     vocab_frame = pd.read_pickle("vocab_frame.pkl")
     terms = np.load("terms.npy")
     dist = np.load("distance_matrix.npy")
+    print("Loaded in existing cluster profile...\n")
 
     clusters = km.labels_.tolist()
 
     # create a dictionary "db" of filenames, contents, and clusters
-    db = {'filename': fnames, 'content': dataset, 'cluster': clusters}
+    db = {'filename': [fn for fn in fnames], 'content': dataset, 'cluster': clusters}
     # convert "db" to a pandas datafram
     frame = pd.DataFrame(db, index=[clusters], columns=['filename','cluster'])
     # print the number of files in each cluster
@@ -173,8 +167,8 @@ def main_function(num_clusters, retokenize, corpusdir):
 
     # for each cluster
     for i in range(num_clusters):
-        fwriter.write("Cluster " + str(i) + " words: ")
-        print("Cluster %d words:" % i, end='')
+        fwriter.write("Cluster " + str(i+1) + " words: ")
+        print("Cluster %d words:" % i+1, end='')
         
         # print the first "n_words" words in a cluster
         n_words = 10
@@ -186,8 +180,8 @@ def main_function(num_clusters, retokenize, corpusdir):
         fwriter.write("\n")
         
         # print out the filenames in the cluster
-        print("Cluster %d filenames:" % i, end='')
-        fwriter.write("Cluster " + str(i) + " filenames: ")
+        print("Cluster %d filenames:" % (i+1), end='')
+        fwriter.write("Cluster " + str(i+1) + " filenames: ")
         for filename in frame.ix[i]['filename'].values.tolist():
             print(' %s,' % filename, end='')
             fwriter.write(filename.rstrip('\n') + ", ")
@@ -209,7 +203,7 @@ def main_function(num_clusters, retokenize, corpusdir):
     ax = Axes3D(fig)
 
     # create data frame with MDS results, cluster numbers, and filenames
-    df = pd.DataFrame(dict(x=xs, y=ys, z=zs, label=clusters, filename=fnames)) 
+    df = pd.DataFrame(dict(x=xs, y=ys, z=zs, label=clusters, filename=[fn for fn in fnames])) 
     # group by cluster
     groups = df.groupby('label')
 
@@ -229,3 +223,14 @@ def main_function(num_clusters, retokenize, corpusdir):
 
     # print total time taken to run program
     print("time taken: ", time()-t0)
+
+
+# MAIN PROGRAM
+
+num_clusters = int(sys.argv[1])
+retokenize = sys.argv[2]
+# the directory of the files you want to cluster
+corpusdir = "/home/ljung/extension_sorted_data/all_text/"
+corpusdir = sys.argv[3]
+main_function(num_clusters, retokenize, corpusdir)
+

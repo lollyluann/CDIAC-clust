@@ -36,16 +36,22 @@ def check_valid_dir(some_dir):
 
 check_valid_dir(directory)
 check_valid_dir(out_dir)
+xls_path = os.path.join(directory, "xls/")
+xlsx_path = os.path.join(directory, "xlsx/")
+csv_path = os.path.join(directory, "csv/")
+tsv_path = os.path.join(directory, "tsv/")
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # RETURNS: list of filenames which are candidates for conversion.
 
 def get_valid_filenames(directory):
+    if not os.path.isdir(directory):
+        return []
     dir_list = os.listdir(directory)
     print("size of directory: ", len(dir_list))
-    list_valid_exts = [".xls", ".xlsx"]
-    list_caps_exts = {".XLS":".xls", ".XLSX":".xlsx"}
+    list_valid_exts = [".xls", ".xlsx", ".tsv"]
+    list_caps_exts = {".XLS":".xls", ".XLSX":".xlsx", ".TSV":".tsv"}
     valid_list = []
     # for each filename in the directory...
     for filename in tqdm(dir_list):
@@ -175,7 +181,7 @@ def get_header_dict(csv_dir, fill_threshold):
                 continue
             # throw a key value pair in the dict, with filename as key
             header_dict.update({filename:header_list})
-    print("Throwing out this number of files, all have less than 10% nonempty cells in every row: ", bad_files)    
+    print("Throwing out this number of files, all have less than ", fill_threshold*100, "% nonempty cells in every row: ", bad_files)    
     return header_dict
 
 #=========1=========2=========3=========4=========5=========6=========7=
@@ -261,8 +267,14 @@ def agglomerative(jacc_matrix, num_clusters):
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # MAIN PROGRAM: 
-valid_list = get_valid_filenames(directory)
-convert_those_files(valid_list, directory, out_dir)
+xls_valid_list = get_valid_filenames(xls_path)
+xlsx_valid_list = get_valid_filenames(xlsx_path)
+tsv_valid_list = get_valid_filenames(tsv_path)
+convert_those_files(xls_valid_list, xls_path, out_dir)
+convert_those_files(xlsx_valid_list, xlsx_path, out_dir)
+convert_those_files(tsv_valid_list, tsv_path, out_dir)
+csv_files_path = os.path.join(csv_path, "*.csv")
+os.system(csv_path + "cp " + csv_files_path + " " + out_dir)
 
 # if csvs have less than fill_threshold*100% nonempty cells in every row
 # then we throw them out of our clustering. 
