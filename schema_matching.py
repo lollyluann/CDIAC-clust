@@ -8,6 +8,8 @@ import csv
 import os
 
 # Converts all the .xls or .xlsx files in a directory to .csv files. 
+# Then it clusters the schemas of these .csv files using agglomerative
+# clustering. 
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -15,6 +17,9 @@ import os
 # source directory and output directory
 directory = sys.argv[1]
 out_dir = sys.argv[2]
+overwrite = sys.argv[3]
+# overwrite is a string, should be "0" for don't overwrite, and "1"
+# for do
 
 def check_valid_dir(some_dir):
     if not os.path.isdir(directory):
@@ -32,15 +37,13 @@ def check_valid_dir(some_dir):
 check_valid_dir(directory)
 check_valid_dir(out_dir)
 
-# grab the contents of the directory
-dir_list = os.listdir(directory)
-
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # RETURNS: list of filenames which are candidates for conversion.
 
 def get_valid_filenames(directory):
     dir_list = os.listdir(directory)
+    print("size of directory: ", len(dir_list))
     list_valid_exts = [".xls", ".xlsx"]
     list_caps_exts = {".XLS":".xls", ".XLSX":".xlsx"}
     valid_list = []
@@ -101,13 +104,14 @@ def convert_those_files(valid_list, directory, out_dir):
         in_path = os.path.join(directory, filename)
         out_path = os.path.join(out_dir, fn_no_ext)
         if not os.path.isfile(out_path + ".csv.0"):
+            #print("out_path: ", out_path)
             print("converting")
             os.system("ssconvert " + in_path + " " + out_path + ".csv > /dev/null 2>&1 -S")
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
 #RETURNS: a dictionary which maps filenames to csvs header lists. 
-def get_header_dict(csv_dir):
+def get_header_dict(csv_dir, fill_threshold):
     header_dict = {}
     # get a list of all files in the directory
     dir_list = os.listdir(csv_dir)
@@ -121,10 +125,11 @@ def get_header_dict(csv_dir):
             reader = csv.reader(f)
             try:
                 header_list = next(reader)
+                
                 # if the header is empty, try the next line
                 if (len(header_list) == 0):
                     header_list = next(reader)
-
+                
                 
                 # number of nonempty attribute strings
                 num_nonempty = 0
@@ -135,24 +140,38 @@ def get_header_dict(csv_dir):
 
                 # keep checking lines until you get one where there
                 # are enough nonempty attributes
-                while (fill_ratio <= 0.4):
+                while (fill_ratio <= fill_threshold):
                     # if there's only one nonempty attribute, it's
                     # probably just a descriptor of the table, so try the
                     # next line. 
                     header_list = next(reader)
+                    #print(len(header_list))
                     num_nonempty = 0
                     for attribute in header_list:
                         if not (attribute == ""):
                             num_nonempty = num_nonempty + 1
                     fill_ratio = num_nonempty / len(header_list)
+
+                    #================================================
+                    # Here we've hardcoded some information about 
+                    # scientific data to work better with CDIAC. 
+                    # feel free to remove it. 
+                    
                     # people seem to denote pre-header stuff with a *
                     for attribute in header_list:
                         if (attribute != "" and attribute[-1] == "*"):
                             fill_ratio = -1
-                    if (header_list[0] == ""):
+                    
+                    if (header_list[0] == "Year" and header_list[2] != ""):
+                        break
+                    if (header_list[0] == "Citation"):
                         fill_ratio = -1
+                        
+                    #================================================
+                    
             except StopIteration:
                 bad_files = bad_files + 1
+                #os.system("cp " + path + " ~/bad_csvs/")
                 continue
             # throw a key value pair in the dict, with filename as key
             header_dict.update({filename:header_list})
@@ -165,7 +184,7 @@ def jaccard_similarity(list1, list2):
     intersection = len(list(set(list1).intersection(list2)))
     #print(list(set(list1).intersection(list2)))
     union = (len(list1) + len(list2)) - intersection
-    return float(intersection / union)
+    return 1 - float(intersection / union)
     
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -174,7 +193,7 @@ def jaccard_similarity(list1, list2):
 # RETURNS: a tuple with the first element being an array of all the 
 # headers in numpy array form, and the secnond being the jaccard dist
 # matrix. 
-def dist_mat_generator(header_dict, dist_mat_path):
+def dist_mat_generator(header_dict, dist_mat_path, overwrite):
     list_of_headers = []
     # we're keeping track of the max number of attributes in any header
     # so we know how big to make the second axis of the numpy array
@@ -182,28 +201,26 @@ def dist_mat_generator(header_dict, dist_mat_path):
     # for each key value pair, maps filenames to headers as lists of 
     # strings...
     for filename, header_list in header_dict.items():
+        print(header_list)
         # just find the max_attributes value
         if (len(header_list) > max_attributes):
             max_attributes = len(header_list)
     # again for each key value pair...
     for filename, header_list in header_dict.items():
         length = len(header_list)
-        print(header_list)
         diff = max_attributes - length
         # add in empty strings until all headers have max length
         for x in range(diff):
             header_list.append("")
         # add each header to a list as a numpy array
-        list_of_headers.append(np.array(header_list))
+        list_of_headers.append(header_list)
     # convert list of numpy arrays to numpy array 
-    schema_matrix = np.array(list_of_headers)
-    schema_matrix = np.stack(schema_matrix, axis=0)
-    print(schema_matrix.shape)
-    num_headers = schema_matrix.shape[0]
+    schema_matrix = list_of_headers
+    num_headers = len(schema_matrix)
     
     jacc_matrix = np.zeros((2,1))
 
-    if not os.path.isfile(dist_mat_path):
+    if not os.path.isfile(dist_mat_path) or overwrite == "1":
         print("No existing distance matrix for this directory. ")
         print("Generating distance matrix using jaccard similarity. ")
         print("This could take a while... ")
@@ -236,7 +253,7 @@ def dist_mat_generator(header_dict, dist_mat_path):
 #=========1=========2=========3=========4=========5=========6=========7=
 
 def agglomerative(jacc_matrix, num_clusters):
-    clustering = AgglomerativeClustering(n_clusters=num_clusters, affinity='precomputed', linkage='average')
+    clustering = AgglomerativeClustering(n_clusters=num_clusters, affinity='precomputed', linkage='complete')
     clustering.fit(jacc_matrix)
     labels = clustering.labels_
     print(labels)
@@ -246,14 +263,18 @@ def agglomerative(jacc_matrix, num_clusters):
 # MAIN PROGRAM: 
 valid_list = get_valid_filenames(directory)
 convert_those_files(valid_list, directory, out_dir)
-header_dict = get_header_dict(out_dir)
+
+# if csvs have less than fill_threshold*100% nonempty cells in every row
+# then we throw them out of our clustering. 
+fill_threshold = 0.4
+header_dict = get_header_dict(out_dir, fill_threshold)
 dist_mat_path = directory[0:len(directory) - 1] + ".npy"
 print(dist_mat_path)
-schema_matrix, jacc_matrix = dist_mat_generator(header_dict, dist_mat_path)
-print(jacc_matrix)
-agglomerative(jacc_matrix, 10)
+schema_matrix, jacc_matrix = dist_mat_generator(header_dict, dist_mat_path, overwrite)
+length = jacc_matrix.shape[0]
+#for i in range(length):
+    #print(jacc_matrix[i,:])
+agglomerative(jacc_matrix, 15)
 
-#labels = spectral_clustering(NN_matrix, n_clusters=num_clusters, eigen_solver='arpack')
-#print(labels)
 
 
