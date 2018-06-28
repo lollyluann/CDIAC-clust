@@ -4,7 +4,10 @@ from matplotlib import pyplot as plt
 import numpy as np
 import random
 <<<<<<< HEAD
+<<<<<<< HEAD
 from generate_token_dict import DFS
+=======
+>>>>>>> 31b5b0a82c8ff6e5f3cf57c80511ca5207a0067c
 =======
 >>>>>>> 31b5b0a82c8ff6e5f3cf57c80511ca5207a0067c
 import pandas as pd
@@ -23,12 +26,18 @@ from mpl_toolkits.mplot3d import Axes3D
 #=========1=========2=========3=========4=========5=========6=========7=
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 31b5b0a82c8ff6e5f3cf57c80511ca5207a0067c
 num_clusters = int(sys.argv[1])
 # the directory of the files you want to cluster
 corpusdir = "/home/ljung/extension_sorted_data/all_text/"
 
 
+<<<<<<< HEAD
+>>>>>>> 31b5b0a82c8ff6e5f3cf57c80511ca5207a0067c
+=======
 >>>>>>> 31b5b0a82c8ff6e5f3cf57c80511ca5207a0067c
 ''' PARAM: a string containing the directory of .txt files
     RETURNS: a list of filenames and a list of the contents of the files 
@@ -85,6 +94,7 @@ def tokenize_only(text):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 def main_function(num_clusters, retokenize, corpusdir):
     # record initial time that program started
@@ -283,6 +293,8 @@ corpusdir = sys.argv[3]
 fr = main_function(num_clusters, retokenize, corpusdir)
 histogram_clusters(fr, "/home/ljung/pub8/", num_clusters)
 =======
+=======
+>>>>>>> 31b5b0a82c8ff6e5f3cf57c80511ca5207a0067c
 # record initial time that program started
 t0 = time()
 
@@ -419,4 +431,7 @@ plt.savefig("3D_document_cluster", dpi=300)
 
 # print total time taken to run program
 print("time taken: ", time()-t0)
+<<<<<<< HEAD
+>>>>>>> 31b5b0a82c8ff6e5f3cf57c80511ca5207a0067c
+=======
 >>>>>>> 31b5b0a82c8ff6e5f3cf57c80511ca5207a0067c

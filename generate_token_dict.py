@@ -69,6 +69,7 @@ def gen_tokens(pathname, length):
     return token_list
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #=========1=========2=========3=========4=========5=========6=========7=
 
 def parse_args():
@@ -102,6 +103,8 @@ if __name__ == "__main__":
    # stuff only to run when not called via 'import' here
    main() 
 =======
+=======
+>>>>>>> 31b5b0a82c8ff6e5f3cf57c80511ca5207a0067c
 
 # MAIN PROGRAM
 
@@ -123,4 +126,7 @@ f1.write( str(file_pathtokens_dict) )
 f2.write( str(file_path_dict) )
 f1.close()
 f2.close() 
+<<<<<<< HEAD
+>>>>>>> 31b5b0a82c8ff6e5f3cf57c80511ca5207a0067c
+=======
 >>>>>>> 31b5b0a82c8ff6e5f3cf57c80511ca5207a0067c
