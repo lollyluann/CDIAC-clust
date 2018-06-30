@@ -55,7 +55,8 @@ def tokenize_and_stem(text):
     # filter out tokens without letters (e.g., numbers, punctuation)
     for token in tokens:
         if re.search('[a-zA-Z]', token):
-            filtered_tokens.append(token)
+            filtered_tokens.append(token) 
+    stemmer = SnowballStemmer("english")
     stems = [stemmer.stem(t) for t in filtered_tokens]
     return stems
 
@@ -83,7 +84,7 @@ def main_function(num_clusters, retokenize, corpusdir):
     #stopwords = nltk.download('stopwords')
 
     #nltk.download('punkt')
-    stemmer = SnowballStemmer("english")
+    # stemmer = SnowballStemmer("english")
 
     #=========1=========2=========3=========4=========5=========6=======
 
@@ -151,7 +152,7 @@ def main_function(num_clusters, retokenize, corpusdir):
     print(frame['cluster'].value_counts())
 
     #=========1=========2=========3=========4=========5=========6=========
-    '''
+    
     # open file writer for result output
     output_path = os.path.join(corpusdir, "results/")
     if not os.path.isdir(output_path):
@@ -193,7 +194,7 @@ def main_function(num_clusters, retokenize, corpusdir):
     print("output written to \"doc_clusters.txt\" in \"results\" of the original directory")
 
     #=========1=========2=========3=========4=========5=========6========
-'''
+
     # multidimensional scaling to convert distance matrix into 3 dimensions
     mds = MDS(n_components=3, dissimilarity="precomputed", random_state=1)
     pos = mds.fit_transform(dist)  # shape (n_components, n_samples)
@@ -271,4 +272,4 @@ retokenize = sys.argv[2]
 corpusdir = "/home/ljung/extension_sorted_data/all_text/"
 corpusdir = sys.argv[3]
 fr = main_function(num_clusters, retokenize, corpusdir)
-bar_clusters(fr, "/home/ljung/pub8/", num_clusters)
+#bar_clusters(fr, "/home/ljung/pub8/", num_clusters)
