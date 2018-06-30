@@ -181,32 +181,32 @@ def plot_extension_pie(extensions, num_slices):
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # MAIN FUNCTION
+def main():
+    root_path = sys.argv[1]
+    token_length = int(sys.argv[2])
+    allpaths = generate_shortened_token_dict.DFS(root_path, token_length)
 
-root_path = sys.argv[1]
-token_length = int(sys.argv[2])
-allpaths = generate_shortened_token_dict.DFS(root_path, token_length)
-
-# a list of all the file names (without the paths)
-filenames = list(allpaths[1].keys())
-filenames_no_ext, exts = remove_file_extension(filenames)
-
-
-os.chdir("/home/ljung/CDIAC-clust/")
-f = open("filenames.txt", "w")
-for x in filenames_no_ext:
-    f.write(x+ "\n")
-    #print(generate_tokens(x))
-f.close()
-
-sorted_tokens, sorted_counts = count_and_sort_tokens(filenames_no_ext)
-
-token_file = open("variable_length_tokens.txt", "w")
-for token in sorted_tokens:
-    token_file.write(token + "\n")
-token_file.close()
+    # a list of all the file names (without the paths)
+    filenames = list(allpaths[1].keys())
+    filenames_no_ext, exts = remove_file_extension(filenames)
 
 
+    os.chdir("/home/ljung/CDIAC-clust/")
+    f = open("filenames.txt", "w")
+    for x in filenames_no_ext:
+        f.write(x+ "\n")
+        #print(generate_tokens(x))
+    f.close()
 
-plot_extension_pie(exts,15)
+    sorted_tokens, sorted_counts = count_and_sort_tokens(filenames_no_ext)
+
+    token_file = open("variable_length_tokens.txt", "w")
+    for token in sorted_tokens:
+        token_file.write(token + "\n")
+    token_file.close()
+
+    plot_extension_pie(exts,15)
 
 
+if __name__ == "__main__":
+    main()

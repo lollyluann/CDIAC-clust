@@ -68,8 +68,6 @@ def gen_tokens(pathname, length):
         token_list.append(pathname[pos:pos+length])
     return token_list
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 #=========1=========2=========3=========4=========5=========6=========7=
 
 def parse_args():
@@ -102,31 +100,3 @@ def main():
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here
    main() 
-=======
-=======
->>>>>>> 31b5b0a82c8ff6e5f3cf57c80511ca5207a0067c
-
-# MAIN PROGRAM
-
-root_path = sys.argv[1]
-token_length = int(sys.argv[2])
-
-allpaths = DFS(root_path, token_length)
-# print(allpaths)
-
-os.chdir(root_path)
-
-file_pathtokens_dict = allpaths[0]
-file_path_dict = allpaths[1]
-
-f1 = open(root_path + "file_pathtokens_dict.txt","w")
-f2 = open(root_path + "file_path_dict.txt","w")
-
-f1.write( str(file_pathtokens_dict) )
-f2.write( str(file_path_dict) )
-f1.close()
-f2.close() 
-<<<<<<< HEAD
->>>>>>> 31b5b0a82c8ff6e5f3cf57c80511ca5207a0067c
-=======
->>>>>>> 31b5b0a82c8ff6e5f3cf57c80511ca5207a0067c
