@@ -207,15 +207,17 @@ def main_function(num_clusters, retokenize, corpusdir):
     df = pd.DataFrame(dict(x=xs, y=ys, z=zs, label=clusters, filename=fnames)) 
     # group by cluster
     groups = df.groupby('label')
-
+    colors = ["#cc1b00", "#d9ca00", "#40ff40", "#4d9994", "#003d73", "#180059", "#59434f", "#a6877c", "#a6a37c", "#1a331a", "#40bfff", "#bfc8ff", "#a6299d", "#59161f", "#b2862d", "#549926", "#bfffd0", "#0088ff", "#3d3df2", "#d9a3ce", "#ff8091"]
     # for each cluster, plot the files in that cluster
+    i = 0
     for name, group in groups:
         # color = ('#%06X' % random.randint(0,256**3-1))
-        color = np.random.rand(3,)
+        # color = np.random.rand(3,)
         for t in range(group.shape[0]):
             ax.scatter(group.x.iloc[t], group.y.iloc[t], group.z.iloc[t], 
-                c=color, marker='o')
+                c=colors[i], marker='o')
             ax.set_aspect('auto')
+        i+=1
 
     plt.savefig("3D_document_cluster", dpi=300)
     print("scatter plot written to \"3D_document_cluster.png\"")
