@@ -193,7 +193,7 @@ def main_function(num_clusters, retokenize, corpusdir):
     print("output written to \"doc_clusters.txt\" in \"results\" of the original directory")
 
     #=========1=========2=========3=========4=========5=========6========
-
+'''
     # multidimensional scaling to convert distance matrix into 3 dimensions
     mds = MDS(n_components=3, dissimilarity="precomputed", random_state=1)
     pos = mds.fit_transform(dist)  # shape (n_components, n_samples)
@@ -219,7 +219,7 @@ def main_function(num_clusters, retokenize, corpusdir):
 
     plt.savefig("3D_document_cluster", dpi=300)
     print("scatter plot written to \"3D_document_cluster.png\"")
-    '''
+    
     # print total time taken to run program
     print("time taken: ", time()-t0)
     
