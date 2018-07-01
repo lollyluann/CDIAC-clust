@@ -152,7 +152,7 @@ def main_function(num_clusters, retokenize, corpusdir):
     print(frame['cluster'].value_counts())
 
     #=========1=========2=========3=========4=========5=========6=========
-    
+    '''  
     # open file writer for result output
     output_path = os.path.join(corpusdir, "results/")
     if not os.path.isdir(output_path):
@@ -225,7 +225,7 @@ def main_function(num_clusters, retokenize, corpusdir):
     
     # print total time taken to run program
     print("time taken: ", time()-t0)
-    
+    '''
     return frame
 
 
