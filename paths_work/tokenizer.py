@@ -1,9 +1,9 @@
-import new_DFS
+from matplotlib import pyplot as plt
 import matplotlib
 matplotlib.use('Agg')
-from matplotlib import pyplot as plt
 import pylab as pl
 import numpy as np
+import new_DFS
 import sys
 import os
 
@@ -21,7 +21,7 @@ def get_single_extension(filename):
     return extension.lower()
 
 ''' PARAMETER: a single filename. 
-    RETURNS: the file without its extension '''
+    RETURNS: the filename without its extension '''
 def remove_extension(filename):    
     length = len(filename)
     for ch in filename[::-1]:
@@ -129,42 +129,48 @@ def count_and_sort_tokens(filenames):
 
 
 ''' PARAMETER: a list of extensions
-    DOES: sorts a dictionary with the counts of each token
+    DOES: sorts a dictionary with the counts of each extension, 
+          writes the top "num_slices" extensions to a file
     RETURNS: a list of sorted tokens and a list of sorted counts '''
-def count_and_sort_exts(filenames):
+def count_and_sort_exts(extensions, num_slices):
     # a dict mapping tokens to the count of how many times they appear
-    token_count_dict = {}
-    # for each filename
-    for fn in filenames:      
-        if fn[:2]!="._" and fn[-1]!="~" and fn[0]!="_":
-            # if the token is already in our dict
-            if fn in token_count_dict.keys():
+    ext_count_dict = {}
+    # for each extension
+    for ext in extensions:      
+        if ext[:2]!="._" and ext[-1]!="~" and ext[0]!="_":
+            # if the extension is already in our dict
+            if ext in ext_count_dict.keys():
                 # grab the old count
-                old_count = token_count_dict.get(fn)
+                old_count = ext_count_dict.get(ext)
                 # increment and update the count in the dict              
-                token_count_dict.update({fn:old_count+1})
+                ext_count_dict.update({ext:old_count+1})
             else:
                 # otherwise, add a key,value pair with a count of 1
-                token_count_dict.update({fn:1})
-    sorted_tokens = []
+                ext_count_dict.update({ext:1})
+    sorted_extensions = []
     sorted_counts = []
-    # for each token in the dict, iterating from largest to smallest count 
-    for w in sorted(token_count_dict, key=token_count_dict.get, reverse=True):
-        # add the token to a sorted list of tokens
-        sorted_tokens.append(w)
+    # for each extension in the dict, iterating from largest to smallest count 
+    for ext in sorted(ext_count_dict, key=ext_count_dict.get, reverse=True):
+        # add the extension to a sorted list of extensions
+        sorted_extensions.append(ext)
         # add the corresponding count to a list of counts
-        sorted_counts.append(token_count_dict[w])    
-        print(w, token_count_dict[w])
+        sorted_counts.append(ext_count_dict[ext])    
+        print(ext, ext_count_dict[ext])
 
-    return sorted_tokens, sorted_counts
+    f = open("top_exts.txt",'w')
+    for i in range(num_slices):
+        f.write(sorted_extensions[i] + "\n")
+    f.close()
+
+    return sorted_extensions, sorted_counts
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
 ''' PARAMETERS: a list of extensions, number of pie chart slices, output path
-    DOES: writes top num_slices extensions to top_exts.txt and creates a pie chart '''
+    DOES: creates a pie chart '''
 def plot_extension_pie(extensions, num_slices, output_path):
     os.chdir(output_path)
-    sorted_exts, sorted_counts = count_and_sort_exts(extensions)
+    sorted_exts, sorted_counts = count_and_sort_exts(extensions, num_slices)
     labels = []
     sizes = []
     for x in range(num_slices):
@@ -176,11 +182,6 @@ def plot_extension_pie(extensions, num_slices, output_path):
     plt.axis('equal')
     plt.title(str(num_slices) + " Most Common Extensions in CDIAC")
     plt.savefig("top_exts_pie",dpi=300)
-
-    f = open("top_exts.txt",'w')
-    for i in range(num_slices):
-        f.write(sorted_exts[i] + "\n")
-    f.close()
 
 #=========1=========2=========3=========4=========5=========6=========7=
 

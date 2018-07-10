@@ -1,6 +1,6 @@
 from shutil import copyfile
-import new_DFS
 import tokenizer
+import new_DFS
 import sys
 import os
 
@@ -8,7 +8,10 @@ import os
 
 def copy_and_sort(input_path, output_path):
     # gets a dictionary of the files to their paths
-    transformed_paths = new_DFS.DFS(input_path)
+    paths = new_DFS.DFS(input_path)
+    transformed_paths = []
+    for p in paths:
+        transformed_paths.append(new_DFS.str_encode(p))
 
     # reads in the top file extensions
     ext_file = open("top_exts.txt", "r")

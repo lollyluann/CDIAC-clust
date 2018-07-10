@@ -97,8 +97,7 @@ def optimize_k(df, labels_array, min_k, max_k):
         print(ch_score)
     
 
-    #cluster_labels = kmeans(best_k, df)
-    cluster_labels = kmeans(df)
+    cluster_labels = kmeans(best_k, df)
     cluster_to_words = find_word_clusters(labels_array, cluster_labels)
     # we evaluate our clusters using several measures of well-definedness
     print("Silhouette score: ")

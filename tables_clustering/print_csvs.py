@@ -10,7 +10,7 @@ import os
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # ARGUMENTS
-# source directory and output directory
+# source directory
 directory = sys.argv[1]
 
 def check_valid_dir(some_dir):

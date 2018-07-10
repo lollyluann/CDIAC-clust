@@ -1,13 +1,13 @@
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
-import numpy as np
 import random
-import new_DFS
+import numpy as np
 import pandas as pd
-import nltk, re, os, codecs, mpld3, sys
 from time import time
+from glob import glob
 from six import string_types
+import nltk, re, os, codecs, mpld3, sys
 from sklearn.cluster import KMeans
 from sklearn.externals import joblib
 from sklearn import feature_extraction
@@ -32,6 +32,16 @@ def get_end_directory(directory):
         ind += 1
     return directory[len(directory)-ind:len(directory)-1]
 
+''' PARAM: a full path
+    RETURNS: only the filename '''
+def get_fname_from_path(path):    
+    filename = ""
+    for c in path[::-1]:
+        if c=="/" or c=="@":
+            break
+        filename = c+filename
+    return filename
+
 ''' PARAMETER: a single filename. 
     RETURNS: the file without its extension '''
 def remove_extension(filename):    
@@ -42,39 +52,69 @@ def remove_extension(filename):
         length = length - 1 
     return filename[:length-1]
 
-''' PARAM: a list of strings/directories to read from
+def get_immediate_subdirectories(a_dir):
+    sub_list = []
+    for name in os.listdir(a_dir):
+        if os.path.isdir(os.path.join(a_dir, name)):
+            sub_list.append(os.path.join(a_dir, name)+"/")
+    return sub_list
+
+''' PARAM: a parent directory containing /pdf/ /doc/ etc
     RETURNS: a list of filenames and a list of the contents of the files 
     DOES: gets all the filenames and their contents of a directory'''   
-def get_document_contents(directories):
+def get_document_contents(directory):
+    ext_paths = np.load("/home/ljung/CDIAC-clust/paths_work/extension_index.npy").item()
     filenames = []
     data = []
     i = 1
-    for directory in directories:
-        # for every file in the given directory
-        print("num files in directory ", i, ": ", len(os.listdir(directory)))
-        folder = get_end_directory(directory)
-        for filename in os.listdir(directory):
-            print(i)
-            i = i + 1
-            current_file = os.path.join(directory,filename)
-            if os.path.isfile(current_file):
-                # add the non-converted filename to "filenames" 
-                new_name = remove_extension(filename)+"."+folder
-                filenames.append(new_name)
-                # read the contents of the file and remove newlines
-                freader = open(current_file, "r", errors='backslashreplace')
-                contents = freader.read()#.encode("utf-8").decode('utf-8', 'backslashreplace')
-                freader.close()
-                contents = contents.replace("\n","")
-                # add the string of the contents of the file to "data"
-                data.append(contents)
-        print("Directory contents retrieved")
+    # a list of the paths of the txt files still in pub8 
+    txt_paths = ext_paths.get("txt")
+    for path in txt_paths:
+        if os.path.isfile(path):
+            i = i+1
+            print("txt ", i) 
+            # add the filename to "filenames" 
+            filenames.append(get_fname_from_path(path))
+            # read the contents of the file and remove newlines
+            freader = open(path, "r", errors='backslashreplace')
+            contents = freader.read()#.encode("utf-8").decode('utf-8', 'backslashreplace')
+            freader.close()
+            contents = contents.replace("\n","")
+            # add the string of the contents of the file to "data"
+            data.append(contents)
+    
+    # for every file in the directory of converted files
+    conv_folders = get_immediate_subdirectories(directory)
+    print(directory, conv_folders)
+    for folder in conv_folders:
+        filetype = get_end_directory(folder)
+        print(filetype)
+        if filetype in ["pdf", "doc", "docx"]:
+            for filename in os.listdir(folder):
+                current_file = os.path.join(folder,filename)
+                if os.path.isfile(current_file):
+                    i = i + 1
+                    print(filetype, i)
+                    # add the non-converted filename to "filenames" 
+                    new_name = remove_extension(filename)+"."+folder
+                    filenames.append(new_name)
+                    # read the contents of the file and remove newlines
+                    freader = open(current_file, "r", errors='backslashreplace')
+                    contents = freader.read()#.encode("utf-8").decode('utf-8', 'backslashreplace')
+                    freader.close()
+                    contents = contents.replace("\n","")
+                    # add the string of the contents of the file to "data"
+                    data.append(contents)
+    
+    print("num total files: ", i)
+    print("All directory contents retrieved")
     return filenames, data
 
 ''' PARAM: the text of a document
     RETURN: list of stems
     DOES: splits a document into a list of tokens & stems each token '''
 def tokenize_and_stem(text):
+    stemmer = SnowballStemmer("english")
     # tokenize by sentence, then by word so punctuation is its own token
     tokens = [word for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
     filtered_tokens = []
@@ -177,14 +217,15 @@ def main_function(num_clusters, retokenize, corpusdir):
     print(frame['cluster'].value_counts())
 
     #=========1=========2=========3=========4=========5=========6=========
-    '''
+    
     # open file writer for result output
-    output_path = os.path.join(corpusdir, "results/")
-    if not os.path.isdir(output_path):
-        os.mkdir(output_path)
-    os.chdir(output_path)
+    # output_path = os.path.join(corpusdir, "results/")
+    #output_path = os.path.join(os.getcwd(), "/results/")
+    #if not os.path.isdir(output_path):
+    #    os.mkdir(output_path)
+    #os.chdir(output_path)
     fwriter = open("doc_clusters.txt", "w")
-    fwriter.write("clusters from .txt files in: " + corpusdir)
+    fwriter.write("clusters from text files in: " + corpusdir)
 
     fwriter.write("\nTop terms per cluster: \n\n")
     print("Top terms per cluster: \n")
@@ -216,7 +257,7 @@ def main_function(num_clusters, retokenize, corpusdir):
         fwriter.write("\n\n")
 
     fwriter.close()
-    print("output written to \"doc_clusters.txt\" in \"results\" of the original directory")
+    print("output written to \"doc_clusters.txt\" in \"results\"")
 
     #=========1=========2=========3=========4=========5=========6========
 
@@ -245,7 +286,7 @@ def main_function(num_clusters, retokenize, corpusdir):
 
     plt.savefig("3D_document_cluster", dpi=300)
     print("scatter plot written to \"3D_document_cluster.png\"")
-    '''
+    
     # print total time taken to run program
     print("time taken: ", time()-t0)
     
@@ -284,12 +325,14 @@ def bar_clusters(frame, path, num_clusters):
         plt.xticks(y_pos, sorted_names)
         plt.ylabel('Number of files')
         plt.title('Directories in Cluster ' + str(i))
+        
         save_name = "histogram_cluster"+str(i)
-        os.chdir("/home/ljung/CDIAC-clust/txt_cluster_hists/")
+        output_path = os.path.join(os.getcwd(), "/txt_cluster_hists/")
+        if not os.path.isdir(output_path):
+            os.mkdir(output_path)
+        os.chdir(output_path)
+        
         plt.savefig(save_name, dpi=200)
-
-
-# MAIN PROGRAM
 
 
 # MAIN PROGRAM
@@ -297,10 +340,8 @@ def bar_clusters(frame, path, num_clusters):
 def main():
     num_clusters = int(sys.argv[1])
     retokenize = sys.argv[2]
-    # the directory of the files you want to cluster
-    corpusdir = "/home/ljung/extension_sorted_data/all_text/"
-    corpusdir = sys.argv[3]
-    corpusdir = ["/home/ljung/extension_sorted_data/pdf/", "/home/ljung/extension_sorted_data/txt/"]
+    # the directory containing the files not in pub8 you want to cluster
+    corpusdir = sys.argv[3] #eg. /home/ljung/extension_sorted_data/
     fr = main_function(num_clusters, retokenize, corpusdir)
     bar_clusters(fr, "/home/ljung/pub8/", num_clusters)
 

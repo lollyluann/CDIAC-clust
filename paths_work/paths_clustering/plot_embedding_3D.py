@@ -2,6 +2,7 @@ from sklearn.feature_selection import VarianceThreshold
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
+from sklearn import manifold
 import matplotlib
 matplotlib.use('Agg')
 from numpy import loadtxt
@@ -35,16 +36,25 @@ vector_file = sys.argv[1]
 clusters = sys.argv[2]
 path_vectors, paths = build_word_vector_matrix(vector_file, 14869)
 
-'''
+
 # project the vectors down into R^3 using PCA 
 pca = PCA(n_components=3)
 reduced_path_vectors = pca.fit_transform(path_vectors)
-'''
 
+
+'''
 # project the vectors down into R^3 using feature subset selection
 sel = VarianceThreshold(threshold=(.00001 * (1 - .00001)))
 reduced_path_vectors = sel.fit_transform(path_vectors)
 print(reduced_path_vectors.shape)
+'''
+
+'''
+mds = manifold.MDS(n_components=3, n_jobs=4, dissimilarity="euclidean", random_state=1, verbose=2)
+print("Fitting to the path_vectors matrix. ")
+reduced_path_vectors = mds.fit_transform(path_vectors)  # shape (n_components, n_samples)
+print("Done fitting. ")
+'''
 
 # create a dict that maps paths to 3D vectors
 reduced_path_dict = {}
