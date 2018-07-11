@@ -1,6 +1,7 @@
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
+import matplotlib.backends.backend_pdf
 import random
 import numpy as np
 import pandas as pd
@@ -221,7 +222,7 @@ def main_function(num_clusters, retokenize, corpusdir):
     print(frame['cluster'].value_counts())
 
     #=========1=========2=========3=========4=========5=========6=========
-    
+    ''' 
     # open file writer for result output
     # output_path = os.path.join(corpusdir, "results/")
     output_path = "results/"
@@ -293,19 +294,19 @@ def main_function(num_clusters, retokenize, corpusdir):
     
     # print total time taken to run program
     print("time taken: ", time()-t0)
-    
+    '''
     return frame
-
 
 def bar_clusters(frame, path, num_clusters):
     #file_pathtokens_dict, file_path_dict = DFS(path,1)
     #file_paths = DFS(path)
-    plt.figure("hist")
+    plt.figure("bar")
   
-    output_path = "txt_cluster_hists/"
+    output_path = "txt_cluster_bars/"
     if not os.path.isdir(output_path):
         os.mkdir(output_path)
     os.chdir(output_path)
+    matplotlib.rcParams.update({'font.size': 6})
     
     # for each cluster, generate a bar chart 
     for i in range(num_clusters):
@@ -336,11 +337,17 @@ def bar_clusters(frame, path, num_clusters):
 
         plt.bar(y_pos, sorted_counts, align='center', alpha=0.5)
         plt.xticks(y_pos, sorted_names, rotation=90)
+        plt.rc('xtick', labelsize=3)
         plt.ylabel('Number of files')
         plt.title('Directories in Cluster ' + str(i))
+        plt.tight_layout()
+        save_name = "barchart_cluster"+str(i)       
+        # plt.savefig(save_name, dpi=200)
         
-        save_name = "histogram_cluster"+str(i)       
-        plt.savefig(save_name, dpi=200)
+        pdf = matplotlib.backends.backend_pdf.PdfPages("text_barcharts.pdf")
+        for fig in range(1, plt.gcf().number+1): ## will open an empty extra figure :(
+            pdf.savefig(fig)
+        pdf.close()
 
 ''' PARAM: a full path
     RETURNS: the path without the filename '''
