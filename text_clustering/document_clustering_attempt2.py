@@ -308,6 +308,7 @@ def bar_clusters(frame, path, num_clusters):
     os.chdir(output_path)
     matplotlib.rcParams.update({'font.size': 6})
     
+    pdf = matplotlib.backends.backend_pdf.PdfPages("text_barcharts.pdf")
     # for each cluster, generate a bar chart 
     for i in range(num_clusters):
         plt.clf()
@@ -344,10 +345,9 @@ def bar_clusters(frame, path, num_clusters):
         save_name = "barchart_cluster"+str(i)       
         # plt.savefig(save_name, dpi=200)
         
-        pdf = matplotlib.backends.backend_pdf.PdfPages("text_barcharts.pdf")
-        for fig in range(1, plt.gcf().number+1): ## will open an empty extra figure :(
-            pdf.savefig(fig)
-        pdf.close()
+        # for fig in range(1, plt.gcf().number+1): ## will open an empty extra figure :(
+        pdf.savefig(plt.gcf())
+    pdf.close()
 
 ''' PARAM: a full path
     RETURNS: the path without the filename '''

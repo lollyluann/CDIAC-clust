@@ -17,6 +17,7 @@ import sklearn
 import sys
 import csv
 import os
+import re
 
 np.set_printoptions(threshold=np.nan)
 
@@ -214,70 +215,63 @@ def get_better_dict(csv_dir, csv_path_list, fill_threshold, converted_status):
         # So now in both cases, filename has the "@"s, and path is
         # the location of some copy of the file. 
 
+#=========1=========2=========3=========4=========5=========6=========7=
+
+        data = list(list(rec) for rec in csv.reader(f, delimiter=','))
+
         with open(path, "r") as f:
             # read csv and get the header as a list
             reader = csv.reader(f)
-            try:
-                header_list = next(reader)
-                
-                # if the header is empty, try the next line
-                if (len(header_list) == 0):
-                    header_list = next(reader)
-                 
-                # number of nonempty attribute strings
-                num_nonempty = 0
-                for attribute in header_list:
-                    if not (attribute == ""):
-                        num_nonempty = num_nonempty + 1
-                fill_ratio = num_nonempty / len(header_list)                
-
-                # keep checking lines until you get one where there
-                # are enough nonempty attributes
-                while (True):
-
-                    while
-
-
-
-
-                    # if there's only one nonempty attribute, it's
-                    # probably just a descriptor of the table, so try the
-                    # next line. 
-                    header_list = next(reader)
+            try: 
+                rows = list(list(rec) for rec in csv.reader(f, delimiter=','))
+      
+                header_list = []
+                num_aligned_floats = 1
+                float_loc = float('Inf') 
+                for i in range(len(rows)):
+        
+                    # if the row is empty, try the next line
+                    if (len(rows[i]) == 0):
+                        continue
+                     
+                    # number of nonempty cells
                     num_nonempty = 0
-                    for attribute in header_list:
-                        if not (attribute == ""):
+                    for cell in rows[i]:
+                        if not (cell == ""):
                             num_nonempty = num_nonempty + 1
-                    if (len(header_list) == 0):
-                        fill_ratio = -1
-                    else:
-                        fill_ratio = num_nonempty / len(header_list)
+                    fill_ratio = num_nonempty / len(rows[i])                
+                    if (fill_ratio == 0):
+                        continue
+        
+#=========1=========2=========3=========4=========5=========6=========7=
 
-                    #================================================
-                    # Here we've hardcoded some information about 
-                    # scientific data to work better with CDIAC. 
-                    # feel free to remove it. 
+                    old_float_loc = float_loc
+                    float_loc = float('Inf')
                     
-                    # people seem to denote pre-header stuff with a *
-                    for attribute in header_list:
-                        if (attribute != "" and attribute[-1] == "*"):
-                            fill_ratio = -1
-                    if (len(header_list) > 3):
-                        if (header_list[0] == "Year" and header_list[2] != ""):
-                            break
-                        if (header_list[0] == "Citation"):
-                            fill_ratio = -1
-                        
-                    #================================================
+                    row = rows[i]
+                    for j in range(len(row) - 1):
+                        # if we have two consecutive float cells
+                        if ((not re.match("^\d+?\.\d+?$", row[j]) is None) and (not re.match("^\d+?\.\d+?$", row[j]) is None)):
+                            # save its location in that row
+                            float_loc = j
+
+                    # if there exists a float in the current row AND 
+                    # in the same place as the last... 
+                    if (float_loc != float('Inf') and float_loc == old_float_loc):
+                        num_aligned_floats = num_aligned_floats + 1
+                    
+                    if (num_aligned_floats == 5):
+                        header_list = rows[i - 4]
+                        break
+                   
+                if (i == len(rows) - 1):
+                    bad_files = bad_files + 1
+                    continue
             except UnicodeDecodeError:
                 decode_probs = decode_probs + 1                    
-            except StopIteration:
-                bad_files = bad_files + 1
-                #os.system("cp " + path + " ~/bad_csvs/")
-                continue
             # throw a key value pair in the dict, with filename as key
             header_dict.update({filename:header_list})
-    print("Throwing out this number of files, all have less than ", fill_threshold*100, "% nonempty cells in every row: ", bad_files)    
+    print("Couldn't find the header in " + str(bad_files) + " files. Discarded.")    
     print("Number of UnicodeDecodeErrors: ", decode_probs)
     return header_dict
 
@@ -319,6 +313,9 @@ def dist_mat_generator(header_dict, dist_mat_path, overwrite):
         dist_mat_list = []
         # iterating over the header array once...
         for header_a in tqdm(schema_matrix):
+            #===========================
+            print(header_a)
+            #===========================
             # storing distances for a single header
             single_row = []
             # iterating again...
