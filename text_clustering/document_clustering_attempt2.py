@@ -70,7 +70,7 @@ def get_document_contents(directory):
     filenames = []
     data = []
     i = 1
-    '''
+    
     # a list of the paths of the txt files still in pub8 
     txt_paths = ext_paths.get("txt")
     for path in txt_paths:
@@ -87,14 +87,13 @@ def get_document_contents(directory):
             contents = contents.replace("\n","")
             # add the string of the contents of the file to "data"
             data.append(contents)
-     '''
+    
     # for every file in the directory of converted files
     conv_folders = get_immediate_subdirectories(directory)
     print(directory, conv_folders)
     for folder in conv_folders:
         filetype = get_end_directory(folder)
-        print(filetype)
-        if filetype in ["doc"]: #["pdf", "doc", "docx"]:
+        if filetype in ["pdf", "doc", "docx"]:
             for filename in os.listdir(folder):
                 current_file = os.path.join(folder,filename)
                 if os.path.isfile(current_file):
@@ -336,7 +335,7 @@ def bar_clusters(frame, path, num_clusters):
         y_pos = np.arange(len(sorted_names))
 
         plt.bar(y_pos, sorted_counts, align='center', alpha=0.5)
-        plt.xticks(y_pos, sorted_names)
+        plt.xticks(y_pos, sorted_names, rotation=90)
         plt.ylabel('Number of files')
         plt.title('Directories in Cluster ' + str(i))
         

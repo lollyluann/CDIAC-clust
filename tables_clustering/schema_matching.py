@@ -69,98 +69,104 @@ def str_decode(string):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-def schema_locatinator(filename, path, header_dict, fill_threshold, decode_probs, bad_files):
+#RETURNS: a dictionary which maps filenames to csvs header lists. 
+def get_header_dict(csv_dir, csv_path_list, fill_threshold, converted_status):
+    header_dict = {}
+    # number of files with no valid header
+    bad_files = 0
+    decode_probs = 0
 
-    with open(path, "r") as f:
-        # read csv and get the header as a list
-        reader = csv.reader(f)
-        try:
-            header_list = next(reader)
-            
-            # if the header is empty, try the next line
-            if (len(header_list) == 0):
-                header_list = next(reader)
-             
-            # number of nonempty attribute strings
-            num_nonempty = 0
-            for attribute in header_list:
-                if not (attribute == ""):
-                    num_nonempty = num_nonempty + 1
-            fill_ratio = num_nonempty / len(header_list)                
+    # This code is rather confusing because I wanted the function to 
+    # be able to handle both types of inputs (lists of paths in names)
+    # and just directory locations. 
 
-            # keep checking lines until you get one where there
-            # are enough nonempty attributes
-            while (fill_ratio <= fill_threshold):
-                # if there's only one nonempty attribute, it's
-                # probably just a descriptor of the table, so try the
-                # next line. 
+    # CASE 1:
+    # If we're reading in converted files, we only need the csv_dir
+    # argument, so we get a list of the filenames from that directory. 
+    # These filenames are in the form:
+    # "@home@ljung@pub8@oceans@some_file.csv"
+    if (converted_status):
+        dir_list = os.listdir(csv_dir)
+
+    # CASE 2:
+    # Otherwise, we are reading in a list of the true, original 
+    # locations of files that were csvs to begin with in the dataset.
+    else:
+        dir_list = csv_path_list
+    
+    # CASE 1: "path" looks like:"@home@ljung@pub8@oceans@some_file.csv" 
+    # CASE 2: "path" is literally the path of that file in the original
+    # dataset as a string. 
+    for path in tqdm(dir_list):
+        if (converted_status): 
+            # get the new location of the current file in "csv_dir", 
+            # i.e. not in original dataset. 
+            filename = path
+            path = os.path.join(csv_dir, path) 
+        else:
+            # convert to "@home@ljung@pub8@oceans@some_file.csv" form. 
+            filename = str_encode(path)
+
+        # So now in both cases, filename has the "@"s, and path is
+        # the location of some copy of the file. 
+
+        with open(path, "r") as f:
+            # read csv and get the header as a list
+            reader = csv.reader(f)
+            try:
                 header_list = next(reader)
+                
+                # if the header is empty, try the next line
+                if (len(header_list) == 0):
+                    header_list = next(reader)
+                 
+                # number of nonempty attribute strings
                 num_nonempty = 0
                 for attribute in header_list:
                     if not (attribute == ""):
                         num_nonempty = num_nonempty + 1
-                if (len(header_list) == 0):
-                    fill_ratio = -1
-                else:
-                    fill_ratio = num_nonempty / len(header_list)
+                fill_ratio = num_nonempty / len(header_list)                
 
-                #================================================
-                # Here we've hardcoded some information about 
-                # scientific data to work better with CDIAC. 
-                # feel free to remove it. 
-                
-                # people seem to denote pre-header stuff with a *
-                for attribute in header_list:
-                    if (attribute != "" and attribute[-1] == "*"):
+                # keep checking lines until you get one where there
+                # are enough nonempty attributes
+                while (fill_ratio <= fill_threshold):
+                    # if there's only one nonempty attribute, it's
+                    # probably just a descriptor of the table, so try the
+                    # next line. 
+                    header_list = next(reader)
+                    num_nonempty = 0
+                    for attribute in header_list:
+                        if not (attribute == ""):
+                            num_nonempty = num_nonempty + 1
+                    if (len(header_list) == 0):
                         fill_ratio = -1
-                if (len(header_list) > 3):
-                    if (header_list[0] == "Year" and header_list[2] != ""):
-                        break
-                    if (header_list[0] == "Citation"):
-                        fill_ratio = -1
+                    else:
+                        fill_ratio = num_nonempty / len(header_list)
+
+                    #================================================
+                    # Here we've hardcoded some information about 
+                    # scientific data to work better with CDIAC. 
+                    # feel free to remove it. 
                     
-                #================================================
-        except UnicodeDecodeError:
-            decode_probs = decode_probs + 1                    
-        except StopIteration:
-            bad_files = bad_files + 1
-            #os.system("cp " + path + " ~/bad_csvs/")
-            continue
-        # throw a key value pair in the dict, with filename as key
-        header_dict.update({filename:header_list})
-        return header_dict, decode_probs, bad_files
-
-#=========1=========2=========3=========4=========5=========6=========7=
-
-#RETURNS: a dictionary which maps filenames to csvs header lists. 
-def get_header_dict_csv(csv_path_list, fill_threshold):
-    header_dict = {}
-    # number of files with no valid header
-    bad_files = 0
-    decode_probs = 0
-    for path in tqdm(csv_path_list):
-        # filename is the path of the file in the orig dataset encoded
-        # in the form "|home|ljung|pub8|oceans|some_file.csv"
-        filename = str_encode(path)
-        header_dict, decode_probs, bad_files = schema_locatinator(filename, path, header_dict, fill_threshold, decode_probs, bad_files)
-    print("Throwing out this number of files, all have less than ", fill_threshold*100, "% nonempty cells in every row: ", bad_files)    
-    print("Number of UnicodeDecodeErrors: ", decode_probs)
-    return header_dict
-
-#=========1=========2=========3=========4=========5=========6=========7=
-
-#RETURNS: a dictionary which maps filenames to csvs header lists. 
-def get_header_dict_converted(csv_dir, fill_threshold):
-    header_dict = {}
-    # get a list of all files in the directory
-    dir_list = os.listdir(csv_dir)
-    # number of files with no valid header
-    bad_files = 0
-    decode_probs = 0
-    for filename in tqdm(dir_list):
-        # get the new location of the current file
-        path = os.path.join(csv_dir, filename) 
-        header_dict, decode_probs, bad_files = schema_locatinator(filename, path, header_dict, fill_threshold, decode_probs, bad_files)
+                    # people seem to denote pre-header stuff with a *
+                    for attribute in header_list:
+                        if (attribute != "" and attribute[-1] == "*"):
+                            fill_ratio = -1
+                    if (len(header_list) > 3):
+                        if (header_list[0] == "Year" and header_list[2] != ""):
+                            break
+                        if (header_list[0] == "Citation"):
+                            fill_ratio = -1
+                        
+                    #================================================
+            except UnicodeDecodeError:
+                decode_probs = decode_probs + 1                    
+            except StopIteration:
+                bad_files = bad_files + 1
+                #os.system("cp " + path + " ~/bad_csvs/")
+                continue
+            # throw a key value pair in the dict, with filename as key
+            header_dict.update({filename:header_list})
     print("Throwing out this number of files, all have less than ", fill_threshold*100, "% nonempty cells in every row: ", bad_files)    
     print("Number of UnicodeDecodeErrors: ", decode_probs)
     return header_dict
@@ -433,8 +439,8 @@ def main():
     # we have two dicts, one made up of files which were converted to
     # csv format, and the other made up of files that were in csv
     # format originally. we concatenate both dicts into "header_dict".
-    header_dict_converted = get_header_dict_converted(out_dir, fill_threshold)
-    header_dict_csv = get_header_dict_csv(csv_path_list, fill_threshold)
+    header_dict_converted = get_header_dict(out_dir, [],  fill_threshold, True)
+    header_dict_csv = get_header_dict("", csv_path_list, fill_threshold, False)
     header_dict = dict(header_dict_converted)
     header_dict.update(header_dict_csv)
 
