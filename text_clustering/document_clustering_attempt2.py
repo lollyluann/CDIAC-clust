@@ -30,7 +30,7 @@ def get_end_directory(directory):
             if ct>1:
                 break
         ind += 1
-    return directory[len(directory)-ind:len(directory)-1]
+    return directory[len(directory)-ind:len(directory)-1].replace("/","")
 
 ''' PARAM: a full path
     RETURNS: only the filename '''
@@ -74,7 +74,8 @@ def get_document_contents(directory):
             i = i+1
             print("txt ", i) 
             # add the filename to "filenames" 
-            filenames.append(get_fname_from_path(path))
+            #filenames.append(get_fname_from_path(path))
+            filenames.append(path)
             # read the contents of the file and remove newlines
             freader = open(path, "r", errors='backslashreplace')
             contents = freader.read()#.encode("utf-8").decode('utf-8', 'backslashreplace')
@@ -82,7 +83,7 @@ def get_document_contents(directory):
             contents = contents.replace("\n","")
             # add the string of the contents of the file to "data"
             data.append(contents)
-    
+    ''' 
     # for every file in the directory of converted files
     conv_folders = get_immediate_subdirectories(directory)
     print(directory, conv_folders)
@@ -96,7 +97,7 @@ def get_document_contents(directory):
                     i = i + 1
                     print(filetype, i)
                     # add the non-converted filename to "filenames" 
-                    new_name = remove_extension(filename)+"."+folder
+                    new_name = remove_extension(filename)#+"."+filetype
                     filenames.append(new_name)
                     # read the contents of the file and remove newlines
                     freader = open(current_file, "r", errors='backslashreplace')
@@ -105,7 +106,7 @@ def get_document_contents(directory):
                     contents = contents.replace("\n","")
                     # add the string of the contents of the file to "data"
                     data.append(contents)
-    
+    '''
     print("num total files: ", i)
     print("All directory contents retrieved")
     return filenames, data
@@ -220,10 +221,10 @@ def main_function(num_clusters, retokenize, corpusdir):
     
     # open file writer for result output
     # output_path = os.path.join(corpusdir, "results/")
-    #output_path = os.path.join(os.getcwd(), "/results/")
-    #if not os.path.isdir(output_path):
-    #    os.mkdir(output_path)
-    #os.chdir(output_path)
+    output_path = "results/"
+    if not os.path.isdir(output_path):
+        os.mkdir(output_path)
+    os.chdir(output_path)
     fwriter = open("doc_clusters.txt", "w")
     fwriter.write("clusters from text files in: " + corpusdir)
 
@@ -295,20 +296,26 @@ def main_function(num_clusters, retokenize, corpusdir):
 
 def bar_clusters(frame, path, num_clusters):
     #file_pathtokens_dict, file_path_dict = DFS(path,1)
-    file_paths = DFS(path)
+    #file_paths = DFS(path)
     plt.figure("hist")
+  
+    output_path = "txt_cluster_hists/"
+    if not os.path.isdir(output_path):
+        os.mkdir(output_path)
+    os.chdir(output_path)
     
+    # for each cluster, generate a bar chart 
     for i in range(num_clusters):
         plt.clf()
         paths_in_cluster = {}
-        cluster_files = frame.loc[frame['cluster']==1]
-        count = 0    
+        # get the files associated with the current cluster
+        cluster_files = frame.loc[frame['cluster']==i]
+        count = 0 
         for index, row in cluster_files.iterrows():
             if count>1:
-                fna = row['filename'] 
-                
-                path = file_path_dict.get(fna)
-                print("file: ", fna, " path: ", path)
+                path = row['filename']
+                print("path: ", path)
+                # if the path is already in the cluster, add to count
                 if path in paths_in_cluster:
                     paths_in_cluster.update({path:paths_in_cluster.get(path)+1})
                 else:
@@ -316,6 +323,7 @@ def bar_clusters(frame, path, num_clusters):
             count+=1
         sorted_names = []
         sorted_counts = []
+        # sort the paths in ascending order based on # of occurrences
         for e in sorted(paths_in_cluster, key=paths_in_cluster.get, reverse=True):
             sorted_names.append(e)
             sorted_counts.append(paths_in_cluster[e])
@@ -326,12 +334,7 @@ def bar_clusters(frame, path, num_clusters):
         plt.ylabel('Number of files')
         plt.title('Directories in Cluster ' + str(i))
         
-        save_name = "histogram_cluster"+str(i)
-        output_path = os.path.join(os.getcwd(), "/txt_cluster_hists/")
-        if not os.path.isdir(output_path):
-            os.mkdir(output_path)
-        os.chdir(output_path)
-        
+        save_name = "histogram_cluster"+str(i)       
         plt.savefig(save_name, dpi=200)
 
 

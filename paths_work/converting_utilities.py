@@ -19,29 +19,25 @@ def convert_pdfs(pdf_paths, dest):
     num_pdfs = len(pdf_paths)
     print(num_pdfs, " pdfs for conversion")
     for path in tqdm(pdf_paths):      
-        filename = new_DFS.get_fname_from_path(path)
-
         output_dir = os.path.join(dest, "pdf")
         if not os.path.isdir(output_dir):
             os.mkdir(output_dir)
-
-        if not os.path.isfile(os.path.join(output_dir, filename + ".txt")):
-            os.system("ebook-convert " + path + " " + os.path.join(output_dir, filename + ".txt")) 
+        transformed_path = new_DFS.str_encode(path)
+        if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
+            os.system("ebook-convert " + path + " " + os.path.join(output_dir, transformed_path + ".txt")) 
 
 def convert_doc(doc_paths, dest):
     num_docs = len(doc_paths)
     print(num_docs, " docs for conversion")
     for path in tqdm(doc_paths): 
         try:     
-            filename = new_DFS.get_fname_from_path(path)
-
             output_dir = os.path.join(dest, "doc")
             if not os.path.isdir(output_dir):
                 os.mkdir(output_dir)
-            
+            transformed_path = new_DFS.str_encode(path)
             os.chdir(output_dir)
-            if not os.path.isfile(os.path.join(output_dir, filename + ".txt")):
-                f = open(filename+".txt", "w")
+            if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
+                f = open(transformed_path+".txt", "w")
                 contents = textract.process(path).decode("UTF-8").replace("\n", " ")
                 f.write(contents)
                 f.close()
@@ -53,15 +49,13 @@ def convert_docx(docx_paths, dest):
     print(num_docxs, " docxs for conversion")
     for path in tqdm(docx_paths):     
         try:
-            filename = new_DFS.get_fname_from_path(path)
-
             output_dir = os.path.join(dest, "docx")
             if not os.path.isdir(output_dir):
                 os.mkdir(output_dir)
-            
+            transformed_paath = new_DFS.str_encode(path)
             os.chdir(output_dir)
-            if not os.path.isfile(os.path.join(output_dir, filename + ".txt")):
-                f = open(filename+".txt", "w")
+            if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
+                f = open(transformed_path+".txt", "w")
                 contents = textract.process(path)
                 f.write(str(contents))
                 f.close()
@@ -151,13 +145,14 @@ def main():
     # conversion. 
     if "pdf" in ext_locations:
         pdf_paths = ext_locations.get("pdf")
-        # convert_pdfs(pdf_paths, dest)
+        convert_pdfs(pdf_paths, dest)
     if "doc" in ext_locations:
         doc_paths = ext_locations.get("doc")
         convert_doc(doc_paths, dest)
     if "docx" in ext_locations:
         docx_paths = ext_locations.get("docx")
         convert_docx(docx_paths, dest)
+    '''
     if "xls" in ext_locations:
         xls_paths = ext_locations.get("xls")
         valid_xls = get_valid_filenames_tabular(xls_paths)
@@ -170,7 +165,7 @@ def main():
         tsv_paths = ext_locations.get("tsv")
         valid_tsv = get_valid_filenames_tabular(tsv_paths)
         convert_tabular(valid_tsv, csv_dest)
-    
+    '''
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here
    main() 

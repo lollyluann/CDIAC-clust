@@ -1,8 +1,8 @@
 csv
 pdf
+txt
 xml
 xls
-txt
 readme
 jpg
 zip

@@ -5,6 +5,8 @@ from sklearn.cluster import AgglomerativeClustering
 from sklearn.neighbors import kneighbors_graph
 from plot_dendrogram import plot_dendrogram 
 from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.backends.backend_pdf
+import matplotlib.gridspec as gridspec
 from matplotlib import pyplot as plt
 from collections import Counter
 from sklearn import manifold
@@ -303,11 +305,11 @@ def agglomerative(jacc_matrix, num_clusters, filename_header_pairs):
     labels = clustering.labels_
     print(labels)
 
-    plt.figure(figsize=(17,9))
-    plot_dendrogram(clustering, labels = clustering.labels_)
+    #plt.figure(figsize=(17,9))
+    #plot_dendrogram(clustering, labels = clustering.labels_)
     
-    plt.savefig("dendrogram", dpi=300)
-    print("dendrogram written to \"dendrogram.png\"")
+    #plt.savefig("dendrogram", dpi=300)
+    #print("dendrogram written to \"dendrogram.png\"")
     
 
     '''
@@ -420,24 +422,87 @@ def generate_barcharts(filename_header_pairs, labels, num_clusters):
     for k in range(num_clusters):
         list_cluster_lists.append([])
     # for each label in labels
-    for i in range(len(labels)):
+    for i in tqdm(range(len(labels))):
         # get the corresponding filename
         filename_header_pair = filename_header_pairs[i]
         filename = filename_header_pair[0]
-        print("filename is: ", filename)
+        at_loc = 0
+        j = len(filename) - 1
+        while (j >= 0):
+            if (filename[j] == "@"):
+                at_loc = j
+                break
+            j = j - 1
+        filepath = filename[0:at_loc]
+        #print("filename is: ", filepath)
         # add it to the appropriate list based on the label
-        list_cluster_lists[labels[i]].append(filename)
-    # add cluster filepath lists to the dict. 
+        list_cluster_lists[labels[i]].append(filepath)
     
-    fig, axes = plt.subplots(nrows=num_clusters, ncols=1)
-
+    # create figure and axes for num_clusters subplots
+    fig, axes = plt.subplots(nrows=num_clusters, ncols=1,figsize=(15, 120))
+    
+    # for each cluster
     for k in range(num_clusters):
+        # add cluster filepath lists to the dict. 
         cluster_filepath_dict.update({k:list_cluster_lists[k]})
+        # get frequencies of the paths
         path_counts = Counter(list_cluster_lists[k])
+        #store all path counts greater than 1 in trimmed (UNUSED)
+        trimmed_path_counts = path_counts.copy()
+        for path, freq in path_counts.items():
+            if freq == 1:
+                del trimmed_path_counts[path]
+        
+        # Create a datafram from path_counts        
         df = pd.DataFrame.from_dict(path_counts, orient='index')
-        plot = df.plot(kind='bar')
-    fig = plot.get_figure()
+        print(list(df.columns.values))
+        # rename the frequency axis
+        df = df.rename(columns={ df.columns[0]: "freqs" })
+        # sort it with highest freqs on top
+        sorted_df = df.sort_values("freqs",ascending=False)
+        # take only the top 10
+        top_10_slice = sorted_df.head(10)
+        print(sorted_df)
+        # plot with corresponding axes
+        top_10_slice.plot(kind='bar', ax=axes[k])
+    # leave enough space for x-axis labels
+    fig.subplots_adjust(hspace=7)
     fig.savefig("cluster_chart.png") 
+    plt.close(fig)
+
+
+    
+    font = {'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 6}
+
+    matplotlib.rc('font', **font)
+
+    # for each cluster
+    for k in range(num_clusters):
+
+        #fig, ax = plt.subplots(nrows=1, ncols=1,figsize=(10, 20))
+        plt.figure(k)
+        # get frequencies of the paths
+        path_counts = Counter(list_cluster_lists[k])
+        
+        # Create a datafram from path_counts        
+        df = pd.DataFrame.from_dict(path_counts, orient='index')
+        # rename the frequency axis
+        df = df.rename(columns={ df.columns[0]: "freqs" })
+        # sort it with highest freqs on top
+        sorted_df = df.sort_values("freqs",ascending=False)
+        # take only the top 10
+        top_10_slice = sorted_df.head(10)
+        # plot with corresponding axes
+        top_10_slice.plot(kind='bar')
+        # leave enough space for x-axis labels
+        # fig.subplots_adjust(hspace=7)
+        plt.tight_layout()
+    pdf = matplotlib.backends.backend_pdf.PdfPages("tabular_barcharts.pdf")
+    for fig in range(1, plt.gcf().number + 1): ## will open an empty extra figure :(
+        pdf.savefig( fig )
+    pdf.close()
  
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -471,7 +536,7 @@ def main():
     length = jacc_matrix.shape[0]
 
     labels = agglomerative(jacc_matrix, num_clusters, filename_header_pairs)
-    plot_clusters(jacc_matrix, labels, plot_mat_path, overwrite_plot)
+    #plot_clusters(jacc_matrix, labels, plot_mat_path, overwrite_plot)
     generate_barcharts(filename_header_pairs, labels, num_clusters)
 
 if __name__ == "__main__":
