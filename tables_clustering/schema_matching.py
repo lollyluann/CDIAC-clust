@@ -69,6 +69,69 @@ def str_decode(string):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
+def schema_locatinator(filename, path, header_dict, fill_threshold, decode_probs, bad_files):
+
+    with open(path, "r") as f:
+        # read csv and get the header as a list
+        reader = csv.reader(f)
+        try:
+            header_list = next(reader)
+            
+            # if the header is empty, try the next line
+            if (len(header_list) == 0):
+                header_list = next(reader)
+             
+            # number of nonempty attribute strings
+            num_nonempty = 0
+            for attribute in header_list:
+                if not (attribute == ""):
+                    num_nonempty = num_nonempty + 1
+            fill_ratio = num_nonempty / len(header_list)                
+
+            # keep checking lines until you get one where there
+            # are enough nonempty attributes
+            while (fill_ratio <= fill_threshold):
+                # if there's only one nonempty attribute, it's
+                # probably just a descriptor of the table, so try the
+                # next line. 
+                header_list = next(reader)
+                num_nonempty = 0
+                for attribute in header_list:
+                    if not (attribute == ""):
+                        num_nonempty = num_nonempty + 1
+                if (len(header_list) == 0):
+                    fill_ratio = -1
+                else:
+                    fill_ratio = num_nonempty / len(header_list)
+
+                #================================================
+                # Here we've hardcoded some information about 
+                # scientific data to work better with CDIAC. 
+                # feel free to remove it. 
+                
+                # people seem to denote pre-header stuff with a *
+                for attribute in header_list:
+                    if (attribute != "" and attribute[-1] == "*"):
+                        fill_ratio = -1
+                if (len(header_list) > 3):
+                    if (header_list[0] == "Year" and header_list[2] != ""):
+                        break
+                    if (header_list[0] == "Citation"):
+                        fill_ratio = -1
+                    
+                #================================================
+        except UnicodeDecodeError:
+            decode_probs = decode_probs + 1                    
+        except StopIteration:
+            bad_files = bad_files + 1
+            #os.system("cp " + path + " ~/bad_csvs/")
+            continue
+        # throw a key value pair in the dict, with filename as key
+        header_dict.update({filename:header_list})
+        return header_dict, decode_probs, bad_files
+
+#=========1=========2=========3=========4=========5=========6=========7=
+
 #RETURNS: a dictionary which maps filenames to csvs header lists. 
 def get_header_dict_csv(csv_path_list, fill_threshold):
     header_dict = {}
@@ -78,66 +141,8 @@ def get_header_dict_csv(csv_path_list, fill_threshold):
     for path in tqdm(csv_path_list):
         # filename is the path of the file in the orig dataset encoded
         # in the form "|home|ljung|pub8|oceans|some_file.csv"
-        filename = str_encode(path)        
-        with open(path, "r") as f:
-            # read csv and get the header as a list
-            reader = csv.reader(f)
-            try:
-                header_list = next(reader)
-                
-                # if the header is empty, try the next line
-                if (len(header_list) == 0):
-                    header_list = next(reader)
-                
-                
-                # number of nonempty attribute strings
-                num_nonempty = 0
-                for attribute in header_list:
-                    if not (attribute == ""):
-                        num_nonempty = num_nonempty + 1
-                fill_ratio = num_nonempty / len(header_list)                
-
-                # keep checking lines until you get one where there
-                # are enough nonempty attributes
-                while (fill_ratio <= fill_threshold):
-                    # if there's only one nonempty attribute, it's
-                    # probably just a descriptor of the table, so try the
-                    # next line. 
-                    header_list = next(reader)
-                    #print(len(header_list))
-                    num_nonempty = 0
-                    for attribute in header_list:
-                        if not (attribute == ""):
-                            num_nonempty = num_nonempty + 1
-                    if (len(header_list) == 0):
-                        fill_ratio = -1
-                    else:
-                        fill_ratio = num_nonempty / len(header_list)
-
-                    #================================================
-                    # Here we've hardcoded some information about 
-                    # scientific data to work better with CDIAC. 
-                    # feel free to remove it. 
-                    
-                    # people seem to denote pre-header stuff with a *
-                    for attribute in header_list:
-                        if (attribute != "" and attribute[-1] == "*"):
-                            fill_ratio = -1
-                    if (len(header_list) > 3):
-                        if (header_list[0] == "Year" and header_list[2] != ""):
-                            break
-                        if (header_list[0] == "Citation"):
-                            fill_ratio = -1
-                        
-                    #================================================
-            except UnicodeDecodeError:
-                decode_probs = decode_probs + 1                    
-            except StopIteration:
-                bad_files = bad_files + 1
-                #os.system("cp " + path + " ~/bad_csvs/")
-                continue
-            # throw a key value pair in the dict, with filename as key
-            header_dict.update({filename:header_list})
+        filename = str_encode(path)
+        header_dict, decode_probs, bad_files = schema_locatinator(filename, path, header_dict, fill_threshold, decode_probs, bad_files)
     print("Throwing out this number of files, all have less than ", fill_threshold*100, "% nonempty cells in every row: ", bad_files)    
     print("Number of UnicodeDecodeErrors: ", decode_probs)
     return header_dict
@@ -153,66 +158,9 @@ def get_header_dict_converted(csv_dir, fill_threshold):
     bad_files = 0
     decode_probs = 0
     for filename in tqdm(dir_list):
-        # get the path of the current file
+        # get the new location of the current file
         path = os.path.join(csv_dir, filename) 
-        with open(path, "r") as f:
-            # read csv and get the header as a list
-            reader = csv.reader(f)
-            try:
-                header_list = next(reader)
-                
-                # if the header is empty, try the next line
-                if (len(header_list) == 0):
-                    header_list = next(reader)
-                
-                # number of nonempty attribute strings
-                num_nonempty = 0
-                for attribute in header_list:
-                    if not (attribute == ""):
-                        num_nonempty = num_nonempty + 1
-                fill_ratio = num_nonempty / len(header_list)                
-
-                # keep checking lines until you get one where there
-                # are enough nonempty attributes
-                while (fill_ratio <= fill_threshold):
-                    # if there's only one nonempty attribute, it's
-                    # probably just a descriptor of the table, so try the
-                    # next line. 
-                    header_list = next(reader)
-                    #print(len(header_list))
-                    num_nonempty = 0
-                    for attribute in header_list:
-                        if not (attribute == ""):
-                            num_nonempty = num_nonempty + 1
-                    if (len(header_list) == 0):
-                        fill_ratio = -1
-                    else:
-                        fill_ratio = num_nonempty / len(header_list)
-
-                    #================================================
-                    # Here we've hardcoded some information about 
-                    # scientific data to work better with CDIAC. 
-                    # feel free to remove it. 
-                    
-                    # people seem to denote pre-header stuff with a *
-                    for attribute in header_list:
-                        if (attribute != "" and attribute[-1] == "*"):
-                            fill_ratio = -1
-                    if (len(header_list) > 3):
-                        if (header_list[0] == "Year" and header_list[2] != ""):
-                            break
-                        if (header_list[0] == "Citation"):
-                            fill_ratio = -1
-                        
-                    #================================================
-            except UnicodeDecodeError:
-                decode_probs = decode_probs + 1                    
-            except StopIteration:
-                bad_files = bad_files + 1
-                #os.system("cp " + path + " ~/bad_csvs/")
-                continue
-            # throw a key value pair in the dict, with filename as key
-            header_dict.update({filename:header_list})
+        header_dict, decode_probs, bad_files = schema_locatinator(filename, path, header_dict, fill_threshold, decode_probs, bad_files)
     print("Throwing out this number of files, all have less than ", fill_threshold*100, "% nonempty cells in every row: ", bad_files)    
     print("Number of UnicodeDecodeErrors: ", decode_probs)
     return header_dict
@@ -429,7 +377,7 @@ def generate_barcharts(filename_header_pairs, labels, num_clusters):
                 break
             j = j - 1
         filepath = filename[0:at_loc]
-        decoded_filepath = str_decode(filepath)
+        decoded_filepath = str_decode(filepath) + "/"
         #print("filename is: ", filepath)
         # add it to the appropriate list based on the label
         list_cluster_lists[labels[i]].append(decoded_filepath)
@@ -455,6 +403,10 @@ def generate_barcharts(filename_header_pairs, labels, num_clusters):
         top_10_slice.plot(kind='bar')
         # leave enough space for x-axis labels
         # fig.subplots_adjust(hspace=7)
+        figure_title = "Directory distribution for cluster " + str(k)
+        plt.title(figure_title, y=1.08)
+        plt.xlabel('Directory')
+        plt.ylabel('Quantity of files in directory')
         plt.tight_layout()
     pdf = matplotlib.backends.backend_pdf.PdfPages("tabular_barcharts.pdf")
     for fig in range(1, plt.gcf().number + 1): ## will open an empty extra figure :(
