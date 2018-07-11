@@ -313,7 +313,7 @@ def bar_clusters(frame, path, num_clusters):
         count = 0 
         for index, row in cluster_files.iterrows():
             if count>1:
-                path = row['filename']
+                path = get_dir_from_path(row['filename'])
                 print("path: ", path)
                 # if the path is already in the cluster, add to count
                 if path in paths_in_cluster:
@@ -336,6 +336,16 @@ def bar_clusters(frame, path, num_clusters):
         
         save_name = "histogram_cluster"+str(i)       
         plt.savefig(save_name, dpi=200)
+
+''' PARAM: a full path
+    RETURNS: the path without the filename '''
+def get_dir_from_path(path):   
+    ind = 0
+    for c in path[::-1]:
+        ind = ind+1
+        if c=="/" or c=="@":
+            break
+    return path[:len(path)-ind]
 
 
 # MAIN PROGRAM

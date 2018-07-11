@@ -165,7 +165,6 @@ def get_header_dict_converted(csv_dir, fill_threshold):
                 if (len(header_list) == 0):
                     header_list = next(reader)
                 
-                
                 # number of nonempty attribute strings
                 num_nonempty = 0
                 for attribute in header_list:
@@ -274,7 +273,6 @@ def dist_mat_generator(header_dict, dist_mat_path, overwrite):
     else:
         jacc_matrix = np.load(dist_mat_path)
 
-
     return schema_matrix, jacc_matrix, filename_header_pairs
 
 #=========1=========2=========3=========4=========5=========6=========7=
@@ -311,7 +309,6 @@ def agglomerative(jacc_matrix, num_clusters, filename_header_pairs):
     #plt.savefig("dendrogram", dpi=300)
     #print("dendrogram written to \"dendrogram.png\"")
     
-
     '''
     # we have a trash cluster that we use for anything that the header
     # reader didn't like, so we'll actually have one more cluster that
@@ -356,12 +353,10 @@ def agglomerative(jacc_matrix, num_clusters, filename_header_pairs):
 
         clust_label_dict.update({filename:label})
 
-    return clust_label_dict
-    
+    return clust_label_dict 
     '''
 
     return labels
-
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -411,7 +406,7 @@ def plot_clusters(jacc_matrix, labels, plot_mat_path, overwrite_plot):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-# DOES: generates histograms which show the distribution of unique
+# DOES: generates barcharts which show the distribution of unique
 #       filepaths in a cluster. 
 def generate_barcharts(filename_header_pairs, labels, num_clusters):
     # create a dict mapping cluster indices to lists of filepaths
@@ -434,50 +429,12 @@ def generate_barcharts(filename_header_pairs, labels, num_clusters):
                 break
             j = j - 1
         filepath = filename[0:at_loc]
+        decoded_filepath = str_decode(filepath)
         #print("filename is: ", filepath)
         # add it to the appropriate list based on the label
-        list_cluster_lists[labels[i]].append(filepath)
-    
-    # create figure and axes for num_clusters subplots
-    fig, axes = plt.subplots(nrows=num_clusters, ncols=1,figsize=(15, 120))
-    
-    # for each cluster
-    for k in range(num_clusters):
-        # add cluster filepath lists to the dict. 
-        cluster_filepath_dict.update({k:list_cluster_lists[k]})
-        # get frequencies of the paths
-        path_counts = Counter(list_cluster_lists[k])
-        #store all path counts greater than 1 in trimmed (UNUSED)
-        trimmed_path_counts = path_counts.copy()
-        for path, freq in path_counts.items():
-            if freq == 1:
-                del trimmed_path_counts[path]
-        
-        # Create a datafram from path_counts        
-        df = pd.DataFrame.from_dict(path_counts, orient='index')
-        print(list(df.columns.values))
-        # rename the frequency axis
-        df = df.rename(columns={ df.columns[0]: "freqs" })
-        # sort it with highest freqs on top
-        sorted_df = df.sort_values("freqs",ascending=False)
-        # take only the top 10
-        top_10_slice = sorted_df.head(10)
-        print(sorted_df)
-        # plot with corresponding axes
-        top_10_slice.plot(kind='bar', ax=axes[k])
-    # leave enough space for x-axis labels
-    fig.subplots_adjust(hspace=7)
-    fig.savefig("cluster_chart.png") 
-    plt.close(fig)
-
-
-    
-    font = {'family' : 'normal',
-        'weight' : 'bold',
-        'size'   : 6}
-
-    matplotlib.rc('font', **font)
-
+        list_cluster_lists[labels[i]].append(decoded_filepath)
+     
+    matplotlib.rcParams.update({'font.size': 6})
     # for each cluster
     for k in range(num_clusters):
 
@@ -512,7 +469,7 @@ def main():
     num_clusters = 15
     ext_dict_file_loc = os.path.join(ext_dict_dir, "extension_index.npy")
     ext_to_paths_dict = np.load(ext_dict_file_loc).item()
-    print(ext_to_paths_dict)
+    # print(ext_to_paths_dict)
     csv_path_list = []
     if "csv" in ext_to_paths_dict:
         csv_path_list = ext_to_paths_dict["csv"]
