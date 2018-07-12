@@ -2,13 +2,13 @@ import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 import matplotlib.backends.backend_pdf
-import random
 import numpy as np
 import pandas as pd
 from time import time
+from tqdm import tqdm
 from glob import glob
 from six import string_types
-import nltk, re, os, codecs, mpld3, sys
+import nltk, re, os, codecs, mpld3, sys, random
 from sklearn.cluster import KMeans
 from sklearn.externals import joblib
 from sklearn import feature_extraction
@@ -43,7 +43,7 @@ def get_fname_from_path(path):
         filename = c+filename
     return filename
 
-''' PARAMETER: a single filename. 
+''' PARAMETER: a single filename 
     RETURNS: the file without its extension '''
 def remove_extension(filename):    
     length = len(filename)
@@ -53,9 +53,13 @@ def remove_extension(filename):
         length = length - 1 
     return filename[:length-1]
 
+''' PARAMETER: a single string
+    RETURNS: the string with all @ relaced with / '''
 def str_decode(string):
     return string.replace("@","/")
 
+''' PARAMETER: a directory path
+    RETURNS: a list of the immediate children of that directory '''
 def get_immediate_subdirectories(a_dir):
     sub_list = []
     for name in os.listdir(a_dir):
@@ -65,7 +69,7 @@ def get_immediate_subdirectories(a_dir):
 
 ''' PARAM: a parent directory containing /pdf/ /doc/ etc
     RETURNS: a list of filenames and a list of the contents of the files 
-    DOES: gets all the filenames and their contents of a directory'''   
+    DOES: gets all the filenames and their contents of a directory '''   
 def get_document_contents(directory):
     ext_paths = np.load("/home/ljung/CDIAC-clust/paths_work/extension_index.npy").item()
     filenames = []
@@ -74,16 +78,16 @@ def get_document_contents(directory):
     
     # a list of the paths of the txt files still in pub8 
     txt_paths = ext_paths.get("txt")
-    for path in txt_paths:
+    print("Getting .txt contents")
+    for path in tqdm(txt_paths):
         if os.path.isfile(path):
             i = i+1
-            print("txt ", i) 
             # add the filename to "filenames" 
             #filenames.append(get_fname_from_path(path))
             filenames.append(path)
             # read the contents of the file and remove newlines
             freader = open(path, "r", errors='backslashreplace')
-            contents = freader.read()#.encode("utf-8").decode('utf-8', 'backslashreplace')
+            contents = freader.read()
             freader.close()
             contents = contents.replace("\n","")
             # add the string of the contents of the file to "data"
@@ -91,15 +95,14 @@ def get_document_contents(directory):
     
     # for every file in the directory of converted files
     conv_folders = get_immediate_subdirectories(directory)
-    print(directory, conv_folders)
     for folder in conv_folders:
+        print("Getting ."+folder+" contents")
         filetype = get_end_directory(folder)
         if filetype in ["pdf", "doc", "docx"]:
-            for filename in os.listdir(folder):
+            for filename in tqdm(os.listdir(folder)):
                 current_file = os.path.join(folder,filename)
                 if os.path.isfile(current_file):
                     i = i + 1
-                    print(filetype, i)
                     # add the non-converted filename to "filenames" 
                     new_name = str_decode(remove_extension(filename))#+"."+filetype
                     filenames.append(new_name)
@@ -146,9 +149,6 @@ def tokenize_only(text):
 #=========1=========2=========3=========4=========5=========6=========7=
 
 def main_function(num_clusters, retokenize, corpusdir):
-    # record initial time that program started
-    t0 = time()
-
     # gets the filenames and their contents
     fnames, dataset = get_document_contents(corpusdir)
     #stopwords = nltk.download('stopwords')
@@ -219,6 +219,7 @@ def main_function(num_clusters, retokenize, corpusdir):
     # convert "db" to a pandas datafram
     frame = pd.DataFrame(db, index=[clusters], columns=['filename','cluster'])
     # print the number of files in each cluster
+    print("Number of files in each cluster: ")
     print(frame['cluster'].value_counts())
 
     #=========1=========2=========3=========4=========5=========6=========
@@ -292,14 +293,15 @@ def main_function(num_clusters, retokenize, corpusdir):
     plt.savefig("3D_document_cluster", dpi=300)
     print("scatter plot written to \"3D_document_cluster.png\"")
     
-    # print total time taken to run program
-    print("time taken: ", time()-t0)
     '''
     return frame
 
-def bar_clusters(frame, path, num_clusters):
-    #file_pathtokens_dict, file_path_dict = DFS(path,1)
-    #file_paths = DFS(path)
+''' PARAMETERS: "frame" a dataframe containing which files are in which clusters
+                "num_clusters" the number of clusters
+                "home_dir" the parent directory of the dataset (e.g. /home/ljung/)
+    DOES: plots a pdf with all the bar charts on it
+          each bar chart shows which directories the files in a cluster come from '''
+def bar_clusters(frame, num_clusters, home_dir):
     plt.figure("bar")
   
     output_path = "txt_cluster_bars/"
@@ -308,9 +310,11 @@ def bar_clusters(frame, path, num_clusters):
     os.chdir(output_path)
     matplotlib.rcParams.update({'font.size': 6})
     
+    print("\nGenerating barcharts...")    
     pdf = matplotlib.backends.backend_pdf.PdfPages("text_barcharts.pdf")
+    cluster_directories = []
     # for each cluster, generate a bar chart 
-    for i in range(num_clusters):
+    for i in tqdm(range(num_clusters)):
         plt.clf()
         paths_in_cluster = {}
         # get the files associated with the current cluster
@@ -319,21 +323,21 @@ def bar_clusters(frame, path, num_clusters):
         for index, row in cluster_files.iterrows():
             if count>1:
                 path = get_dir_from_path(row['filename'])
-                # print("path: ", path)
                 # if the path is already in the cluster, add to count
                 if path in paths_in_cluster:
                     paths_in_cluster.update({path:paths_in_cluster.get(path)+1})
                 else:
                     paths_in_cluster.update({path:1})
             count+=1
+        cluster_directories.append(paths_in_cluster)
         sorted_names = []
         sorted_counts = []
         # sort the paths in ascending order based on # of occurrences
         for e in sorted(paths_in_cluster, key=paths_in_cluster.get, reverse=True):
-            sorted_names.append(e)
+            trimmed_name = e[len(home_dir):]
+            sorted_names.append(trimmed_name)
             sorted_counts.append(paths_in_cluster[e])
 
-        print(sorted_names, sorted_counts)
         y_pos = np.arange(len(sorted_names))
 
         plt.bar(y_pos, sorted_counts, align='center', alpha=0.5)
@@ -345,11 +349,11 @@ def bar_clusters(frame, path, num_clusters):
         save_name = "barchart_cluster"+str(i)       
         # plt.savefig(save_name, dpi=200)
         
-        # for fig in range(1, plt.gcf().number+1): ## will open an empty extra figure :(
         pdf.savefig(plt.gcf())
     pdf.close()
+    return cluster_directories
 
-''' PARAM: a full path
+''' PARAMETER: a full path
     RETURNS: the path without the filename '''
 def get_dir_from_path(path):   
     ind = 0
@@ -359,6 +363,38 @@ def get_dir_from_path(path):
             break
     return path[:len(path)-ind+1]
 
+''' PARAMETER: a list of filepaths
+    RETURNS: nearest shared parent directory of all the files given '''
+def nearest_shared_parent(filepaths):
+    path1 = filepaths[0]
+    path1_folders = path1.split("/")
+    for i in range(1,len(filepaths)):
+        path2 = filepaths[i]
+        path2_folders = path2.split("/")
+        min_folderlist_len = min(len(path1_folders), len(path2_folders))
+        for j in range(min_folderlist_len):
+            # if the folder matches
+            if path1_folders[j]==path2_folders[j]:
+                # save the shared path
+                path1 = path1_folders[:j+1]
+            # once they are no longer equal, stop iterating. 
+            else:
+                break
+    return path1
+
+''' PARAMETER: a list of dictionaries. each dictionary maps cluster to files
+    DOES: prints mean, std-dev, and nearest shared parent for each cluster '''
+def get_cluster_stats(cluster_directories):
+    print("\nNumber of unique directories in:")
+    for i in range(len(cluster_directories)):
+        sum = 0
+        print("Cluster", i, ":", len(cluster_directories[i]))
+        dir_counts = np.array(list(cluster_directories[i].values()))
+        print("Avg dir frequency:", np.mean(dir_counts))
+        print("Std-dev dir frequency:", np.std(dir_counts))
+        print("Nearest shared directory:","/".join(nearest_shared_parent(list(cluster_directories[i].keys()))))
+
+
 
 # MAIN PROGRAM
 
@@ -366,9 +402,17 @@ def main():
     num_clusters = int(sys.argv[1])
     retokenize = sys.argv[2]
     # the directory containing the files not in pub8 you want to cluster
-    corpusdir = sys.argv[3] #eg. /home/ljung/extension_sorted_data/
+    corpusdir = sys.argv[3] #eg. /home/ljung/converted/
+   
+    # record initial time that program started
+    t0 = time()
+    
     fr = main_function(num_clusters, retokenize, corpusdir)
-    bar_clusters(fr, "/home/ljung/pub8/", num_clusters)
+    cluster_directories = bar_clusters(fr, num_clusters, "/home/ljung/")
+    get_cluster_stats(cluster_directories)
+    
+    # print total time taken to run program
+    print("time taken: ", time()-t0, " seconds")
 
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here

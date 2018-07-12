@@ -1,6 +1,7 @@
-from matplotlib import pyplot as plt
 import matplotlib
 matplotlib.use('Agg')
+
+from matplotlib import pyplot as plt
 import pylab as pl
 import numpy as np
 import new_DFS

@@ -52,7 +52,6 @@ def check_valid_dir(some_dir):
 
 check_valid_dir(directory)
 check_valid_dir(out_dir)
-#check_valid_dir(dataset_dir)
 xls_path = os.path.join(directory, "xls/")
 xlsx_path = os.path.join(directory, "xlsx/")
 csv_path = os.path.join(directory, "csv/")
@@ -174,109 +173,6 @@ def get_header_dict(csv_dir, csv_path_list, fill_threshold, converted_status):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-#RETURNS: a dictionary which maps filenames to csvs header lists. 
-def get_better_dict(csv_dir, csv_path_list, fill_threshold, converted_status):
-    header_dict = {}
-    # number of files with no valid header
-    bad_files = 0
-    decode_probs = 0
-
-    # This code is rather confusing because I wanted the function to 
-    # be able to handle both types of inputs (lists of paths in names)
-    # and just directory locations. 
-
-    # CASE 1:
-    # If we're reading in converted files, we only need the csv_dir
-    # argument, so we get a list of the filenames from that directory. 
-    # These filenames are in the form:
-    # "@home@ljung@pub8@oceans@some_file.csv"
-    if (converted_status):
-        dir_list = os.listdir(csv_dir)
-
-    # CASE 2:
-    # Otherwise, we are reading in a list of the true, original 
-    # locations of files that were csvs to begin with in the dataset.
-    else:
-        dir_list = csv_path_list
-    
-    # CASE 1: "path" looks like:"@home@ljung@pub8@oceans@some_file.csv" 
-    # CASE 2: "path" is literally the path of that file in the original
-    # dataset as a string. 
-    for path in tqdm(dir_list):
-        if (converted_status): 
-            # get the new location of the current file in "csv_dir", 
-            # i.e. not in original dataset. 
-            filename = path
-            path = os.path.join(csv_dir, path) 
-        else:
-            # convert to "@home@ljung@pub8@oceans@some_file.csv" form. 
-            filename = str_encode(path)
-
-        # So now in both cases, filename has the "@"s, and path is
-        # the location of some copy of the file. 
-
-#=========1=========2=========3=========4=========5=========6=========7=
-
-        data = list(list(rec) for rec in csv.reader(f, delimiter=','))
-
-        with open(path, "r") as f:
-            # read csv and get the header as a list
-            reader = csv.reader(f)
-            try: 
-                rows = list(list(rec) for rec in csv.reader(f, delimiter=','))
-      
-                header_list = []
-                num_aligned_floats = 1
-                float_loc = float('Inf') 
-                for i in range(len(rows)):
-        
-                    # if the row is empty, try the next line
-                    if (len(rows[i]) == 0):
-                        continue
-                     
-                    # number of nonempty cells
-                    num_nonempty = 0
-                    for cell in rows[i]:
-                        if not (cell == ""):
-                            num_nonempty = num_nonempty + 1
-                    fill_ratio = num_nonempty / len(rows[i])                
-                    if (fill_ratio == 0):
-                        continue
-        
-#=========1=========2=========3=========4=========5=========6=========7=
-
-                    old_float_loc = float_loc
-                    float_loc = float('Inf')
-                    
-                    row = rows[i]
-                    for j in range(len(row) - 1):
-                        # if we have two consecutive float cells
-                        if ((not re.match("^\d+?\.\d+?$", row[j]) is None) and (not re.match("^\d+?\.\d+?$", row[j]) is None)):
-                            # save its location in that row
-                            float_loc = j
-
-                    # if there exists a float in the current row AND 
-                    # in the same place as the last... 
-                    if (float_loc != float('Inf') and float_loc == old_float_loc):
-                        num_aligned_floats = num_aligned_floats + 1
-                    
-                    if (num_aligned_floats == 5):
-                        header_list = rows[i - 4]
-                        break
-                   
-                if (i == len(rows) - 1):
-                    bad_files = bad_files + 1
-                    continue
-            except UnicodeDecodeError:
-                decode_probs = decode_probs + 1                    
-            # throw a key value pair in the dict, with filename as key
-            header_dict.update({filename:header_list})
-    print("Couldn't find the header in " + str(bad_files) + " files. Discarded.")    
-    print("Number of UnicodeDecodeErrors: ", decode_probs)
-    return header_dict
-
-#=========1=========2=========3=========4=========5=========6=========7=
-
 def jaccard_similarity(list1, list2):
     intersection = len(list(set(list1).intersection(list2)))
     #print(list(set(list1).intersection(list2)))
@@ -314,7 +210,7 @@ def dist_mat_generator(header_dict, dist_mat_path, overwrite):
         # iterating over the header array once...
         for header_a in tqdm(schema_matrix):
             #===========================
-            print(header_a)
+            #print(header_a)
             #===========================
             # storing distances for a single header
             single_row = []
@@ -467,9 +363,31 @@ def plot_clusters(jacc_matrix, labels, plot_mat_path, overwrite_plot):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
+# Works with or without trailing "/". 
+# RETURNS: "/hello/no/" from argument "/hello/no/yes/". 
+def remove_path_end(path):
+    # remove trailing "/" if it exists. 
+    if (path[len(path) - 1] == "/"):
+        path = path[0:len(path) - 1]
+
+    # location of the delimiter "/"
+    delim_loc = 0
+    j = len(path) - 1
+    # iterating to find location of first "/" from right
+    while (j >= 0):
+        if (path[j] == "/"):
+            delim_loc = j
+            break
+        j = j - 1
+    # shorten the path, include ending "/"
+    shortened_path = path[0:delim_loc + 1]
+    return shortened_path
+
+#=========1=========2=========3=========4=========5=========6=========7=
+
 # DOES: generates barcharts which show the distribution of unique
 #       filepaths in a cluster. 
-def generate_barcharts(filename_header_pairs, labels, num_clusters):
+def generate_barcharts(filename_header_pairs, labels, num_clusters, root_path):
     # create a dict mapping cluster indices to lists of filepaths
     cluster_filepath_dict = {}
     # list of lists, each list is full of the filepaths for one cluster.
@@ -482,16 +400,17 @@ def generate_barcharts(filename_header_pairs, labels, num_clusters):
         # get the corresponding filename
         filename_header_pair = filename_header_pairs[i]
         filename = filename_header_pair[0]
-        at_loc = 0
-        j = len(filename) - 1
-        while (j >= 0):
-            if (filename[j] == "@"):
-                at_loc = j
-                break
-            j = j - 1
-        filepath = filename[0:at_loc]
-        decoded_filepath = str_decode(filepath) + "/"
-        #print("filename is: ", filepath)
+        # transform "@" delimiters to "/"
+        filename = str_decode(filename)
+        # remove the actual filename to get its directory
+        decoded_filepath = remove_path_end(filename)
+        # get common prefix of top level dataset directory
+        common_prefix = remove_path_end(root_path)
+        # remove the common prefix for display on barchart. The " - 1"
+        # is so that we include the leading "/". 
+        decoded_filepath = decoded_filepath[len(common_prefix) - 1:len(decoded_filepath)]
+        
+        print("filename is: ", decoded_filepath)
         # add it to the appropriate list based on the label
         list_cluster_lists[labels[i]].append(decoded_filepath)
      
@@ -559,7 +478,7 @@ def main():
 
     labels = agglomerative(jacc_matrix, num_clusters, filename_header_pairs)
     #plot_clusters(jacc_matrix, labels, plot_mat_path, overwrite_plot)
-    generate_barcharts(filename_header_pairs, labels, num_clusters)
+    generate_barcharts(filename_header_pairs, labels, num_clusters, directory)
 
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here
