@@ -10,10 +10,14 @@ import matplotlib.gridspec as gridspec
 from matplotlib import pyplot as plt
 from collections import Counter
 from sklearn import manifold
+import get_cluster_stats
 from tqdm import tqdm
+import path_utilities
 import pandas as pd
 import numpy as np
+import silhouette
 import sklearn
+import pickle
 import sys
 import csv
 import os
@@ -52,20 +56,20 @@ def check_valid_dir(some_dir):
 
 check_valid_dir(directory)
 check_valid_dir(out_dir)
+check_valid_dir(ext_dict_dir)
+
+directory = os.path.abspath(directory)
+out_dir = os.path.abspath(out_dir)
+ext_dict_dir = os.path.abspath(ext_dict_dir)
+
+print(directory)
+print(out_dir)
+print(ext_dict_dir)
+
 xls_path = os.path.join(directory, "xls/")
 xlsx_path = os.path.join(directory, "xlsx/")
 csv_path = os.path.join(directory, "csv/")
 tsv_path = os.path.join(directory, "tsv/")
-
-#=========1=========2=========3=========4=========5=========6=========7=
-
-def str_encode(string):
-    return string.replace("/","@")
-   
-#=========1=========2=========3=========4=========5=========6=========7=
-
-def str_decode(string):
-    return string.replace("@","/")
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -105,7 +109,7 @@ def get_header_dict(csv_dir, csv_path_list, fill_threshold, converted_status):
             path = os.path.join(csv_dir, path) 
         else:
             # convert to "@home@ljung@pub8@oceans@some_file.csv" form. 
-            filename = str_encode(path)
+            filename = path_utilities.str_encode(path)
 
         # So now in both cases, filename has the "@"s, and path is
         # the location of some copy of the file. 
@@ -173,7 +177,7 @@ def get_header_dict(csv_dir, csv_path_list, fill_threshold, converted_status):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-def jaccard_similarity(list1, list2):
+def jaccard_distance(list1, list2):
     intersection = len(list(set(list1).intersection(list2)))
     #print(list(set(list1).intersection(list2)))
     union = (len(list1) + len(list2)) - intersection
@@ -188,7 +192,13 @@ def jaccard_similarity(list1, list2):
 # RETURNS: a tuple with the first element being an array of all the 
 # headers in numpy array form, the second being the jaccard dist
 # matrix, and the third being a list of 2-tuples (filename, header_list)
-def dist_mat_generator(header_dict, dist_mat_path, overwrite):
+def dist_mat_generator(header_dict, overwrite_path, overwrite):
+
+    # Define the names for the files we write distance matrix and the
+    # filename_header_pairs list to. 
+    dist_mat_path = overwrite_path + "-dist.npy"
+    headpairs_path = overwrite_path + "-headpairs.pkl"
+
     schema_matrix = []
     # list of tuples, first element is filename, second is header_list
     filename_header_pairs = []
@@ -200,11 +210,10 @@ def dist_mat_generator(header_dict, dist_mat_path, overwrite):
     # we just need an empty numpy array 
     jacc_matrix = np.zeros((2,1))
 
-    if not os.path.isfile(dist_mat_path) or overwrite == "1":
-        print("No existing distance matrix for this directory. ")
+    if not os.path.isfile(dist_mat_path) or not os.path.isfile(headpairs_path) or overwrite == "1":
+        print("No existing cached files for this directory. ")
         print("Generating distance matrix using jaccard similarity. ")
         print("This could take a while... ")
-
         # we generate the distance matrix as a list
         dist_mat_list = []
         # iterating over the header array once...
@@ -216,7 +225,7 @@ def dist_mat_generator(header_dict, dist_mat_path, overwrite):
             single_row = []
             # iterating again...
             for header_b in schema_matrix:
-                jacc = jaccard_similarity(header_a, header_b)
+                jacc = jaccard_distance(header_a, header_b)
                 single_row.append(jacc)
             # add one row to the list
             dist_mat_list.append(np.array(single_row))
@@ -225,103 +234,34 @@ def dist_mat_generator(header_dict, dist_mat_path, overwrite):
         jacc_matrix = np.stack(jacc_matrix, axis=0)
         print(jacc_matrix.shape)
         # save on disk, because computation is expensive
+        print("Saving file to: ", dist_mat_path)
         np.save(dist_mat_path, jacc_matrix)
-
+        with open(headpairs_path, 'wb') as f:
+            pickle.dump(filename_header_pairs, f)
     else:
+        print("Loading file from: ", dist_mat_path)
         jacc_matrix = np.load(dist_mat_path)
-
+        with open(headpairs_path, 'rb') as f:
+            filename_header_pairs = pickle.load(f)
+                
     return schema_matrix, jacc_matrix, filename_header_pairs
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-# RETURNS: index of "char" in "string". Returns the length of the string
-# if there are no instances of that character. 
-def find_char_from_end(string, char):
-    
-        length = len(string)
-        # we iterate on the characters starting from end of the string
-        pos = length - 1
-        # dot pos will be position of the first period from the end,
-        # i.e. the file extension dot. If it is still "length" at end,
-        # we know that there are no dots in the filename. 
-        dot_pos = length
-        while (pos >= 0):
-            if (filename[pos] == char):
-                dot_pos = pos
-                break
-            pos = pos - 1
-        return dot_pos
-
-#=========1=========2=========3=========4=========5=========6=========7=
-
-def agglomerative(jacc_matrix, num_clusters, filename_header_pairs):
+def agglomerative(jacc_matrix, num_clusters, filename_header_pairs, overwrite):
     clustering = AgglomerativeClustering(n_clusters=num_clusters, affinity='precomputed', linkage='complete')
     clustering.fit(jacc_matrix)
     labels = clustering.labels_
-    print(labels)
+    #print(labels)
 
-    #plt.figure(figsize=(17,9))
-    #plot_dendrogram(clustering, labels = clustering.labels_)
-    
-    #plt.savefig("dendrogram", dpi=300)
-    #print("dendrogram written to \"dendrogram.png\"")
-    
-    '''
-    # we have a trash cluster that we use for anything that the header
-    # reader didn't like, so we'll actually have one more cluster that
-    # will be passed in as a directory. 
-    num_clusters = num_clusters + 1
-
-    cluster_path_bins = []
-    for i in range(num_clusters):
-        cluster_path_bins.append([])
-
-    clust_label_dict = {}
-    print("length of labels is: ", len(labels))
-    print("length of filename_header_pairs is: ", len(filename_header_pairs))
-    for i in range(len(labels)):
-        label = labels[i]
-        pair = filename_header_pairs[i]
-        filename = pair[0]
+    if (overwrite == 1):
+        plt.figure(figsize=(17,9))
+        plot_dendrogram(clustering, labels = clustering.labels_)
         
-        dot_pos = find_char_from_end(filename, ".")
-        
-        # recall that these filenames are the converted filenames. 
-        # we want to be able to map back to the original filenames so
-        # we can find the directory using the filename_path_dict from
-        # generate_token_dict to get the path.
-        # converted files will be of the form
-        # <filename>.<orig_ext>.csv.<i> 
-        extension = filename[dot_pos:length]
-        # if the file was converted from some other type...
-        if (extension != ".csv"):
-            # <filename>.<orig_ext>.csv
-            filename_no_num = filename[0:dot_pos]
-            second_dot_pos = find_char_from_end(filename_no_num, ".")
-            # <filename>.<orig_ext>
-            orig_filename = filename_no_num[0:second_dot_pos]
-            # here we'll convert the filename to its original path
-            # in the dataset. 
-            orig_path = "<INSERT_PATH_PARSE_FUNC_HERE>"
-            # add the path to the appropriate list, one list per
-            # cluster, then later on we'll count frequencies in 
-            # these lists to create the histograms. 
-            cluster_path_bins[label].append(orig_path)
-
-        clust_label_dict.update({filename:label})
-
-    return clust_label_dict 
-    '''
-
+        plt.savefig("dendrogram", dpi=300)
+        print("dendrogram written to \"dendrogram.png\"")
+    
     return labels
-
-#=========1=========2=========3=========4=========5=========6=========7=
-
-def create_unconvert_dict(directory, out_dir, xls_valid_list, xlsx_valid_list, tsv_valid_list, file_path_dict):
-    converted_list = os.listdir(out_dir)
-    for filename in converted_list:  
-        print("")
-    return
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -363,28 +303,6 @@ def plot_clusters(jacc_matrix, labels, plot_mat_path, overwrite_plot):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-# Works with or without trailing "/". 
-# RETURNS: "/hello/no/" from argument "/hello/no/yes/". 
-def remove_path_end(path):
-    # remove trailing "/" if it exists. 
-    if (path[len(path) - 1] == "/"):
-        path = path[0:len(path) - 1]
-
-    # location of the delimiter "/"
-    delim_loc = 0
-    j = len(path) - 1
-    # iterating to find location of first "/" from right
-    while (j >= 0):
-        if (path[j] == "/"):
-            delim_loc = j
-            break
-        j = j - 1
-    # shorten the path, include ending "/"
-    shortened_path = path[0:delim_loc + 1]
-    return shortened_path
-
-#=========1=========2=========3=========4=========5=========6=========7=
-
 # DOES: generates barcharts which show the distribution of unique
 #       filepaths in a cluster. 
 def generate_barcharts(filename_header_pairs, labels, num_clusters, root_path):
@@ -392,32 +310,54 @@ def generate_barcharts(filename_header_pairs, labels, num_clusters, root_path):
     cluster_filepath_dict = {}
     # list of lists, each list is full of the filepaths for one cluster.
     list_cluster_lists = []
+    # list of dicts, keys are unique directories, values are counts
+    # each list corresponds to a cluster
+    cluster_directories = []
     # initialize each child list. 
     for k in range(num_clusters):
         list_cluster_lists.append([])
+        # add k empty dicts
+        cluster_directories.append({})    
+
     # for each label in labels
     for i in tqdm(range(len(labels))):
         # get the corresponding filename
         filename_header_pair = filename_header_pairs[i]
         filename = filename_header_pair[0]
         # transform "@" delimiters to "/"
-        filename = str_decode(filename)
+        filename = path_utilities.str_decode(filename)
         # remove the actual filename to get its directory
-        decoded_filepath = remove_path_end(filename)
+        decoded_filepath = path_utilities.remove_path_end(filename)
         # get common prefix of top level dataset directory
-        common_prefix = remove_path_end(root_path)
+        common_prefix = path_utilities.remove_path_end(root_path)
         # remove the common prefix for display on barchart. The " - 1"
         # is so that we include the leading "/". 
         decoded_filepath = decoded_filepath[len(common_prefix) - 1:len(decoded_filepath)]
-        
-        print("filename is: ", decoded_filepath)
+        #print("filename is: ", decoded_filepath)
         # add it to the appropriate list based on the label
         list_cluster_lists[labels[i]].append(decoded_filepath)
-     
+  
+#=========1=========2=========3=========4=========5=========6=========7=
+
+    # create a list of dicts, one for each cluster, which map dirs to 
+    # counts. 
+    for k in range(num_clusters):
+        for directory in list_cluster_lists[k]:
+            if directory in cluster_directories[k]:
+                old_count = cluster_directories[k].get(directory)
+                new_count = old_count + 1
+                cluster_directories[k].update({directory:new_count})
+            else:
+                cluster_directories[k].update({directory:1})
+    
+    # get a list of the cluster statistic for printing to pdf
+    cluster_stats = get_cluster_stats.get_cluster_stats(cluster_directories)
+    # just make font a bit smaller
     matplotlib.rcParams.update({'font.size': 6})
+
     # for each cluster
     for k in range(num_clusters):
-
+        single_cluster_stats = cluster_stats[k]
         #fig, ax = plt.subplots(nrows=1, ncols=1,figsize=(10, 20))
         plt.figure(k)
         # get frequencies of the paths
@@ -435,7 +375,12 @@ def generate_barcharts(filename_header_pairs, labels, num_clusters, root_path):
         top_10_slice.plot(kind='bar')
         # leave enough space for x-axis labels
         # fig.subplots_adjust(hspace=7)
-        figure_title = "Directory distribution for cluster " + str(k)
+        figure_title = "Directory distribution for cluster " + str(k) + "\n"
+        figure_title += "Number of unique directories: " + str(single_cluster_stats[0]) + "\n"
+        figure_title += "Mean frequency: " + str(single_cluster_stats[1]) + "\n"
+        figure_title += "Median frequency: " + str(single_cluster_stats[3]) + "\n"
+        figure_title += "Standard deviation of frequencies: " + str(single_cluster_stats[2]) + "\n"
+        figure_title += "Closest common ancestor of all directories: " + single_cluster_stats[4]
         plt.title(figure_title, y=1.08)
         plt.xlabel('Directory')
         plt.ylabel('Quantity of files in directory')
@@ -453,7 +398,6 @@ def main():
     num_clusters = 15
     ext_dict_file_loc = os.path.join(ext_dict_dir, "extension_index.npy")
     ext_to_paths_dict = np.load(ext_dict_file_loc).item()
-    # print(ext_to_paths_dict)
     csv_path_list = []
     if "csv" in ext_to_paths_dict:
         csv_path_list = ext_to_paths_dict["csv"]
@@ -470,13 +414,15 @@ def main():
     header_dict = dict(header_dict_converted)
     header_dict.update(header_dict_csv)
 
-    dist_mat_path = directory[0:len(directory) - 1] + ".npy"
-    plot_mat_path = directory[0:len(directory) - 1] + "_plot.npy"
-    print("We are storing the distance matrix is the following file: ", dist_mat_path)
+    # note here that "directory" does NOT have a trailing "/"
+    dist_mat_path = directory
+    plot_mat_path = directory + "_plot.npy"
+    print("We are storing the distance matrix in the following file: ", dist_mat_path)
     schema_matrix, jacc_matrix, filename_header_pairs = dist_mat_generator(header_dict, dist_mat_path, overwrite)
     length = jacc_matrix.shape[0]
-
-    labels = agglomerative(jacc_matrix, num_clusters, filename_header_pairs)
+    
+    # cluster, generate labels, plot, and generate a pdf of barcharts
+    labels = agglomerative(jacc_matrix, num_clusters, filename_header_pairs, overwrite_plot)
     #plot_clusters(jacc_matrix, labels, plot_mat_path, overwrite_plot)
     generate_barcharts(filename_header_pairs, labels, num_clusters, directory)
 

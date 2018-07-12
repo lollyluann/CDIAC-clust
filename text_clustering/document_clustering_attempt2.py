@@ -7,6 +7,7 @@ import pandas as pd
 from time import time
 from tqdm import tqdm
 from glob import glob
+from unipath import Path
 from six import string_types
 import nltk, re, os, codecs, mpld3, sys, random
 from sklearn.cluster import KMeans
@@ -338,20 +339,25 @@ def bar_clusters(frame, num_clusters, home_dir):
             sorted_names.append(trimmed_name)
             sorted_counts.append(paths_in_cluster[e])
 
+        cluster_stats = get_cluster_stats(paths_in_cluster)
         y_pos = np.arange(len(sorted_names))
 
         plt.bar(y_pos, sorted_counts, align='center', alpha=0.5)
         plt.xticks(y_pos, sorted_names, rotation=90)
         plt.rc('xtick', labelsize=3)
         plt.ylabel('Number of files')
-        plt.title('Directories in Cluster ' + str(i))
+        plt.title('Directories in Cluster ' + str(i) + "\n" + cluster_stats)
         plt.tight_layout()
         save_name = "barchart_cluster"+str(i)       
         # plt.savefig(save_name, dpi=200)
         
         pdf.savefig(plt.gcf())
     pdf.close()
-    return cluster_directories
+    p = Path(os.getcwd())
+    p2 = Path(p.parent)
+    os.chdir(os.path.join(p2.parent,"paths_work"))
+    np.save("cluster_directories.npy",cluster_directories)
+
 
 ''' PARAMETER: a full path
     RETURNS: the path without the filename '''
@@ -368,6 +374,7 @@ def get_dir_from_path(path):
 def nearest_shared_parent(filepaths):
     path1 = filepaths[0]
     path1_folders = path1.split("/")
+    shared_index = len(path1_folders)
     for i in range(1,len(filepaths)):
         path2 = filepaths[i]
         path2_folders = path2.split("/")
@@ -376,25 +383,23 @@ def nearest_shared_parent(filepaths):
             # if the folder matches
             if path1_folders[j]==path2_folders[j]:
                 # save the shared path
-                path1 = path1_folders[:j+1]
+                shared_index = j+1
             # once they are no longer equal, stop iterating. 
             else:
                 break
+    path1 = path1_folders[:shared_index]
     return path1
 
-''' PARAMETER: a list of dictionaries. each dictionary maps cluster to files
-    DOES: prints mean, std-dev, and nearest shared parent for each cluster '''
+''' PARAMETER: a dictionary of directories and their counts from a cluster
+    DOES: returns a string of mean, std-dev, and nearest shared parent for that cluster '''
 def get_cluster_stats(cluster_directories):
-    print("\nNumber of unique directories in:")
-    for i in range(len(cluster_directories)):
-        sum = 0
-        print("Cluster", i, ":", len(cluster_directories[i]))
-        dir_counts = np.array(list(cluster_directories[i].values()))
-        print("Avg dir frequency:", np.mean(dir_counts))
-        print("Std-dev dir frequency:", np.std(dir_counts))
-        print("Nearest shared directory:","/".join(nearest_shared_parent(list(cluster_directories[i].keys()))))
-
-
+    dir_counts = np.array(list(cluster_directories.values()))
+    unique = str(len(cluster_directories)) + " unique directories"
+    avg = "Avg dir frequency:" + str( np.mean(dir_counts))
+    med = "Median dir frequency:" + str( np.median(dir_counts))
+    std = "Std-dev dir frequency:" + str( np.std(dir_counts))
+    nsd = "Nearest shared directory:" + "/".join(nearest_shared_parent(list(cluster_directories.keys())))
+    return unique+"\n"+avg+"\n"+med+"\n"+std+"\n"+nsd
 
 # MAIN PROGRAM
 
@@ -408,8 +413,8 @@ def main():
     t0 = time()
     
     fr = main_function(num_clusters, retokenize, corpusdir)
-    cluster_directories = bar_clusters(fr, num_clusters, "/home/ljung/")
-    get_cluster_stats(cluster_directories)
+    bar_clusters(fr, num_clusters, "/home/ljung/")
+    
     
     # print total time taken to run program
     print("time taken: ", time()-t0, " seconds")
