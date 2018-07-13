@@ -309,7 +309,7 @@ def bar_clusters(frame, num_clusters, home_dir):
     if not os.path.isdir(output_path):
         os.mkdir(output_path)
     os.chdir(output_path)
-    matplotlib.rcParams.update({'font.size': 5})
+    matplotlib.rcParams.update({'font.size': 4})
     
     print("\nGenerating barcharts...")    
     pdf = matplotlib.backends.backend_pdf.PdfPages("text_barcharts.pdf")
@@ -349,7 +349,7 @@ def bar_clusters(frame, num_clusters, home_dir):
         plt.xlabel('Directory')
         plt.title('Directories in Cluster ' + str(i) + "\n" + cluster_stats)
         plt.tight_layout()
-        plt.subplots_adjust(bottom=0.4, top=0.87)
+        plt.subplots_adjust(bottom=0.38, top=0.90)
         save_name = "barchart_cluster"+str(i)       
         # plt.savefig(save_name, dpi=200)
         
