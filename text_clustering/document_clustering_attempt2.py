@@ -349,7 +349,7 @@ def bar_clusters(frame, num_clusters, home_dir):
         plt.xlabel('Directory')
         plt.title('Directories in Cluster ' + str(i) + "\n" + cluster_stats)
         plt.tight_layout()
-        plt.subplots_adjust(bottom=0.3, top=0.6)
+        plt.subplots_adjust(bottom=0.01, top=0.9)
         save_name = "barchart_cluster"+str(i)       
         # plt.savefig(save_name, dpi=200)
         
