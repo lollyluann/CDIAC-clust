@@ -1,6 +1,4 @@
 from tqdm import tqdm
-import numpy as np
-import new_DFS
 import sys
 import os
 
@@ -69,7 +67,6 @@ def DFS(path):
 
 # RETURNS: Naive max distance according to the above distance metric. 
 def naive_max_dist(root):
-    print("Calculating maximum distance between files...")
     max_dist = 0
     all_paths = DFS(root)
     for path_a in tqdm(all_paths):
@@ -91,8 +88,6 @@ def get_dir_from_path(path):
             break
     return path[:len(path)-ind+1]
 
-''' PARAMETER: a list of the paths in a cluster
-    RETURNS: the avg distance between the paths '''
 def intracluster_dist(cluster_paths):
     distances = []
     for i in range(len(cluster_paths)-1):
@@ -104,39 +99,6 @@ def intracluster_dist(cluster_paths):
     dists = np.array(distances)
     return np.mean(dists)
 
-#=========1=========2=========3=========4=========5=========6=========7=
-
-''' DEPRECATED '''
-def find_max_dist(root):
-    # "initial_depth" is the depth until siblings are reached
-    initial_depth = 0
-    max_dist = 0
-    stack = []
-    stack.append(root)
-    while len(stack) > 0:
-        tmp = stack.pop(len(stack)-1)
-        children = []
-        for item in os.listdir(tmp):
-            if os.path.isdir(os.path.join(tmp,item)):
-                children.append(os.path.join(tmp, item))
-                stack.append(os.path.join(tmp, item))
-        if len(children)<2:
-            continue
-        else:
-            lengths = []
-            for child in children:
-                max_len = 0
-                paths = new_DFS.DFS(child)
-                for path in paths:
-                    folders = path.split("/")
-                    if len(folders)>max_len:
-                        max_len = len(folders)
-                lengths.append(max_len)
-            lengths.sort()
-            max_dist = lengths[0]+lengths[1]
-            break
-    return max_dist
-                    
 #=========1=========2=========3=========4=========5=========6=========7=
 
 def main():
@@ -153,14 +115,6 @@ def main():
     print("t4 - t2", path_dist(t4,t2))
     print("t4 - t1", path_dist(t4,t1))
     print("t4 - t3", path_dist(t4, t3))    
-
-    cluster_dirs = np.load('cluster_directories.npy')
-    for i in range(len(cluster_dirs)):
-        list_of_dirs = []
-        for path, count in cluster_dirs[i].items():
-            list_of_dirs.extend([path]*count)
-        print("cluster",i,"intracluster dist:", intracluster_dist(list_of_dirs))
-        
 
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here

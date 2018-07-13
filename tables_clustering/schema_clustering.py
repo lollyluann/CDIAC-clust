@@ -8,6 +8,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.backends.backend_pdf
 import matplotlib.gridspec as gridspec
 from matplotlib import pyplot as plt
+import calculate_file_distances
 from collections import Counter
 from sklearn import manifold
 import get_cluster_stats
@@ -65,6 +66,13 @@ ext_dict_dir = os.path.abspath(ext_dict_dir)
 print(directory)
 print(out_dir)
 print(ext_dict_dir)
+
+'''
+script_dir = os.path.dirname(os.path.abspath(__file__))
+paths_work_dir = os.path.join(script_dir, "../paths_work/")
+sys.path.append(paths_work_dir)
+import calculate_file_distances
+'''
 
 xls_path = os.path.join(directory, "xls/")
 xlsx_path = os.path.join(directory, "xlsx/")
@@ -303,6 +311,22 @@ def plot_clusters(jacc_matrix, labels, plot_mat_path, overwrite_plot):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
+def tree_dist(path1, path2):
+    return calculate_file_distances.path_dist(path1, path2)
+
+#=========1=========2=========3=========4=========5=========6=========7=
+
+#RETURNS: Silhouette coefficient of clustering. 
+def compute_silhouette(filename_header_pairs, labels):
+    path_list = []
+    for pair in filename_header_pairs:
+        filename = pair[0]
+        path_list.append(filename)
+    paths_array = np.array(path_list)
+    return silhouette.silhouette_score_block(paths_array, labels, metric=tree_dist)
+
+#=========1=========2=========3=========4=========5=========6=========7=
+
 # DOES: generates barcharts which show the distribution of unique
 #       filepaths in a cluster. 
 def generate_barcharts(filename_header_pairs, labels, num_clusters, root_path):
@@ -332,10 +356,10 @@ def generate_barcharts(filename_header_pairs, labels, num_clusters, root_path):
         common_prefix = path_utilities.remove_path_end(root_path)
         # remove the common prefix for display on barchart. The " - 1"
         # is so that we include the leading "/". 
-        decoded_filepath = decoded_filepath[len(common_prefix) - 1:len(decoded_filepath)]
+        decoded_filepath_trunc = decoded_filepath[len(common_prefix) - 1:len(decoded_filepath)]
         #print("filename is: ", decoded_filepath)
         # add it to the appropriate list based on the label
-        list_cluster_lists[labels[i]].append(decoded_filepath)
+        list_cluster_lists[labels[i]].append(decoded_filepath_trunc) 
   
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -425,6 +449,8 @@ def main():
     labels = agglomerative(jacc_matrix, num_clusters, filename_header_pairs, overwrite_plot)
     #plot_clusters(jacc_matrix, labels, plot_mat_path, overwrite_plot)
     generate_barcharts(filename_header_pairs, labels, num_clusters, directory)
+    sil_coeff = compute_silhouette(filename_header_pairs, labels)
+    print("Silhouette coefficient: ", sil_coeff)
 
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here

@@ -344,8 +344,9 @@ def bar_clusters(frame, num_clusters, home_dir):
 
         plt.bar(y_pos, sorted_counts, align='center', alpha=0.5)
         plt.xticks(y_pos, sorted_names, rotation=90)
-        plt.rc('xtick', labelsize=3)
+        plt.rc('xtick')
         plt.ylabel('Number of files')
+        plt.xlabel('Directory')
         plt.title('Directories in Cluster ' + str(i) + "\n" + cluster_stats)
         plt.tight_layout()
         save_name = "barchart_cluster"+str(i)       
@@ -395,10 +396,10 @@ def nearest_shared_parent(filepaths):
 def get_cluster_stats(cluster_directories):
     dir_counts = np.array(list(cluster_directories.values()))
     unique = str(len(cluster_directories)) + " unique directories"
-    avg = "Avg dir frequency:" + str( np.mean(dir_counts))
-    med = "Median dir frequency:" + str( np.median(dir_counts))
-    std = "Std-dev dir frequency:" + str( np.std(dir_counts))
-    nsd = "Nearest shared directory:" + "/".join(nearest_shared_parent(list(cluster_directories.keys())))
+    avg = "Avg dir frequency: " + str( np.mean(dir_counts))
+    med = "Median dir frequency: " + str( np.median(dir_counts))
+    std = "Std-dev dir frequency: " + str( np.std(dir_counts))
+    nsd = "Nearest shared directory: " + "/".join(nearest_shared_parent(list(cluster_directories.keys())))
     return unique+"\n"+avg+"\n"+med+"\n"+std+"\n"+nsd
 
 # MAIN PROGRAM
