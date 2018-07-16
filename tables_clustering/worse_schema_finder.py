@@ -1,3 +1,70 @@
+from tqdm import tqdm
+import path_utilities
+import csv
+import os
+import re
+
+def isfloat(value):
+  try:
+    float(value)
+    return True
+  except ValueError:
+    return False
+
+def standalone_schema_id(path):
+    with open(path, "r") as f:
+        # read csv and get the header as a list
+        reader = csv.reader(f)
+        try:
+            # list of all rows in csv 
+            rows = list(list(rec) for rec in csv.reader(f, delimiter=','))
+  
+            header_list = []
+
+            num_aligned_floats = 1
+            float_loc = float('Inf') 
+            for i in range(len(rows)):
+    
+                # if the row is empty, try the next line
+                if (len(rows[i]) == 0):
+                    continue
+                 
+                # number of nonempty cells
+                num_nonempty = 0
+                for cell in rows[i]:
+                    if not (cell == ""):
+                        num_nonempty = num_nonempty + 1
+                fill_ratio = num_nonempty / len(rows[i])                
+                if (fill_ratio == 0):
+                    continue        
+
+                old_float_loc = float_loc
+                float_loc = float('Inf')
+                
+                row = rows[i]
+                for j in range(len(row) - 1):
+                    # if we have two consecutive float cells
+                    if not re.search('[a-zA-Z]', row[j]) and not re.search('[a-zA-Z]', row[j + 1]):
+                        # save its location in that row
+                        float_loc = j
+
+                # if there exists a float in the current row AND 
+                # in the same place as the last... 
+                if (float_loc != float('Inf') and float_loc == old_float_loc):
+                    num_aligned_floats = num_aligned_floats + 1
+                
+                if (num_aligned_floats == 5):
+                    shift_up = 5
+                    first_cell = rows[i - shift_up][0]
+                    while (re.search('[a-zA-Z]', first_cell) or first_cell == "") and shift_up < i:
+                        shift_up += 1
+                        first_cell = rows[i - shift_up][0]
+                    header_list = rows[i - shift_up]
+                    print("found header")
+                    break
+        except UnicodeDecodeError:
+            decode_probs = decode_probs + 1
+        print(header_list) 
 
 #RETURNS: a dictionary which maps filenames to csvs header lists. 
 def get_better_dict(csv_dir, csv_path_list, fill_threshold, converted_status):
@@ -35,12 +102,10 @@ def get_better_dict(csv_dir, csv_path_list, fill_threshold, converted_status):
             path = os.path.join(csv_dir, path) 
         else:
             # convert to "@home@ljung@pub8@oceans@some_file.csv" form. 
-            filename = str_encode(path)
+            filename = path_utilities.str_encode(path)
 
         # So now in both cases, filename has the "@"s, and path is
         # the location of some copy of the file. 
-
-#=========1=========2=========3=========4=========5=========6=========7=
 
         with open(path, "r") as f:
             # read csv and get the header as a list
@@ -65,9 +130,7 @@ def get_better_dict(csv_dir, csv_path_list, fill_threshold, converted_status):
                             num_nonempty = num_nonempty + 1
                     fill_ratio = num_nonempty / len(rows[i])                
                     if (fill_ratio == 0):
-                        continue
-        
-#=========1=========2=========3=========4=========5=========6=========7=
+                        continue        
 
                     old_float_loc = float_loc
                     float_loc = float('Inf')
@@ -75,7 +138,7 @@ def get_better_dict(csv_dir, csv_path_list, fill_threshold, converted_status):
                     row = rows[i]
                     for j in range(len(row) - 1):
                         # if we have two consecutive float cells
-                        if ((not re.match("^\d+?\.\d+?$", row[j]) is None) and (not re.match("^\d+?\.\d+?$", row[j]) is None)):
+                        if not re.search('[a-zA-Z]', row[j]) and not re.search('[a-zA-Z]', row[j + 1]):
                             # save its location in that row
                             float_loc = j
 
@@ -85,13 +148,14 @@ def get_better_dict(csv_dir, csv_path_list, fill_threshold, converted_status):
                         num_aligned_floats = num_aligned_floats + 1
                     
                     if (num_aligned_floats == 5):
-                        header_list = rows[i - 4]
+                        shift_up = 5
+                        first_cell = rows[i - shift_up][0]
+                        while (re.search('[a-zA-Z]', first_cell) or first_cell == "") and shift_up < i:
+                            shift_up += 1
+                            first_cell = rows[i - shift_up][0]
+                        header_list = rows[i - shift_up]
                         print("found header")
                         break
-                   
-                if (i == len(rows) - 1):
-                    bad_files = bad_files + 1
-                    continue
             except UnicodeDecodeError:
                 decode_probs = decode_probs + 1                    
             # throw a key value pair in the dict, with filename as key
@@ -100,3 +164,12 @@ def get_better_dict(csv_dir, csv_path_list, fill_threshold, converted_status):
     print("Number of UnicodeDecodeErrors: ", decode_probs)
     return header_dict
 
+def main():
+    standalone_schema_id("test.csv")
+
+
+
+
+if __name__ == "__main__":
+    # stuff only to run when not called via 'import' here
+    main() 

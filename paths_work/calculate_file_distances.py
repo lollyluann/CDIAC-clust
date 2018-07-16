@@ -6,7 +6,6 @@ import os
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-
 # ONLY ACCEPTS DIRECTORY PATHS (NOT FILE PATHS)
 # RETURNS: distance between files in specified directories
 def path_dist(path1, path2):
@@ -47,7 +46,8 @@ def has_files(directory):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-''' RETURNS: a list of the folders with files in them in the directory "path" '''
+''' PARAMETER: a root directory
+    RETURNS: a list of the folders with files in them in the root '''
 def DFS(path):
     stack = []
     all_dirs = []
@@ -58,6 +58,7 @@ def DFS(path):
         # if this is a directory and has at least one file in it
         if os.path.isdir(tmp):
             if has_files(tmp)==True:
+                print(tmp)
                 all_dirs.append(tmp)
             # for every item in the "tmp" directory
             for item in os.listdir(tmp):
@@ -67,17 +68,21 @@ def DFS(path):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-# RETURNS: Naive max distance according to the above distance metric. 
+''' RETURNS: Naive max distance according to the above distance metric '''
 def naive_max_dist(root):
     print("Calculating maximum distance between files...")
     max_dist = 0
+    p1 = ""
+    p2 = ""
     all_paths = DFS(root)
     for path_a in tqdm(all_paths):
         for path_b in all_paths:
             dist = path_dist(path_a, path_b) 
             if (max_dist < dist):
                 max_dist = dist
-    return max_dist
+                p1 = path_a
+                p2 = path_b
+    return [max_dist, p1, p2]
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -91,16 +96,22 @@ def get_dir_from_path(path):
             break
     return path[:len(path)-ind+1]
 
-''' PARAMETER: a list of the paths in a cluster
+''' PARAMETER: "cluster_paths": a list of the paths in a cluster
+               "max_dist": the max distance between paths
+               "normalized": 1 to normalize, 0 to not
     RETURNS: the avg distance between the paths '''
-def intracluster_dist(cluster_paths):
+def avg_intracluster_dist(cluster_paths, max_dist, normalized):
     distances = []
     for i in range(len(cluster_paths)-1):
         path1 = cluster_paths[i]
         path2 = cluster_paths[i+1]
         dirOf_path1 = get_dir_from_path(path1)
         dirOf_path2 = get_dir_from_path(path2)
-        distances.append(path_dist(dirOf_path1, dirOf_path2))
+        if normalized=="1":
+            distances.append(path_dist(dirOf_path1, dirOf_path2)/max_dist)
+            #print(path_dist(dirOf_path1, dirOf_path2)/max_dist)
+        else:
+            distances.append(path_dist(dirOf_path1, dirOf_path2)) 
     dists = np.array(distances)
     return np.mean(dists)
 
@@ -143,7 +154,7 @@ def main():
     root_path = sys.argv[1]
     max_dist = naive_max_dist(root_path)
     #max_dist = find_max_dist(root_path)
-    print("The max_dist is: ", max_dist)
+    print("The max_dist is: ", max_dist[0], "\nbetween", max_dist[1], max_dist[2])
     
     t1 = "/home/ljung/CDIAC-clust/paths_work/test1"    
     t4 = "/home/ljung/CDIAC-clust/paths_work/test1/t2/t4"
@@ -159,7 +170,7 @@ def main():
         list_of_dirs = []
         for path, count in cluster_dirs[i].items():
             list_of_dirs.extend([path]*count)
-        print("cluster",i,"intracluster dist:", intracluster_dist(list_of_dirs))
+        print("cluster",i,"intracluster dist:", avg_intracluster_dist(list_of_dirs, max_dist[0], "1"))
         
 
 if __name__ == "__main__":

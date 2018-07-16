@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 import matplotlib.backends.backend_pdf
 import numpy as np
 import pandas as pd
+import silhouette
 from time import time
 from tqdm import tqdm
 from glob import glob
@@ -21,20 +22,20 @@ from mpl_toolkits.mplot3d import Axes3D
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-''' PARAM: a string with a directory
+''' PARAMETER: a string with a directory
     RETURNS: only the last folder name '''
 def get_end_directory(directory):
-    ind = 0
+    i = 0
     ct = 0
     for ch in directory[::-1]:
         if ch=="/":
             ct+=1
             if ct>1:
                 break
-        ind += 1
-    return directory[len(directory)-ind:len(directory)-1].replace("/","")
+        i += 1
+    return directory[len(directory)-i:len(directory)-1].replace("/","")
 
-''' PARAM: a full path
+''' PARAMETER: a full path
     RETURNS: only the filename '''
 def get_fname_from_path(path):    
     filename = ""
@@ -55,7 +56,7 @@ def remove_extension(filename):
     return filename[:length-1]
 
 ''' PARAMETER: a single string
-    RETURNS: the string with all @ relaced with / '''
+    RETURNS: the string with all @ replaced with / '''
 def str_decode(string):
     return string.replace("@","/")
 
@@ -72,7 +73,10 @@ def get_immediate_subdirectories(a_dir):
     RETURNS: a list of filenames and a list of the contents of the files 
     DOES: gets all the filenames and their contents of a directory '''   
 def get_document_contents(directory):
-    ext_paths = np.load("/home/ljung/CDIAC-clust/paths_work/extension_index.npy").item()
+    p = Path(os.getcwd()).parent
+    file_place = os.path.join(p, "/paths_work/")    
+    #ext_paths = np.load("/home/ljung/CDIAC-clust/paths_work/extension_index.npy").item()
+    ext_paths = np.load(file_place).item()
     filenames = []
     data = []
     i = 1
@@ -87,9 +91,9 @@ def get_document_contents(directory):
             #filenames.append(get_fname_from_path(path))
             filenames.append(path)
             # read the contents of the file and remove newlines
-            freader = open(path, "r", errors='backslashreplace')
-            contents = freader.read()
-            freader.close()
+            fread = open(path, "r", errors='backslashreplace')
+            contents = fread.read()
+            fread.close()
             contents = contents.replace("\n","")
             # add the string of the contents of the file to "data"
             data.append(contents)
@@ -101,25 +105,27 @@ def get_document_contents(directory):
         filetype = get_end_directory(folder)
         if filetype in ["pdf", "doc", "docx"]:
             for filename in tqdm(os.listdir(folder)):
-                current_file = os.path.join(folder,filename)
-                if os.path.isfile(current_file):
+                cur_file = os.path.join(folder,filename)
+                if os.path.isfile(cur_file):
                     i = i + 1
                     # add the non-converted filename to "filenames" 
-                    new_name = str_decode(remove_extension(filename))#+"."+filetype
+                    new_name = str_decode(remove_extension(filename))
                     filenames.append(new_name)
                     # read the contents of the file and remove newlines
-                    freader = open(current_file, "r", errors='backslashreplace')
-                    contents = freader.read()#.encode("utf-8").decode('utf-8', 'backslashreplace')
-                    freader.close()
+                    fread = open(cur_file, "r", errors='backslashreplace')
+                    contents = fread.read()
+                    fread.close()
                     contents = contents.replace("\n","")
-                    # add the string of the contents of the file to "data"
+                    # add the string of the file contents to "data"
                     data.append(contents)
     
     print("num total files: ", i)
     print("All directory contents retrieved")
     return filenames, data
 
-''' PARAM: the text of a document
+#=========1=========2=========3=========4=========5=========6=========7=
+
+''' PARAMETER: the text of a document
     RETURN: list of stems
     DOES: splits a document into a list of tokens & stems each token '''
 def tokenize_and_stem(text):
@@ -130,11 +136,13 @@ def tokenize_and_stem(text):
     # filter out tokens without letters (e.g., numbers, punctuation)
     for token in tokens:
         if re.search('[a-zA-Z]', token):
-            filtered_tokens.append(token)
+# ##################################################################################################################33 Filter out tokens of length 1
+            if len(token)>1:
+               filtered_tokens.append(token)
     stems = [stemmer.stem(t) for t in filtered_tokens]
     return stems
 
-''' PARAM: the text of a document
+''' PARAMETER: the text of a document
     RETURN: a list of filtered tokens
     DOES: tokenizes the document only (doesn't stem) '''
 def tokenize_only(text):
@@ -144,12 +152,18 @@ def tokenize_only(text):
     # filter out tokens without letters (e.g., numbers, punctuation)
     for token in tokens:
         if re.search('[a-zA-Z]', token):
-            filtered_tokens.append(token)
+# ##################################################################################################################33 Filter out tokens of length 1
+            if len(token)>1:
+                filtered_tokens.append(token)
     return filtered_tokens
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-def main_function(num_clusters, retokenize, corpusdir):
+''' PARAMETERS: "num_clusters" - the number of clusters to cluster into
+                "retokenize" - 1 if to retokenize, 0 to not
+                "corpusdir" - the directory of converted files
+                "n_words" - number of words/cluster to print out '''
+def main_function(num_clusters, retokenize, corpusdir, n_words):
     # gets the filenames and their contents
     fnames, dataset = get_document_contents(corpusdir)
     #stopwords = nltk.download('stopwords')
@@ -162,11 +176,7 @@ def main_function(num_clusters, retokenize, corpusdir):
     if retokenize == "1": 
         totalvocab_stemmed = []
         totalvocab_tokenized = []
-        count = 1
-        d_length = len(dataset)
-        for i in dataset:
-            print("tokenizing document ", count, " of ", d_length)
-            count = count + 1
+        for i in tqdm(dataset):
             # for each item in the dataset, tokenize/stem
             allwords_stemmed = tokenize_and_stem(i)
             # extend "totalvocab_stemmed" 
@@ -188,6 +198,7 @@ def main_function(num_clusters, retokenize, corpusdir):
                               tokenizer=tokenize_and_stem, ngram_range=(1,3))
 
         #fits the vectorizer to the dataset
+        print("Fitting vectorizer to data...")
         tfidf_matrix = tfidf_vectorizer.fit_transform(dataset) 
         terms = tfidf_vectorizer.get_feature_names()
         np.save("terms.npy", terms)
@@ -198,13 +209,14 @@ def main_function(num_clusters, retokenize, corpusdir):
         #=========1=========2=========3=========4=========5=========6======
 
         # cluster using KMeans on the tfidf matrix
+        print("Clustering using kmeans with k = " + num_clusters + "...")
         km = KMeans(n_clusters=num_clusters)
         km.fit(tfidf_matrix)
         clusters = km.labels_.tolist()
         print("kmeans clustering complete")
 
         # pickle the model, reload the model/reassign the labels as the clusters
-        joblib.dump(km,  'doc_cluster.pkl')
+        joblib.dump(km, 'doc_cluster.pkl')
 
 
     km = joblib.load('doc_cluster.pkl')
@@ -217,14 +229,14 @@ def main_function(num_clusters, retokenize, corpusdir):
 
     # create a dictionary "db" of filenames, contents, and clusters
     db = {'filename': fnames, 'content': dataset, 'cluster': clusters}
-    # convert "db" to a pandas datafram
+    # convert "db" to a pandas dataframe
     frame = pd.DataFrame(db, index=[clusters], columns=['filename','cluster'])
     # print the number of files in each cluster
     print("Number of files in each cluster: ")
     print(frame['cluster'].value_counts())
 
     #=========1=========2=========3=========4=========5=========6=========
-    ''' 
+    
     # open file writer for result output
     # output_path = os.path.join(corpusdir, "results/")
     output_path = "results/"
@@ -239,21 +251,25 @@ def main_function(num_clusters, retokenize, corpusdir):
 
     #sort cluster centers by proximity to centroid
     order_centroids = km.cluster_centers_.argsort()[:, ::-1] 
-
+    
+    all_cluster_words = {}
     # for each cluster
     for i in range(num_clusters):
         fwriter.write("Cluster " + str(i) + " words: ")
         print("Cluster %d words:" % i, end='')
         
+        cluster_words = []
         # print the first "n_words" words in a cluster
-        n_words = 10
         for ind in order_centroids[i, : n_words]:
             print(' %s' % vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0],
                     end=",")
             fwriter.write(vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0].rstrip('\n') + ", ")
+            cluster_words.append(vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0])
         print()
         fwriter.write("\n")
         
+        all_cluster_words.update({i:cluster_words})
+
         # print out the filenames in the cluster
         print("Cluster %d filenames:" % i, end='')
         fwriter.write("Cluster " + str(i) + " filenames: ")
@@ -267,7 +283,7 @@ def main_function(num_clusters, retokenize, corpusdir):
     print("output written to \"doc_clusters.txt\" in \"results\"")
 
     #=========1=========2=========3=========4=========5=========6========
-
+    '''
     # multidimensional scaling to convert distance matrix into 3 dimensions
     mds = MDS(n_components=3, dissimilarity="precomputed", random_state=1)
     pos = mds.fit_transform(dist)  # shape (n_components, n_samples)
@@ -283,7 +299,8 @@ def main_function(num_clusters, retokenize, corpusdir):
     groups = df.groupby('label')
 
     # for each cluster, plot the files in that cluster
-    for name, group in groups:
+    print("Plotting scatterplot of cluster points...")
+    for name, group in tqdm(groups):
         # color = ('#%06X' % random.randint(0,256**3-1))
         color = np.random.rand(3,)
         for t in range(group.shape[0]):
@@ -294,12 +311,12 @@ def main_function(num_clusters, retokenize, corpusdir):
     plt.savefig("3D_document_cluster", dpi=300)
     print("scatter plot written to \"3D_document_cluster.png\"")
     
-    '''
-    return frame
+    '''    
+    return frame, all_cluster_words
 
-''' PARAMETERS: "frame" a dataframe containing which files are in which clusters
-                "num_clusters" the number of clusters
-                "home_dir" the parent directory of the dataset (e.g. /home/ljung/)
+''' PARAMETERS: "frame" - a dataframe containing which files are in which clusters
+                "num_clusters" - the number of clusters
+                "home_dir" - the parent directory of the dataset (e.g. /home/ljung/)
     DOES: plots a pdf with all the bar charts on it
           each bar chart shows which directories the files in a cluster come from '''
 def bar_clusters(frame, num_clusters, home_dir):
@@ -340,8 +357,8 @@ def bar_clusters(frame, num_clusters, home_dir):
             sorted_counts.append(paths_in_cluster[e])
 
         cluster_stats = get_cluster_stats(paths_in_cluster)
-        y_pos = np.arange(len(sorted_names))
 
+        y_pos = np.arange(len(sorted_names))
         plt.bar(y_pos, sorted_counts, align='center', alpha=0.5)
         plt.xticks(y_pos, sorted_names, rotation=90)
         plt.rc('xtick')
@@ -355,9 +372,11 @@ def bar_clusters(frame, num_clusters, home_dir):
         
         pdf.savefig(plt.gcf())
     pdf.close()
+    silhouette.compute_silhouette(cluster_directories, "/home/ljung/pub8/")
     p = Path(os.getcwd())
     p2 = Path(p.parent)
-    os.chdir(os.path.join(p2.parent,"paths_work"))
+    p3 = Path(p2.parent)
+    os.chdir(os.path.join(p3.parent,"paths_work"))
     np.save("cluster_directories.npy",cluster_directories)
 
 
@@ -392,15 +411,15 @@ def nearest_shared_parent(filepaths):
     path1 = path1_folders[:shared_index]
     return path1
 
-''' PARAMETER: a dictionary of directories and their counts from a cluster
+''' PARAMETER: a dictionary of directories and their counts from ONE cluster
     DOES: returns a string of mean, std-dev, and nearest shared parent for that cluster '''
-def get_cluster_stats(cluster_directories):
-    dir_counts = np.array(list(cluster_directories.values()))
-    unique = str(len(cluster_directories)) + " unique directories"
+def get_cluster_stats(one_cluster_directories):
+    dir_counts = np.array(list(one_cluster_directories.values()))
+    unique = str(len(one_cluster_directories)) + " unique directories"
     avg = "Avg dir frequency: " + str( np.mean(dir_counts))
     med = "Median dir frequency: " + str( np.median(dir_counts))
     std = "Std-dev dir frequency: " + str( np.std(dir_counts))
-    nsd = "Nearest shared directory: " + "/".join(nearest_shared_parent(list(cluster_directories.keys())))
+    nsd = "Nearest shared directory: " + "/".join(nearest_shared_parent(list(one_cluster_directories.keys())))
     return unique+"\n"+avg+"\n"+med+"\n"+std+"\n"+nsd
 
 # MAIN PROGRAM
@@ -414,10 +433,10 @@ def main():
     # record initial time that program started
     t0 = time()
     
-    fr = main_function(num_clusters, retokenize, corpusdir)
-    bar_clusters(fr, num_clusters, "/home/ljung/")
-    
-    
+    fr, all_cluster_words = main_function(num_clusters, retokenize, corpusdir, 10)
+    bar_clusters(fr, num_clusters, "/home/ljung/")    
+    print(all_cluster_words)
+
     # print total time taken to run program
     print("time taken: ", time()-t0, " seconds")
 
