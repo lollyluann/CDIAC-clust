@@ -60,8 +60,9 @@ def extension_indexer(root, n):
                 ext_list = ext_locations.get(ext)
                 ext_list.append(fp)
                 ext_locations.update({ext:ext_list})
-   
-    np.save("extension_index.npy", ext_locations)
+  
+    root_name = get_first_dir_from_path(root) 
+    np.save("extension_index_" + root_name + ".npy", ext_locations)
     
     return ext_locations
 
@@ -75,6 +76,16 @@ def str_decode(string):
     
 def get_fname_from_path(path):    
     filename = ""
+    for c in path[::-1]:
+        if c=="/" or c=="@":
+            break
+        filename = c+filename
+    return filename
+
+def get_first_dir_from_path(path):    
+    filename = ""
+    if path[len(path) - 1] == "/" or path[len(path) - 1] == "@":
+        path = path[0:len(path) - 1]
     for c in path[::-1]:
         if c=="/" or c=="@":
             break

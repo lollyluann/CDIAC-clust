@@ -56,7 +56,8 @@ def standalone_schema_id(path):
                 if (num_aligned_floats == 5):
                     shift_up = 5
                     first_cell = rows[i - shift_up][0]
-                    while (re.search('[a-zA-Z]', first_cell) or first_cell == "") and shift_up < i:
+                    while (not re.search('[a-zA-Z]', first_cell) or first_cell == "") and shift_up < i:
+                        print (first_cell)
                         shift_up += 1
                         first_cell = rows[i - shift_up][0]
                     header_list = rows[i - shift_up]
@@ -150,7 +151,7 @@ def get_better_dict(csv_dir, csv_path_list, fill_threshold, converted_status):
                     if (num_aligned_floats == 5):
                         shift_up = 5
                         first_cell = rows[i - shift_up][0]
-                        while (re.search('[a-zA-Z]', first_cell) or first_cell == "") and shift_up < i:
+                        while (not re.search('[a-zA-Z]', first_cell) or first_cell == "") and shift_up < i:
                             shift_up += 1
                             first_cell = rows[i - shift_up][0]
                         header_list = rows[i - shift_up]
@@ -165,11 +166,7 @@ def get_better_dict(csv_dir, csv_path_list, fill_threshold, converted_status):
     return header_dict
 
 def main():
-    standalone_schema_id("test.csv")
-
-
-
-
+    print("nothing here. ")
 if __name__ == "__main__":
     # stuff only to run when not called via 'import' here
     main() 

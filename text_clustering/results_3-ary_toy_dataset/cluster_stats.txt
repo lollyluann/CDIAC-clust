@@ -1,0 +1,1622 @@
+Cluster 0
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/1/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 1
+800 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.042105263157894736
+
+Cluster 2
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/1/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 3
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/1/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 4
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/1/0/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 5
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/1/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 6
+60 files 
+40 unique directories
+Avg dir frequency: 19.95
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.3122498999199199
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.036824892588828505
+
+Cluster 7
+40 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.03684210526315789
+
+Cluster 8
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/0/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 9
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/0/1/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 10
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/0/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 11
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/0/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 12
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/0/0/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 13
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/0/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 14
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/0/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 15
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/2/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 16
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/2/1/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 17
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/2/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 18
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/2/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 19
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/2/0/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 20
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/2/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 21
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/1/2/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 22
+40 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.042105263157894736
+
+Cluster 23
+20 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.042105263157894736
+
+Cluster 24
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/0/1/1/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 25
+20 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.042105263157894736
+
+Cluster 26
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/0/1/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 27
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/0/1/0/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 28
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/0/1/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 29
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/0/1/2/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 30
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/0/1/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 31
+20 files 
+3 unique directories
+Avg dir frequency: 19.333333333333332
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.9428090415820634
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.034482758620689655
+
+Cluster 32
+20 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.03684210526315789
+
+Cluster 33
+40 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.03684210526315789
+
+Cluster 34
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/0/0/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 35
+60 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1
+Silhouette score: -0.039473684210526314
+
+Cluster 36
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/0/0/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 37
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/0/2/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 38
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/0/2/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 39
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/0/2/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 40
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/0/2/0/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 41
+20 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1
+Silhouette score: -0.039473684210526314
+
+Cluster 42
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/0/2/2/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 43
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/0/2/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 44
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/1/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 45
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/1/1/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 46
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/1/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 47
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/1/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 48
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/1/0/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 49
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/1/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 50
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/0/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 51
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/0/1/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 52
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/0/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 53
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/0/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 54
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/0/0/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 55
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/0/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 56
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/0/2/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 57
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/0/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 58
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/2/1/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 59
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/2/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 60
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/2/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 61
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/2/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 62
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/1/2/2/2/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 63
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/1/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 64
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/1/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 65
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/1/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 66
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/1/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 67
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/1/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 68
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/0/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 69
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/0/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 70
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/0/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 71
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/0/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 72
+20 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.042105263157894736
+
+Cluster 73
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/0/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 74
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/2/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 75
+20 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.042105263157894736
+
+Cluster 76
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/2/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 77
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/2/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 78
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/2/0/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 79
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/2/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 80
+20 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.042105263157894736
+
+Cluster 81
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/1/2/2/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 82
+20 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.042105263157894736
+
+Cluster 83
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/1/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 84
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/1/1/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 85
+20 files 
+3 unique directories
+Avg dir frequency: 19.333333333333332
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.9428090415820634
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.03682616056312928
+
+Cluster 86
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/1/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 87
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/1/0/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 88
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/1/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 89
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/1/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 90
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/1/2/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 91
+20 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.042105263157894736
+
+Cluster 92
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/0/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 93
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/0/1/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 94
+20 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.03684210526315789
+
+Cluster 95
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/0/0/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 96
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/0/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 97
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/0/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 98
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/0/2/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 99
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/2/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 100
+20 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0
+Silhouette score: -0.03289473684210526
+
+Cluster 101
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/2/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 102
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/2/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 103
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/2/2/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 104
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/0/2/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 105
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/1/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 106
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/1/1/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 107
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/1/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 108
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/1/2/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 109
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/1/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 110
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/0/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 111
+20 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.042105263157894736
+
+Cluster 112
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/0/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 113
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/0/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 114
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/0/0/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 115
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/0/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 116
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/0/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 117
+20 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset
+Silhouette score: -0.042105263157894736
+
+Cluster 118
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/0/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 119
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/2/1/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 120
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/2/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 121
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/2/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 122
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/2/0/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 123
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/2/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 124
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/2/2/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 125
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/0/2/2/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 126
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/1/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 127
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/1/1/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 128
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/1/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 129
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/1/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 130
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/1/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 131
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/1/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 132
+20 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/0
+Silhouette score: -0.02631578947368421
+
+Cluster 133
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/0/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 134
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/0/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 135
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/0/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 136
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/0/2/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 137
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/2/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 138
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/2/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 139
+20 files 
+2 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 19.0
+Std-dev dir frequency: 1.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2
+Silhouette score: -0.02631578947368421
+
+Cluster 140
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/2/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 141
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/2/2/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 142
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/1/2/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 143
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/1/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 144
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/1/1/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 145
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/1/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 146
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/1/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 147
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/1/0/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 148
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/1/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 149
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/1/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 150
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/0/1/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 151
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/0/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 152
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/0/2/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 153
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/0/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 154
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/2/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 155
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/2/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 156
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/2/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 157
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/2/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 158
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/2/2/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 159
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/0/2/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 160
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/1/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 161
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/1/1/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 162
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/1/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 163
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/1/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 164
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/1/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 165
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/1/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 166
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/0/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 167
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/0/1/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 168
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/0/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 169
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/0/0/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 170
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/0/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 171
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/0/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 172
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/0/2/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 173
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/2/1/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 174
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/2/1/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 175
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/2/0/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 176
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/2/0/0/
+Silhouette score: 0.05555555555555555
+
+Cluster 177
+20 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/2/0/2/
+Silhouette score: 0.05555555555555555
+
+Cluster 178
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/2/2/1/
+Silhouette score: 0.05555555555555555
+
+Cluster 179
+40 files 
+1 unique directories
+Avg dir frequency: 18.0
+Median dir frequency: 18.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ljung/3-ary_toy_dataset/2/2/2/2/0/
+Silhouette score: 0.05555555555555555
+
+
+Total silhouette score: 0.02089507075587852

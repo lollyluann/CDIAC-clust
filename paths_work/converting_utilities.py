@@ -1,5 +1,6 @@
 from tqdm import tqdm
 import new_DFS
+from bs4 import BeautifulSoup
 import sys
 import textract
 import os
@@ -52,7 +53,7 @@ def convert_docx(docx_paths, dest):
             output_dir = os.path.join(dest, "docx")
             if not os.path.isdir(output_dir):
                 os.mkdir(output_dir)
-            transformed_paath = new_DFS.str_encode(path)
+            transformed_path = new_DFS.str_encode(path)
             os.chdir(output_dir)
             if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
                 f = open(transformed_path+".txt", "w")
@@ -62,8 +63,41 @@ def convert_docx(docx_paths, dest):
         except textract.exceptions.ShellError:
             continue
 
-#=========1=========2=========3=========4=========5=========6=========7=
+def convert_html(html_paths, dest):
+    num_htmls = len(html_paths)
+    print(num_htmls, " htmls for conversion")
+    for path in tqdm(html_paths):     
+        with open(path, 'r', errors="backslashreplace") as content_file:
+            contents = content_file.read()
+            soup = BeautifulSoup(contents, 'html.parser')         
+            output_dir = os.path.join(dest, "html")
+            if not os.path.isdir(output_dir):
+                os.mkdir(output_dir)
+            transformed_path = new_DFS.str_encode(path)
+            os.chdir(output_dir)
+            if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
+                f = open(transformed_path+".txt", "w")
+                f.write(soup.get_text())
+                f.close()
 
+def convert_xml(xml_paths, dest):
+    num_xmls = len(xml_paths)
+    print(num_xmls, " xmls for conversion")
+    for path in tqdm(xml_paths):     
+        with open(path, 'r', errors="backslashreplace") as content_file:
+            contents = content_file.read()
+            soup = BeautifulSoup(contents, 'xml')         
+            output_dir = os.path.join(dest, "xml")
+            if not os.path.isdir(output_dir):
+                os.mkdir(output_dir)
+            transformed_path = new_DFS.str_encode(path)
+            os.chdir(output_dir)
+            if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
+                f = open(transformed_path+".txt", "w")
+                f.write(soup.get_text())
+                f.close()
+
+#=========1=========2=========3=========4=========5=========6=========7=
 
 # RETURNS: list of filepaths which are candidates for conversion.
 def get_valid_filenames_tabular(dir_list):
@@ -139,10 +173,13 @@ def main():
     # get a dictionary which maps extension names of the form "csv"
     # to lists of the full paths of files with those extensions in the 
     # dataset.
+    # CREATES "extension_index_<dataset_name>.npy"
+
     ext_locations = new_DFS.extension_indexer(directory, num_top_exts)
 
     # if we have extensions with the following names, performs 
-    # conversion. 
+    # conversion.
+     
     if "pdf" in ext_locations:
         pdf_paths = ext_locations.get("pdf")
         convert_pdfs(pdf_paths, dest)
@@ -152,7 +189,13 @@ def main():
     if "docx" in ext_locations:
         docx_paths = ext_locations.get("docx")
         convert_docx(docx_paths, dest)
-    '''
+    if "html" in ext_locations:
+        html_paths = ext_locations.get("html")
+        convert_html(html_paths, dest)
+    if "xml" in ext_locations:
+        xml_paths = ext_locations.get("xml")
+        convert_xml(xml_paths, dest)
+    
     if "xls" in ext_locations:
         xls_paths = ext_locations.get("xls")
         valid_xls = get_valid_filenames_tabular(xls_paths)
@@ -164,8 +207,9 @@ def main():
     if "tsv" in ext_locations:
         tsv_paths = ext_locations.get("tsv")
         valid_tsv = get_valid_filenames_tabular(tsv_paths)
-        convert_tabular(valid_tsv, csv_dest)
-    '''
+        #convert_tabular(valid_tsv, csv_dest)
+        
+
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here
    main() 

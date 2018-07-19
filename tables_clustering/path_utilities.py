@@ -54,6 +54,18 @@ def remove_path_end(path):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
+def get_last_dir_from_path(path):    
+    filename = ""
+    if path[len(path) - 1] == "/" or path[len(path) - 1] == "@":
+        path = path[0:len(path) - 1]
+    for c in path[::-1]:
+        if c=="/" or c=="@":
+            break
+        filename = c+filename
+    return filename
+
+#=========1=========2=========3=========4=========5=========6=========7=
+
 def main():
     print("This file is just for importing functions, don't run it. ")    
 

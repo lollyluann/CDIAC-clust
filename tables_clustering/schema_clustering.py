@@ -2,7 +2,6 @@ import matplotlib
 matplotlib.use('Agg')
 
 from sklearn.cluster import AgglomerativeClustering
-from worse_schema_finder import get_better_dict
 from sklearn.neighbors import kneighbors_graph
 from plot_dendrogram import plot_dendrogram 
 from mpl_toolkits.mplot3d import Axes3D
@@ -44,7 +43,7 @@ overwrite_plot = sys.argv[5]    # overwrite plot cache.
 # for do
 
 def check_valid_dir(some_dir):
-    if not os.path.isdir(directory):
+    if not os.path.isdir(some_dir):
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -67,13 +66,6 @@ ext_dict_dir = os.path.abspath(ext_dict_dir)
 print(directory)
 print(out_dir)
 print(ext_dict_dir)
-
-'''
-script_dir = os.path.dirname(os.path.abspath(__file__))
-paths_work_dir = os.path.join(script_dir, "../paths_work/")
-sys.path.append(paths_work_dir)
-import calculate_file_distances
-'''
 
 xls_path = os.path.join(directory, "xls/")
 xlsx_path = os.path.join(directory, "xlsx/")
@@ -239,10 +231,13 @@ def dist_mat_generator(header_dict, overwrite_path, overwrite):
         print("This could take a while... ")
         # we generate the distance matrix as a list
         dist_mat_list = []
+        #j = 0
         # iterating over the header array once...
         for header_a in tqdm(schema_matrix):
             #===========================
-            print(header_a)
+            #print(header_a)
+            #print(filename_header_pairs[j][0])
+            #j = j + 1
             #===========================
             # storing distances for a single header
             single_row = []
@@ -275,7 +270,8 @@ def dist_mat_generator(header_dict, overwrite_path, overwrite):
 def agglomerative(jacc_matrix, 
                   num_clusters, 
                   filename_header_pairs, 
-                  overwrite):
+                  overwrite,
+                  write_path):
     clustering = AgglomerativeClustering(n_clusters=num_clusters, 
                                          affinity='precomputed', 
                                          linkage='complete')
@@ -287,7 +283,7 @@ def agglomerative(jacc_matrix,
         plt.figure(figsize=(17,9))
         plot_dendrogram(clustering, labels = clustering.labels_)
         
-        plt.savefig("dendrogram", dpi=300)
+        plt.savefig(write_path + "_dendrogram", dpi=300)
         print("dendrogram written to \"dendrogram.png\"")
     
     return labels
@@ -296,8 +292,9 @@ def agglomerative(jacc_matrix,
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # DOES: plots the schema_clusters for the csv files. 
-def plot_clusters(jacc_matrix, labels, plot_mat_path, overwrite_plot):
-
+def plot_clusters(jacc_matrix, labels, write_path, overwrite_plot):
+ 
+    plot_mat_path = write_path + "_plot.npy"
     if not os.path.isfile(plot_mat_path) or overwrite_plot == "1":
         # multidimensional scaling to convert distance matrix into 3D
         mds = manifold.MDS(n_components=3, n_jobs=4, 
@@ -332,7 +329,7 @@ def plot_clusters(jacc_matrix, labels, plot_mat_path, overwrite_plot):
                        c=color, marker='o')
             ax.set_aspect('auto')
 
-    plt.savefig("3D_schema_cluster", dpi=300)
+    plt.savefig(write_path + "_3D_schema_cluster", dpi=300)
     print("scatter plot written to \"3D_schema_cluster.png\"")
     return
 
@@ -449,8 +446,8 @@ def compute_silhouette(cluster_directories, root_path):
 
 # DOES: generates barcharts which show the distribution of unique
 #       filepaths in a cluster. 
-def generate_barcharts(filename_header_pairs, 
-                       labels, num_clusters, root_path):
+def generate_barcharts(filename_header_pairs, labels, 
+                       num_clusters, root_path, write_path):
     
     # create a dict mapping cluster indices to lists of filepaths
     cluster_filepath_dict = {}
@@ -504,8 +501,10 @@ def generate_barcharts(filename_header_pairs,
     # compute silhouette coefficients for each cluster (sil_list)
     # and for the entire clustering (sil)
     sil, sil_list = compute_silhouette(cluster_directories, root_path)
+    l = 0
     for coeff in sil_list:
-        print(coeff)
+        print("Silhouette score for cluster " + str(l) + ": " + str(coeff))
+        l += 1
     print("total: ", sil)
 
     # just make font a bit smaller
@@ -546,8 +545,9 @@ def generate_barcharts(filename_header_pairs,
         plt.title(fig_title, y=1.08)
         plt.xlabel('Directory')
         plt.ylabel('Quantity of files in directory')
-        plt.tight_layout()
-    pdf = matplotlib.backends.backend_pdf.PdfPages("tabular_stats.pdf")
+        #plt.tight_layout()
+    pdf = matplotlib.backends.backend_pdf.PdfPages(write_path + 
+                                                   "_tabular_stats.pdf")
     for fig in range(1, plt.gcf().number + 1): # opens empty fig
         pdf.savefig( fig )
     pdf.close()
@@ -558,7 +558,7 @@ def generate_barcharts(filename_header_pairs,
 # RETURNS: a list of lists, one for each cluster, which contain
 #          attribute, count pairs.  
 def get_cluster_attributes(filename_header_pairs, 
-                       labels, num_clusters):
+                       labels, num_clusters, write_path):
     
     # list of dicts, keys are unique attributes, values are counts
     # each list corresponds to a cluster
@@ -587,49 +587,55 @@ def get_cluster_attributes(filename_header_pairs,
     
 #=========1=========2=========3=========4=========5=========6=========7=
 
+    # create a list of lists, one for each cluster, containing
+    # 2-tuples where the first element is a unique attribute and the 
+    # second element is an integer representing its frequency in this
+    # cluster
     clust_attr_lists = []
     array_list = []
     max_length = 0
+    # for every attribute dict created above
     for attr_dict in attr_dicts:
+        # the list of tuples for this cluster
         clust_attr_list = []
+        # for each key value pair in this dict
         for attribute, count in attr_dict.items():
+            # add the corresponding tuple to our list
             clust_attr_list.append([attribute,count])
+        # sort the list in ascending order by frequency
         clust_attr_list = sorted(clust_attr_list, key=lambda x: x[1])
+        # find the max length list
         if (max_length < len(clust_attr_list)):
             max_length = len(clust_attr_list)
+        # add each list to our list of lists
         clust_attr_lists.append(clust_attr_list)
+        # convert each list to a dataframe
         attr_df = pd.DataFrame(clust_attr_list)
+        # make it descending order
         sorted_attr_df = attr_df.iloc[::-1]
+        # convert to numpy array
         sorted_array = sorted_attr_df.values 
+        # add to list of numpy arrays
         array_list.append(sorted_array)
 
+    # this block just adds 0s to each array so they all have the same
+    # length, so that we can put them all in a single array called
+    # "concat". 
     new_array_list = []
-    print("max", max_length)
-    print("length", len(array_list))
     for array in array_list:
-        print("iterating")
         diff = max_length - array.shape[0]
         if (diff > 0):
-            print("diff: ",diff)
             arr = np.zeros(shape=(diff, 2))
-            #print(arr)
-            array = np.append(array, arr, axis=0)
-            
-        #print(array.shape)
+            array = np.append(array, arr, axis=0)    
         new_array_list.append(array)
 
+    # create one big array for all clusters
     concat = np.concatenate(new_array_list, axis=1)
+    # take only the 50 most frequent attributes
     concat = concat[0:50]
     concat_df = pd.DataFrame(concat)
-    concat_df.to_csv("top_50_attributes.csv")
-    print(concat_df)
-
-    for attr_count_pair in clust_attr_lists[0]:
-        attr = attr_count_pair[0]
-        count = attr_count_pair[1]
-        #print(attr, count)
-
-    
+    concat_df.to_csv(write_path + "_top_50_attributes.csv")
+    #print(concat_df)
         
     return clust_attr_lists 
 
@@ -639,8 +645,10 @@ def get_cluster_attributes(filename_header_pairs,
 def main():
 
     # MAIN PROGRAM:
+    root_name = path_utilities.get_last_dir_from_path(directory)
     num_clusters = 15
-    ext_dict_file_loc = os.path.join(ext_dict_dir,"extension_index.npy")
+    ext_dict_file_loc = os.path.join(ext_dict_dir,"extension_index_"
+                                     + root_name + ".npy")
     ext_to_paths_dict = np.load(ext_dict_file_loc).item()
     csv_path_list = []
     if "csv" in ext_to_paths_dict:
@@ -653,33 +661,35 @@ def main():
     # we have two dicts, one made up of files which were converted to
     # csv format, and the other made up of files that were in csv
     # format originally. we concatenate both dicts into "header_dict".
-    header_dict_converted = get_better_dict(out_dir, [],  
+    header_dict_converted = get_header_dict(out_dir, [],  
                                             fill_threshold, True)
-    #header_dict_csv = get_better_dict("", csv_path_list,
-    #                                  fill_threshold, True) 
+    #header_dict_csv = get_header_dict("", csv_path_list,
+    #                                  fill_threshold, False) 
     header_dict = dict(header_dict_converted)
     #header_dict.update(header_dict_csv)
 
     # note here that "directory" does NOT have a trailing "/"
-    dist_mat_path = directory
-    plot_mat_path = directory + "_plot.npy"
-    print("We are storing the distance matrix in: ", dist_mat_path)
+    write_path = directory
+    print("We are storing the distance matrix in: ", write_path)
     
     dist_tuple = dist_mat_generator(header_dict, 
-                                        dist_mat_path, overwrite)
+                                        write_path, overwrite)
 
     schema_matrix, jacc_matrix, filename_header_pairs = dist_tuple
     length = jacc_matrix.shape[0]
     
     # cluster, generate labels, plot, and generate a pdf of barcharts
     labels = agglomerative(jacc_matrix, num_clusters, 
-                           filename_header_pairs, overwrite_plot)
-    #plot_clusters(jacc_matrix, labels, plot_mat_path, overwrite_plot)
-    #generate_barcharts(filename_header_pairs, labels, 
-    #                   num_clusters, directory)
+                           filename_header_pairs, 
+                           overwrite_plot, write_path)
+    plot_clusters(jacc_matrix, labels, write_path, overwrite_plot)
+    generate_barcharts(filename_header_pairs, labels, 
+                       num_clusters, directory, write_path)
 
     clust_attr_lists = get_cluster_attributes(filename_header_pairs, 
-                                              labels, num_clusters) 
+                                              labels, 
+                                              num_clusters,
+                                              write_path) 
 
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here

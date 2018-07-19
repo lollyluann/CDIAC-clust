@@ -60,6 +60,16 @@ def remove_extension(filename):
 def str_decode(string):
     return string.replace("@","/")
 
+def get_last_dir_from_path(path):    
+    filename = ""
+    if path[len(path) - 1] == "/" or path[len(path) - 1] == "@":
+        path = path[0:len(path) - 1]
+    for c in path[::-1]:
+        if c=="/" or c=="@":
+            break
+        filename = c+filename
+    return filename
+
 ''' PARAMETER: a directory path
     RETURNS: a list of the immediate children of that directory '''
 def get_immediate_subdirectories(a_dir):
@@ -69,21 +79,24 @@ def get_immediate_subdirectories(a_dir):
             sub_list.append(os.path.join(a_dir, name)+"/")
     return sub_list
 
-''' PARAM: a parent directory containing /pdf/ /doc/ etc
+''' PARAM: "directory" - a parent directory containing /pdf/ /doc/ etc
+           "dataset_dir" - a directory leading to the dataset
     RETURNS: a list of filenames and a list of the contents of the files 
     DOES: gets all the filenames and their contents of a directory '''   
-def get_document_contents(directory):
+def get_document_contents(directory, dataset_dir):
     p = Path(os.getcwd()).parent
-    file_place = os.path.join(p, "/paths_work/")    
-    #ext_paths = np.load("/home/ljung/CDIAC-clust/paths_work/extension_index.npy").item()
-    ext_paths = np.load(file_place).item()
+    file_place = os.path.join(p, "paths_work/")    
+    root_name = get_last_dir_from_path(dataset_dir)
+    ext_dict_file_loc = os.path.join(file_place,"extension_index_" + root_name + ".npy")
+    ext_paths = np.load(ext_dict_file_loc).item()
+
     filenames = []
     data = []
     i = 1
-    
+        
     # a list of the paths of the txt files still in pub8 
     txt_paths = ext_paths.get("txt")
-    print("Getting .txt contents")
+    print("Getting .txt contents from " + dataset_dir)
     for path in tqdm(txt_paths):
         if os.path.isfile(path):
             i = i+1
@@ -101,9 +114,9 @@ def get_document_contents(directory):
     # for every file in the directory of converted files
     conv_folders = get_immediate_subdirectories(directory)
     for folder in conv_folders:
-        print("Getting ."+folder+" contents")
         filetype = get_end_directory(folder)
-        if filetype in ["pdf", "doc", "docx"]:
+        if filetype in ["pdf", "doc", "docx"]: #, "xml", "html"]:
+            print("Getting ."+folder+" contents")
             for filename in tqdm(os.listdir(folder)):
                 cur_file = os.path.join(folder,filename)
                 if os.path.isfile(cur_file):
@@ -136,7 +149,6 @@ def tokenize_and_stem(text):
     # filter out tokens without letters (e.g., numbers, punctuation)
     for token in tokens:
         if re.search('[a-zA-Z]', token):
-# ##################################################################################################################33 Filter out tokens of length 1
             if len(token)>1:
                filtered_tokens.append(token)
     stems = [stemmer.stem(t) for t in filtered_tokens]
@@ -152,7 +164,6 @@ def tokenize_only(text):
     # filter out tokens without letters (e.g., numbers, punctuation)
     for token in tokens:
         if re.search('[a-zA-Z]', token):
-# ##################################################################################################################33 Filter out tokens of length 1
             if len(token)>1:
                 filtered_tokens.append(token)
     return filtered_tokens
@@ -162,18 +173,26 @@ def tokenize_only(text):
 ''' PARAMETERS: "num_clusters" - the number of clusters to cluster into
                 "retokenize" - 1 if to retokenize, 0 to not
                 "corpusdir" - the directory of converted files
+                "dataset_dir" - directory of original dataset
                 "n_words" - number of words/cluster to print out '''
-def main_function(num_clusters, retokenize, corpusdir, n_words):
+def main_function(num_clusters, retokenize, corpusdir, dataset_dir, n_words):
     # gets the filenames and their contents
-    fnames, dataset = get_document_contents(corpusdir)
+    # "fnames" is a list of the original location of every file in the
+    # source dataset
+    # "dataset" is a list of strings. Each string is every word in the 
+    # document separated by spaces. 
+    fnames, dataset = get_document_contents(corpusdir, dataset_dir)
     #stopwords = nltk.download('stopwords')
 
     #nltk.download('punkt')
     stemmer = SnowballStemmer("english")
 
+    root_name = get_last_dir_from_path(dataset_dir)
+    
     #=========1=========2=========3=========4=========5=========6=======
 
     if retokenize == "1": 
+        print("Tokenizing", len(dataset), "documents...")
         totalvocab_stemmed = []
         totalvocab_tokenized = []
         for i in tqdm(dataset):
@@ -189,57 +208,70 @@ def main_function(num_clusters, retokenize, corpusdir, n_words):
         # create vocab_frame with "totalvocab_stemmed" or "totalvocab_tokenized"
         vocab_frame = pd.DataFrame({'words': totalvocab_tokenized}, 
                     index = totalvocab_stemmed)
-        vocab_frame.to_pickle("vocab_frame.pkl")
+        vocab_frame.to_pickle("vocab_frame_" + root_name + ".pkl")
         print('there are ' + str(vocab_frame.shape[0]) + ' items in vocab_frame')
 
-        #define vectorizer parameters
-        tfidf_vectorizer = TfidfVectorizer(max_df=0.8, max_features=200000,
-                              min_df=0.2, stop_words='english', use_idf=True, 
+        #define vectorizer parameters #############0.8############0.2#############0.68##0.12###########################################################################################
+        tfidf_vectorizer = TfidfVectorizer(max_df=1.0, max_features=200000,
+                              min_df=1, stop_words='english', use_idf=True, 
                               tokenizer=tokenize_and_stem, ngram_range=(1,3))
 
         #fits the vectorizer to the dataset
         print("Fitting vectorizer to data...")
         tfidf_matrix = tfidf_vectorizer.fit_transform(dataset) 
         terms = tfidf_vectorizer.get_feature_names()
-        np.save("terms.npy", terms)
+        np.save("terms_" + root_name + ".npy", terms)
         dist = 1 - cosine_similarity(tfidf_matrix)
-        np.save("distance_matrix.npy", dist)
-        print("vectorizer fitted to data")
-
+        np.save("distance_matrix_" + root_name + ".npy", dist)
+        print("Vectorizer fitted to data")
+       
         #=========1=========2=========3=========4=========5=========6======
 
         # cluster using KMeans on the tfidf matrix
-        print("Clustering using kmeans with k = " + num_clusters + "...")
+        print("Clustering using kmeans with k = " + str(num_clusters) + "...")
         km = KMeans(n_clusters=num_clusters)
         km.fit(tfidf_matrix)
         clusters = km.labels_.tolist()
-        print("kmeans clustering complete")
+        print("Kmeans clustering complete")
 
         # pickle the model, reload the model/reassign the labels as the clusters
-        joblib.dump(km, 'doc_cluster.pkl')
+        joblib.dump(km, 'doc_cluster_' + root_name + '.pkl')
 
 
-    km = joblib.load('doc_cluster.pkl')
-    vocab_frame = pd.read_pickle("vocab_frame.pkl")
-    terms = np.load("terms.npy")
-    dist = np.load("distance_matrix.npy")
+    km = joblib.load('doc_cluster_' + root_name + '.pkl')
+    vocab_frame = pd.read_pickle("vocab_frame_" + root_name + ".pkl")
+    terms = np.load("terms_" + root_name + ".npy")
+    dist = np.load("distance_matrix_" + root_name + ".npy")
     print("Loaded in existing cluster profile...\n")
 
     clusters = km.labels_.tolist()
+    # get the actual number of clusters in the dataframe, in case some
+    # are omitted for some reason
+    cluster_list = list(set(clusters))    
+    true_num_clusters = len(cluster_list)
+    print("number of distinct clusters: ", true_num_clusters)
+    print("length of fnames: ", len(fnames))
+    print("length of dataset: ", len(dataset))
+    print("clusters: ")
+    print(clusters)
+    distinct_cluster_labels = []
+    for label in clusters:
+        if label not in distinct_cluster_labels:
+            distinct_cluster_labels.append(label)
+    
 
     # create a dictionary "db" of filenames, contents, and clusters
     db = {'filename': fnames, 'content': dataset, 'cluster': clusters}
     # convert "db" to a pandas dataframe
     frame = pd.DataFrame(db, index=[clusters], columns=['filename','cluster'])
     # print the number of files in each cluster
-    print("Number of files in each cluster: ")
-    print(frame['cluster'].value_counts())
+    #print("Number of files in each cluster: ")
+    #print(frame['cluster'].value_counts())
 
     #=========1=========2=========3=========4=========5=========6=========
-    
+   
     # open file writer for result output
-    # output_path = os.path.join(corpusdir, "results/")
-    output_path = "results/"
+    output_path = "results_" + root_name + "/"
     if not os.path.isdir(output_path):
         os.mkdir(output_path)
     os.chdir(output_path)
@@ -252,35 +284,49 @@ def main_function(num_clusters, retokenize, corpusdir, n_words):
     #sort cluster centers by proximity to centroid
     order_centroids = km.cluster_centers_.argsort()[:, ::-1] 
     
+    #print("Printing the index. ")
+    #print(frame.index)
+    #print(vocab_frame.to_string())   
+    print("true number of clusters: ", true_num_clusters)
+
+
     all_cluster_words = {}
     # for each cluster
-    for i in range(num_clusters):
+    for i in tqdm(distinct_cluster_labels):
+        # we catch key errors because some of the clusters may 
+        # not exist. 
         fwriter.write("Cluster " + str(i) + " words: ")
         print("Cluster %d words:" % i, end='')
         
         cluster_words = []
         # print the first "n_words" words in a cluster
+        # NO PRINT FOR NOW REMOVE
+        ''' 
         for ind in order_centroids[i, : n_words]:
             print(' %s' % vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0],
                     end=",")
-            fwriter.write(vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0].rstrip('\n') + ", ")
+            #fwriter.write(vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0].rstrip('\n') + ", ")
             cluster_words.append(vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0])
         print()
-        fwriter.write("\n")
-        
+        #fwriter.write("\n")
+          
+
         all_cluster_words.update({i:cluster_words})
 
+        # NO PRINT FOR NOW REMOVE
+        
         # print out the filenames in the cluster
         print("Cluster %d filenames:" % i, end='')
         fwriter.write("Cluster " + str(i) + " filenames: ")
-        for filename in frame.ix[i]['filename'].values.tolist():
+        for filename in frame.loc[i]['filename'].values.tolist():
             print(' %s,' % filename, end='')
             fwriter.write(filename.rstrip('\n') + ", ")
         print("\n")
         fwriter.write("\n\n")
+        '''
 
     fwriter.close()
-    print("output written to \"doc_clusters.txt\" in \"results\"")
+    print("output written to \"doc_clusters.txt\" in \"results_" + root_name + "\"")
 
     #=========1=========2=========3=========4=========5=========6========
     '''
@@ -310,29 +356,27 @@ def main_function(num_clusters, retokenize, corpusdir, n_words):
 
     plt.savefig("3D_document_cluster", dpi=300)
     print("scatter plot written to \"3D_document_cluster.png\"")
-    
-    '''    
-    return frame, all_cluster_words
+    '''       
+    return frame, all_cluster_words, distinct_cluster_labels
 
 ''' PARAMETERS: "frame" - a dataframe containing which files are in which clusters
                 "num_clusters" - the number of clusters
                 "home_dir" - the parent directory of the dataset (e.g. /home/ljung/)
+                "dataset_dir" - the directory of the dataset (e.g. /home/ljung/pub8/)
     DOES: plots a pdf with all the bar charts on it
           each bar chart shows which directories the files in a cluster come from '''
-def bar_clusters(frame, num_clusters, home_dir):
+def bar_clusters(frame, distinct_cluster_labels, home_dir, dataset_dir):
     plt.figure("bar")
   
-    output_path = "txt_cluster_bars/"
-    if not os.path.isdir(output_path):
-        os.mkdir(output_path)
-    os.chdir(output_path)
     matplotlib.rcParams.update({'font.size': 4})
+    root_name = get_last_dir_from_path(dataset_dir)
     
     print("\nGenerating barcharts...")    
     pdf = matplotlib.backends.backend_pdf.PdfPages("text_barcharts.pdf")
     cluster_directories = []
     # for each cluster, generate a bar chart 
-    for i in tqdm(range(num_clusters)):
+    for i in tqdm(distinct_cluster_labels):
+        # We allow for the case where some clusters are missing 
         plt.clf()
         paths_in_cluster = {}
         # get the files associated with the current cluster
@@ -367,18 +411,32 @@ def bar_clusters(frame, num_clusters, home_dir):
         plt.title('Directories in Cluster ' + str(i) + "\n" + cluster_stats)
         plt.tight_layout()
         plt.subplots_adjust(bottom=0.38, top=0.87)
-        save_name = "barchart_cluster"+str(i)       
-        # plt.savefig(save_name, dpi=200)
         
         pdf.savefig(plt.gcf())
     pdf.close()
-    silhouette.compute_silhouette(cluster_directories, "/home/ljung/pub8/")
     p = Path(os.getcwd())
     p2 = Path(p.parent)
-    p3 = Path(p2.parent)
-    os.chdir(os.path.join(p3.parent,"paths_work"))
-    np.save("cluster_directories.npy",cluster_directories)
+    os.chdir(os.path.join(p2.parent,"paths_work"))
+    cluster_dir_saved_path = os.path.join(p2.parent, "paths_work/", "cluster_directories_" + root_name + ".npy")
+    np.save("cluster_directories_" + root_name + ".npy",cluster_directories)
+    return cluster_dir_saved_path
 
+def print_cluster_stats(top_words, frame, dataset_dir, clust_dir_location):
+    root_name = get_last_dir_from_path(dataset_dir)
+    cluster_directories = np.load(clust_dir_location)
+    p = Path(os.getcwd()).parent
+    p2 = os.path.join(p, "text_clustering/", "results_" + root_name + "/")
+    os.chdir(p2)
+    fr = open("cluster_stats.txt", "w")
+    total_silhouette, scores = silhouette.compute_silhouette(cluster_directories, "/home/ljung/pub8/")
+    num_files_per_cluster = frame['cluster'].value_counts().sort_index().tolist()
+    for clust_num in range(len(cluster_directories)):
+        c_stats = "Cluster " + str(clust_num) + "\n" + str(num_files_per_cluster[clust_num]) + " files \n"
+        c_stats = c_stats + get_cluster_stats(cluster_directories[clust_num])
+        c_stats = c_stats + "\nSilhouette score: " + str(scores[clust_num]) #+ "\nTop 10 words: " + ", ".join(top_words.get(clust_num))
+        fr.write(c_stats + "\n\n")
+    fr.write("\nTotal silhouette score: " + str(total_silhouette))
+    fr.close()
 
 ''' PARAMETER: a full path
     RETURNS: the path without the filename '''
@@ -429,14 +487,13 @@ def main():
     retokenize = sys.argv[2]
     # the directory containing the files not in pub8 you want to cluster
     corpusdir = sys.argv[3] #eg. /home/ljung/converted/
+    dataset_dir = sys.argv[4]
    
     # record initial time that program started
     t0 = time()
-    
-    fr, all_cluster_words = main_function(num_clusters, retokenize, corpusdir, 10)
-    bar_clusters(fr, num_clusters, "/home/ljung/")    
-    print(all_cluster_words)
-
+    fr, all_cluster_words, distinct_cluster_labels = main_function(num_clusters, retokenize, corpusdir, dataset_dir, 10)
+    location_cluster_dir = bar_clusters(fr, distinct_cluster_labels, "/home/ljung/", dataset_dir)    
+    print_cluster_stats(all_cluster_words, fr, dataset_dir, location_cluster_dir)
     # print total time taken to run program
     print("time taken: ", time()-t0, " seconds")
 

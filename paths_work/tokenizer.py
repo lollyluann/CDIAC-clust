@@ -137,17 +137,29 @@ def count_and_sort_exts(extensions, num_slices):
     # a dict mapping tokens to the count of how many times they appear
     ext_count_dict = {}
     # for each extension
-    for ext in extensions:      
-        if ext[:2]!="._" and ext[-1]!="~" and ext[0]!="_":
-            # if the extension is already in our dict
-            if ext in ext_count_dict.keys():
-                # grab the old count
-                old_count = ext_count_dict.get(ext)
-                # increment and update the count in the dict              
-                ext_count_dict.update({ext:old_count+1})
-            else:
-                # otherwise, add a key,value pair with a count of 1
-                ext_count_dict.update({ext:1})
+    for ext in extensions:
+        try:
+            if ext[2]!="._" and ext[-1]!="~" and ext[0]!="_":
+                # if the extension is already in our dict
+                if ext in ext_count_dict.keys():
+                    # grab the old count
+                    old_count = ext_count_dict.get(ext)
+                    # increment and update the count in the dict              
+                    ext_count_dict.update({ext:old_count+1})
+                else:
+                    # otherwise, add a key,value pair with a count of 1
+                    ext_count_dict.update({ext:1})
+        except IndexError:
+            if ext.isalnum(): 
+                # if the extension is already in our dict
+                if ext in ext_count_dict.keys():
+                    # grab the old count
+                    old_count = ext_count_dict.get(ext)
+                    # increment and update the count in the dict              
+                    ext_count_dict.update({ext:old_count+1})
+                else:
+                    # otherwise, add a key,value pair with a count of 1
+                    ext_count_dict.update({ext:1})
     sorted_extensions = []
     sorted_counts = []
     # for each extension in the dict, iterating from largest to smallest count 
@@ -159,6 +171,8 @@ def count_and_sort_exts(extensions, num_slices):
         print(ext, ext_count_dict[ext])
 
     f = open("top_exts.txt",'w')
+    if (len(sorted_extensions) < num_slices):
+        num_slices = len(sorted_extensions)
     for i in range(num_slices):
         f.write(sorted_extensions[i] + "\n")
     f.close()

@@ -91,7 +91,4 @@ def compute_silhouette(cluster_directories, root):
         total_num_files = 1
     total_silhouette = total_silhouette_sum / total_num_files
   
-    for score in silhouette_list: 
-        print(score)
-    print("total", total_silhouette) 
     return total_silhouette, silhouette_list

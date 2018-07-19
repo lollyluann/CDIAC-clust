@@ -1,15 +1,1 @@
-csv
-pdf
 txt
-xml
-xls
-readme
-jpg
-zip
-doc
-png
-gz
-dat
-ds_store
-xlsx
-html
