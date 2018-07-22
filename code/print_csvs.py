@@ -11,10 +11,10 @@ import os
 
 # ARGUMENTS
 # source directory
-directory = sys.argv[1]
+dataset_path = sys.argv[1]
 
 def check_valid_dir(some_dir):
-    if not os.path.isdir(directory):
+    if not os.path.isdir(dataset_path):
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -26,13 +26,13 @@ def check_valid_dir(some_dir):
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         exit()
 
-check_valid_dir(directory)
+check_valid_dir(dataset_path)
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
 #DOES: prints all csv files in "csv_dir" to a single text document
 # called "all_csvs_in_one_file.txt". 
-def print_files(csv_dir, fill_threshold):
+def print_files(csv_dir):
     # get a list of all files in the directory
     dir_list = os.listdir(csv_dir)
     # number of files with no valid header
@@ -62,13 +62,9 @@ def print_files(csv_dir, fill_threshold):
     text_file.close()
     return 
 
-
-
-
 def main():
     # MAIN PROGRAM: 
-    fill_threshold = 0.2
-    print_files(directory, fill_threshold)
+    print_files(dataset_path)
 
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here

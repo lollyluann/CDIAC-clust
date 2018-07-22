@@ -10,7 +10,6 @@ def chunk_reader(fobj, chunk_size=1024):
             return
         yield chunk
 
-
 def check_for_duplicates(paths, hash=hashlib.sha1):
     num_hidden_dupl = 0
     num_dupl = 0

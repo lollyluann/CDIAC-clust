@@ -1,12 +1,12 @@
 from tqdm import tqdm
 import sys
 import os
+import path_utilities
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-
-# ONLY ACCEPTS DIRECTORY PATHS (NOT FILE PATHS)
-# RETURNS: distance between files in specified directories
+''' PARAMETER: two DIRECTORY paths (not file paths)
+    RETURNS: distance between the files in the specified directories '''
 def path_dist(path1, path2):
     path1_folders = path1.split("/")
     path2_folders = path2.split("/")
@@ -41,7 +41,8 @@ def path_dist(path1, path2):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-# DOES: checks if the directory has any FILES (not subfolders). 
+''' PARAMETER: a path to a directory
+    DOES: checks if the directory alone (not children) has any FILES '''
 def has_files(directory):
     for item in os.listdir(directory):
         if os.path.isfile(os.path.join(directory, item)):
@@ -50,7 +51,8 @@ def has_files(directory):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-''' RETURNS: a list of the folders with files in them in the directory "path" '''
+''' PARAMETER: a path to a directory
+    RETURNS: a list of the folders with files in them in "path" '''
 def DFS(path):
     stack = []
     all_dirs = []
@@ -70,7 +72,8 @@ def DFS(path):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-# RETURNS: Naive max distance according to the above distance metric. 
+''' PARAMETER: a directory path
+    RETURNS: Naive max distance according to above distance metric. '''
 def naive_max_dist(root):
     max_dist = 0
     all_paths = DFS(root)
@@ -83,23 +86,16 @@ def naive_max_dist(root):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-''' PARAMETER: a full path
-    RETURNS: the path without the filename '''
-def get_dir_from_path(path):   
-    ind = 0
-    for c in path[::-1]:
-        ind = ind+1
-        if c=="/" or c=="@":
-            break
-    return path[:len(path)-ind+1]
-
+''' DEPRECATED
+    PARAMETER: all the paths in a cluster
+    RETURNS: the average intracluster distance '''
 def intracluster_dist(cluster_paths):
     distances = []
     for i in range(len(cluster_paths)-1):
         path1 = cluster_paths[i]
         path2 = cluster_paths[i+1]
-        dirOf_path1 = get_dir_from_path(path1)
-        dirOf_path2 = get_dir_from_path(path2)
+        dirOf_path1 = path_utilities.remove_path_end(path1)
+        dirOf_path2 = path_utilities.remove_path_end(path2)
         distances.append(path_dist(dirOf_path1, dirOf_path2))
     dists = np.array(distances)
     return np.mean(dists)
@@ -109,10 +105,7 @@ def intracluster_dist(cluster_paths):
 def main():
     root_path = sys.argv[1]
     max_dist = naive_max_dist(root_path)
-    #max_dist = find_max_dist(root_path)
     print("The max_dist is: ", max_dist)
-    dist1 = path_dist("/pub8/oceans/PACIFICA/MP_5_6_9_Pacific/", "/pub8/oceans/VOS_Benguela_Stream/2009/")
-    
 
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here

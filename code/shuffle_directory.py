@@ -1,6 +1,6 @@
 from calculate_file_distances import get_dir_from_path
-import DFS
 import numpy as np
+import DFS
 import sys
 import os
 
@@ -9,16 +9,16 @@ import os
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # ARGUMENTS
-root_path = sys.argv[1]
+dataset_path = sys.argv[1]
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
 #FUNCTIONS
 # DOES: randomly shuffles the location of the files in 
-#       "root_path". 
-def shuffle(root_path):
+#       "dataset_path". 
+def shuffle(dataset_path):
     if (confirm(prompt="Warning, this will scramble the directory "
-                + "structure of all files and folders in " + root_path
+                + "structure of all files and folders in " + dataset_path
                 + ". Are you sure you want to do this? ")):
         print("Ok.")
     else: exit()    
@@ -29,8 +29,8 @@ def shuffle(root_path):
         print("Ok.")
     else: exit()
     # get a list of the paths to every file in the dataset
-    # rooted at "root_path"
-    filepaths = DFS.DFS(root_path)
+    # rooted at "dataset_path"
+    filepaths = DFS.DFS(dataset_path)
     num_files = len(filepaths)
     # list of the parent directories of every file in 
     # "filepaths". 
@@ -101,7 +101,7 @@ def confirm(prompt=None, resp=False):
 #MAIN FUNCTION
 def main():
     print("Just the main function. ")
-    shuffle(root_path)
+    shuffle(dataset_path)
   
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here

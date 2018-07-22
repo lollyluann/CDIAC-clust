@@ -1,7 +1,6 @@
 import numpy as np
 import os
 
-
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # ARGUMENTS: a list of all the paths
@@ -60,7 +59,6 @@ def get_cluster_stats(cluster_directories):
         # individual directories in the path, so "/".join concatenates
         # them with "/"s. 
         closest_com_ancest = "/".join(closest_common_ancestor(list(cluster_directories[i].keys())))
-        closest_com_ancest += "/" 
         # print("closest common ancestor directory:", closest_com_ancest)
         single_cluster_stats.append(len(cluster_directories[i]))
         single_cluster_stats.append(np.mean(dir_counts))
@@ -79,12 +77,4 @@ def main():
 if __name__ == "__main__":
     # stuff only to run when not called via 'import' here
     main() 
-
-
-
-
-
-
-
-
 

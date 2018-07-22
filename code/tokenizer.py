@@ -2,34 +2,13 @@ import matplotlib
 matplotlib.use('Agg')
 
 from matplotlib import pyplot as plt
+from unipath import Path
+import path_utilities
 import pylab as pl
 import numpy as np
 import DFS
 import sys
 import os
-
-''' PARAMETER: a single filename. 
-    RETURNS: the file extension from that filename. '''
-def get_single_extension(filename):    
-    extension = ""
-    length = len(filename)
-    for ch in filename[::-1]:
-        if ch==".":
-            break
-        # "extension" contains just the extension from a filename
-        extension = ch + extension
-        length = length - 1 
-    return extension.lower()
-
-''' PARAMETER: a single filename. 
-    RETURNS: the filename without its extension '''
-def remove_extension(filename):    
-    length = len(filename)
-    for ch in filename[::-1]:
-        if ch==".":
-            break
-        length = length - 1 
-    return filename[:length-1]
 
 ''' PARAMETER: a list of all filenames with extensions
     RETURNS: a list of filenames without the extensions '''
@@ -75,7 +54,7 @@ def generate_tokens(filename):
 ''' PARAMETER: a list of filenames
     DOES: sorts a dictionary with the counts of each token
     RETURNS: a list of sorted tokens and a list of sorted counts '''
-def count_and_sort_tokens(filenames):
+def count_and_sort_tokens(filenames, write_path):
     # a dict mapping tokens to the count of how many times they appear
     token_count_dict = {}
     # for each filename
@@ -107,7 +86,7 @@ def count_and_sort_tokens(filenames):
     bins = np.logspace(0, 4, 100)
     widths = (bins[1:] - bins[:-1])
     #print(bins)
-    #print(widths)
+    #print(widths
 
     # Calculate histogram
     hist = np.histogram(sorted_counts, bins=bins)
@@ -124,7 +103,7 @@ def count_and_sort_tokens(filenames):
     plt.xlabel("# of files a word appears in")
     plt.ylabel("Word count")
 
-    plt.savefig("token_document_frequency_histogram",dpi=500)
+    plt.savefig(os.path.join(write_path, "token_document_frequency_histogram"),dpi=500)
    
     return sorted_tokens, sorted_counts
 
@@ -133,7 +112,11 @@ def count_and_sort_tokens(filenames):
     DOES: sorts a dictionary with the counts of each extension, 
           writes the top "num_slices" extensions to a file
     RETURNS: a list of sorted tokens and a list of sorted counts '''
-def count_and_sort_exts(extensions, num_slices):
+def count_and_sort_exts(extensions, num_slices, write_path, dataset_path):
+    
+    # the name of the top-level directory of the dataset
+    dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
+
     # a dict mapping tokens to the count of how many times they appear
     ext_count_dict = {}
     # for each extension
@@ -168,9 +151,9 @@ def count_and_sort_exts(extensions, num_slices):
         sorted_extensions.append(ext)
         # add the corresponding count to a list of counts
         sorted_counts.append(ext_count_dict[ext])    
-        print(ext, ext_count_dict[ext])
+        print(ext, ext_count_dict[ext]) 
 
-    f = open("top_exts.txt",'w')
+    f = open(os.path.join(write_path, "top_exts_" + dataset_name + ".txt" ),'w')
     if (len(sorted_extensions) < num_slices):
         num_slices = len(sorted_extensions)
     for i in range(num_slices):
@@ -183,11 +166,18 @@ def count_and_sort_exts(extensions, num_slices):
 
 ''' PARAMETERS: a list of extensions, number of pie chart slices, output path
     DOES: creates a pie chart '''
-def plot_extension_pie(extensions, num_slices, output_path):
-    os.chdir(output_path)
-    sorted_exts, sorted_counts = count_and_sort_exts(extensions, num_slices)
+def plot_extension_pie(extensions, num_slices, 
+                       write_path, dataset_path):
+
+    sorted_tuple = count_and_sort_exts(extensions, num_slices,
+                                       write_path, dataset_path)
+    sorted_exts, sorted_counts = sorted_tuple
+    print("length of sorted_exts: ",len(sorted_exts))
+    dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
     labels = []
     sizes = []
+    if (len(sorted_exts) < num_slices):
+        num_slices = len(sorted_exts)
     for x in range(num_slices):
         labels.append(sorted_exts[x])
         sizes.append(sorted_counts[x])
@@ -195,39 +185,52 @@ def plot_extension_pie(extensions, num_slices, output_path):
     plt.clf()
     plt.pie(sizes,labels=labels)
     plt.axis('equal')
-    plt.title(str(num_slices) + " Most Common Extensions in CDIAC")
-    plt.savefig("top_exts_pie",dpi=300)
+    plt.title(str(num_slices) + " Most Common Extensions in ")
+    pie_path = os.path.join(write_path, "top_exts_pie_" + dataset_name
+                            + ".png")
+    plt.savefig(pie_path,dpi=300)
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-# MAIN FUNCTION
-def main():
-    root_path = sys.argv[1]
-    output_path = sys.argv[2]
-    allpaths = DFS.DFS(root_path)
+
+def plot_extensions(dataset_path, num_extensions):
+    
+    allpaths = DFS.DFS(dataset_path) 
+    p = Path(os.getcwd()).parent
+    dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
+    write_path = os.path.join(p, "outputs/", dataset_name + "--output/")
+    if not os.path.isdir(write_path):
+        os.mkdir(write_path)
 
     # a list of all the file names (without the paths)
     filenames = []
     for path in allpaths:
-        filenames.append(DFS.get_fname_from_path(path))
-    filenames_no_ext, exts = remove_all_extensions(filenames)
+        filenames.append(path_utilities.get_fname_from_path(path))
+    filenames_no_ext, exts = remove_all_extensions(filenames) 
+    plot_extension_pie(exts, num_extensions, write_path, dataset_path)
+
     '''
-    os.chdir("/home/ljung/luanns_room/")
-    f = open("filenames.txt", "w")
+    filenames_path = os.path.join(write_path, "filenames_" 
+                                  + dataset_name + ".txt")
+    f = open(os.path.join(filenames_path, "w")
     for x in filenames_no_ext:
         f.write(x+ "\n")
         #print(generate_tokens(x))
     f.close()
-
     sorted_tokens, sorted_counts = count_and_sort_tokens(filenames_no_ext)
-
-    token_file = open("variable_length_tokens.txt", "w")
+    tokens_path = os.path.join(write_path, "tokens_" + dataset_name
+                               + ".txt")
+    token_file = open(tokens_path, "w")
     for token in sorted_tokens:
         token_file.write(token + "\n")
     token_file.close()
-'''
-    plot_extension_pie(exts,15, output_path)
+    '''
 
+# MAIN FUNCTION
+def main():
+    dataset_path = sys.argv[1]
+    num_extensions = sys.argv[2]
+    plot_extensions(dataset_path, num_extensions)    
 
 if __name__ == "__main__":
     main()

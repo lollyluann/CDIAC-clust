@@ -1,9 +1,11 @@
+import path_utilities
 import numpy as np
 import tokenizer
+import path_utilities
 import sys
 import os
 
-# FIRST ARGUMENT: the root directory path.
+# FIRST ARGUMENT: the root directory path (the path of the dataset)
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -33,16 +35,18 @@ def DFS(path):
 ''' RETURNS: a dictionary which maps extension names of the form "csv"
              to lists of the full paths of files with those extensions in 
              the dataset.'''
-def extension_indexer(root, n):  
-    allpaths = DFS(root)
+def extension_indexer(dataset_path, n, write_path):  
+    allpaths = DFS(dataset_path)
     
     # a list of all the filenames (without paths)
     filenames = []
     for path in allpaths:
-        filenames.append(get_fname_from_path(path))
+        filenames.append(path_utilities.get_fname_from_path(path))
     filenames_no_ext, exts = tokenizer.remove_all_extensions(filenames)
     
-    sorted_exts, sorted_counts = tokenizer.count_and_sort_exts(exts, n)
+    sorted_tuple = tokenizer.count_and_sort_exts(exts, n, 
+                                                 write_path, dataset_path)
+    sorted_exts, sorted_counts = sorted_tuple
     top_n_exts = sorted_exts[:n]
      
     # makes a dictionary key for each of the top extensions
@@ -53,55 +57,31 @@ def extension_indexer(root, n):
     # checks every file and saves the paths of those with the top extensions
     # in a dict called "ext_locations"
     for fp in allpaths:
-        fn = get_fname_from_path(fp)
+        fn = path_utilities.get_fname_from_path(fp)
         if fn[:2]!="._":
-            ext = tokenizer.get_single_extension(fn)
+            ext = path_utilities.get_single_extension(fn)
             if ext in top_n_exts:
                 ext_list = ext_locations.get(ext)
                 ext_list.append(fp)
                 ext_locations.update({ext:ext_list})
   
-    root_name = get_first_dir_from_path(root) 
-    np.save("extension_index_" + root_name + ".npy", ext_locations)
+    dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
+    ext_write_path = os.path.join(write_path, "extension_index_" 
+                                  + dataset_name + ".npy")  
+    np.save(ext_write_path, ext_locations)
     
     return ext_locations
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-def str_encode(string):
-    return string.replace("/","@")
-
-def str_decode(string):
-    return string.replace("@","/")
-    
-def get_fname_from_path(path):    
-    filename = ""
-    for c in path[::-1]:
-        if c=="/" or c=="@":
-            break
-        filename = c+filename
-    return filename
-
-def get_first_dir_from_path(path):    
-    filename = ""
-    if path[len(path) - 1] == "/" or path[len(path) - 1] == "@":
-        path = path[0:len(path) - 1]
-    for c in path[::-1]:
-        if c=="/" or c=="@":
-            break
-        filename = c+filename
-    return filename
-
-#=========1=========2=========3=========4=========5=========6=========7=
-
 def main():
-    root_path = sys.argv[1]
+    dataset_path = sys.argv[1]
     num_slices = sys.argv[2]
 
-    # allpaths = DFS(root_path)
+    # allpaths = DFS(dataset_path)
     
-    '''os.chdir(root_path)
-    f1 = open(root_path + "transformed_paths.txt","w")
+    '''os.chdir(dataset_path)
+    f1 = open(dataset_path + "transformed_paths.txt","w")
 
     f1.write(str(allpaths))
     f1.close()'''
