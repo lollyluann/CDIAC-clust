@@ -93,7 +93,7 @@ def get_document_contents(directory, dataset_path):
     print("All directory contents retrieved")
     aaaa = open("fuckkk.txt", "w")
     for item in data:
-        aaaa.write(item)
+        aaaa.write(item + "\n")
     return filenames, data
 
 #=========1=========2=========3=========4=========5=========6=========7=
@@ -301,6 +301,7 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
     #print(vocab_frame.to_string())   
     #print("true number of clusters: ", true_num_clusters)
 
+    print("terms", terms)
     all_cluster_words = {}
     # for each cluster
 
@@ -323,9 +324,9 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
         for ind in order_centroids[i, :]: 
             test_var = vocab_frame.ix[terms[ind].split(" ")].values.tolist()[0]
             cluster_words.append(test_var[0])
-        
+        print("unsorted", cluster_words)     
         cluster_words = unique(cluster_words)
-    
+        print("sorted", cluster_words)
         # print the first "n_words" words in a cluster
         #for ind in order_centroids[i, : n_words]:
         for ind in range(min(n_words, len(cluster_words))):
