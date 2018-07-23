@@ -91,6 +91,9 @@ def get_document_contents(directory, dataset_path):
     
     print("Num total files: ", i)
     print("All directory contents retrieved")
+    aaaa = open("fuckkk.txt", "w")
+    for item in data:
+        aaaa.write(item)
     return filenames, data
 
 #=========1=========2=========3=========4=========5=========6=========7=
