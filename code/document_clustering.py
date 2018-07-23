@@ -91,9 +91,6 @@ def get_document_contents(directory, dataset_path):
     
     print("Num total files: ", i)
     print("All directory contents retrieved")
-    aaaa = open("fuckkk.txt", "w")
-    for item in data:
-        aaaa.write(item + "\n")
     return filenames, data
 
 #=========1=========2=========3=========4=========5=========6=========7=
@@ -169,7 +166,8 @@ def to_retokenize(retokenize, corpusdir, dataset_path):
                     index = totalvocab_stemmed)
         vocab_frame.to_pickle(os.path.join(file_place, "vocab_frame_" + dataset_name + ".pkl"))
         print('There are ' + str(vocab_frame.shape[0]) + ' items in vocab_frame')
-
+        print("vocaob frame", vocab_frame)
+    
         #define vectorizer parameters
         tfidf_vectorizer = TfidfVectorizer(max_df=1.0, max_features=200000,
                               min_df=1, stop_words='english', use_idf=True, 
@@ -178,8 +176,10 @@ def to_retokenize(retokenize, corpusdir, dataset_path):
         #fits the vectorizer to the dataset
         print("\nFitting vectorizer to data...")
         tfidf_matrix = tfidf_vectorizer.fit_transform(dataset) 
+        print("matrix", tfidf_matrix)
         np.save(os.path.join(file_place, "tfidf_matrix_" + dataset_name + ".npy"), tfidf_matrix)
         terms = tfidf_vectorizer.get_feature_names()
+        print("length ofh t erms", len(terms))
         np.save(os.path.join(file_place, "terms_" + dataset_name + ".npy"), terms)
         dist = 1 - cosine_similarity(tfidf_matrix)
         np.save(os.path.join(file_place, "distance_matrix_" + dataset_name + ".npy"), dist)
@@ -222,7 +222,7 @@ def to_recluster(num_clusters, retokenize, recluster, tfidf_matrix, dataset_path
         if minibatch == "1":
             km = MiniBatchKMeans(n_clusters=num_clusters)
         else:
-            km = KMeans(n_clusters=num_clusters)
+            km = KMeans(n_clusters=num_clusters, n_jobs=-1)
         
         km.fit(tfidf_matrix)
         print("Kmeans clustering complete")
@@ -501,17 +501,16 @@ def print_cluster_stats(frame, top_words, dataset_path, num_clusters):
     cluster_directories = np.load(os.path.join(file_place, "cluster_directories_" + trailer_text + ".npy"))
     
     fr = open(os.path.join(file_place, "cluster_stats_" + trailer_text + ".txt"), "w")
-    #total_silhouette, scores = silhouette.compute_silhouette(cluster_directories, dataset_path)
+    total_silhouette, scores = silhouette.compute_silhouette(cluster_directories, dataset_path)
     num_files_per_cluster = frame['cluster'].value_counts().sort_index().tolist()
 
     print("\n\nComputing cluster statistics...")
     for clust_num in tqdm(range(len(cluster_directories))):
         c_stats = "Cluster " + str(clust_num) + "\n" + str(num_files_per_cluster[clust_num]) + " files \n"
         c_stats = c_stats + get_cluster_stats(cluster_directories[clust_num])
-        # c_stats = c_stats + "\nSilhouette score: " + str(scores[clust_num]) + "\nTop 10 words: " + ", ".join(top_words.get(clust_num))
-        c_stats = c_stats + "\nTop 10 words: " + ", ".join(top_words.get(clust_num))
+        c_stats = c_stats + "\nSilhouette score: " + str(scores[clust_num]) + "\nTop 10 words: " + ", ".join(top_words.get(clust_num))
         fr.write(c_stats + "\n\n")
-    # fr.write("\nTotal silhouette score: " + str(total_silhouette))
+    fr.write("\nTotal silhouette score: " + str(total_silhouette))
     fr.close()
     print("Cluster stats written to \"cluster_stats_" + trailer_text + ".txt\"")
 

@@ -194,7 +194,7 @@ def convert(dataset_path, num_top_exts):
         os.system("mkdir " + dest)
     check_valid_dir(dest)
     # get the script output location
-    write_path = os.path.join("../outputs/" + dataset_name + "--output/")
+    write_path = os.path.join("../../cluster-datalake-outputs/" + dataset_name + "--output/")
     # get its absolute path
     write_path = os.path.abspath(write_path)
     if not os.path.isdir(write_path):
