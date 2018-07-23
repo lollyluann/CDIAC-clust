@@ -490,7 +490,7 @@ def get_cluster_stats(one_cluster_directories):
     nsd = "Nearest shared directory: " + "/".join(nearest_shared_parent(list(one_cluster_directories.keys())))
     return unique+"\n"+avg+"\n"+med+"\n"+std+"\n"+nsd
 
-def print_cluster_stats(top_words, frame, dataset_path, num_clusters):
+def print_cluster_stats(frame, top_words, dataset_path, num_clusters):
     p = Path(Path(os.getcwd()).parent).parent
     dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
     file_place = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output")    
