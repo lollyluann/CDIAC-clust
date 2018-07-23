@@ -1,5 +1,11 @@
-from path_utilities import get_last_dir_from_path 
+from path_utilities import get_immediate_subdirectories
+from path_utilities import get_last_dir_from_path
+from path_utilities import remove_extension 
+from path_utilities import str_decode
+ 
 from gensim.models.doc2vec import TaggedDocument
+from gensim.models.doc2vec import Doc2Vec 
+from gensim.test.utils import get_tmpfile
 from collections import namedtuple
 from smart_open import smart_open
 from tqdm import tqdm
@@ -70,15 +76,83 @@ def check_valid_file(some_file):
 #=========1=========2=========3=========4=========5=========6=========7=
 #=========1=========2=========3=========4=========5=========6=========7=
 
+# RETURNS: a list of fnames and a list of the contents of the files 
+def get_document_contents(directory, dataset_path):
+    
+    # setup output path
+    grandparent = Path(Path(os.getcwd()).parent).parent
+    dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
+    write_path = os.path.join(grandparent, 
+                              "cluster-datalake-outputs/", 
+                              dataset_name + "--output")    
+    
+    if not os.path.isdir(write_path):
+        os.mkdir(write_path)
+    
+    # load in the extension index from the output folder
+    ext_dict_file_loc = os.path.join(write_path, "extension_index_" 
+                                     + dataset_name + ".npy") 
+    ext_paths = np.load(ext_dict_file_loc).item()
+    
+    # "filenames" list of the paths of files
+    # "data" list of the contents of files 
+    filenames = []
+    data = []
+    i = 1
+    
+    # get contents of txt files still in original dataset
+    txt_paths = ext_paths.get("txt")
+    print("Getting .txt contents from " + dataset_path)
+    for path in tqdm(txt_paths):
+        if os.path.isfile(path):
+            i = i + 1
+                
+            # add the path of the file to "filenames" 
+            filenames.append(path)
+
+            # read the contents of the file and remove newlines
+            fread = open(path, "r", errors='backslashreplace')
+            contents = fread.read()
+            fread.close()
+            contents = contents.replace("\n","")
+            
+            # add the string of the contents of the file to "data"
+            data.append(contents)
+    
+    # get contents of converted files in the other directory
+    conv_folders = get_immediate_subdirectories(directory)
+    
+    # for each folder in the directory (e.g. pdf/ doc/)
+    for folder in conv_folders:
+        filetype = get_last_dir_from_path(folder)
+        if filetype in ["pdf", "doc", "docx"]: #, "xml", "html"]:
+            print("Getting ."+folder+" contents")
+            for filename in tqdm(os.listdir(folder)):
+                path = os.path.join(folder,filename)
+                if os.path.isfile(path):
+                    i = i + 1
+                    
+                    # add the non-converted filename to "filenames" 
+                    new_name = str_decode(remove_extension(filename))
+                    filenames.append(new_name)
+
+                    # read the contents of the file and remove newlines
+                    fread = open(path, "r", errors='backslashreplace')
+                    contents = fread.read()
+                    fread.close()
+                    contents = contents.replace("\n","")
+                    
+                    # add the string of the file contents to "data"
+                    data.append(contents)
+    
+    print("Num total files: ", i)
+    print("All directory contents retrieved")
+    return filenames, data
+
+#=========1=========2=========3=========4=========5=========6=========7=
+#=========1=========2=========3=========4=========5=========6=========7=
+
 def doc2vec(dataset_path, dataset_name, write_path, txt_path_list):
-
-    locale.setlocale(locale.LC_ALL, 'C')
-    all_lines = []
-
-    if sys.version > '3':
-        control_chars = [chr(0x85)]
-    else:
-        control_chars = [unichr(0x85)]
 
     # Convert text to lower-case and strip punctuation/symbols from words
     def normalize_text(text):
@@ -132,33 +206,17 @@ def doc2vec(dataset_path, dataset_name, write_path, txt_path_list):
     # this data object class suffices as a `TaggedDocument` 
     # (with `words` and `tags`)
     # plus adds other state helpful for our later evaluation/reporting
-    SentimentDocument = namedtuple('SentimentDocument', 
-                                   'words tags split sentiment')
 
-    alldocs = []
     with smart_open(alldata_path, 'rb', encoding='utf-8') as alldata:
-        for line_no, line in tqdm(enumerate(alldata)):
-            tokens = gensim.utils.to_unicode(line).split()
-            words = tokens[1:]
-            
-            # 'tags = [tokens[0]]' would also work at extra memory cost
-            tags = [line_no] 
-            
-            # 25k train, 25k test, 25k extra
-            split = 'train'
-  
-            
-            # [12.5K pos, 12.5K neg]*2 then unknown
-            sentiment = 1.0
-            alldocs.append(SentimentDocument(words, tags, split, sentiment))
+        alldata_list = list(alldata)
+        print("Iterating up to: ", len(alldata_list))
+    with smart_open(alldata_path, 'rb', encoding='utf-8') as alldata:
+        documents = [TaggedDocument(doc, [i]) for i, doc in tqdm(enumerate(alldata))]
+        model = Doc2Vec(documents, vector_size=5, window=2, min_count=1, workers=4)
 
-    train_docs = [doc for doc in alldocs if doc.split == 'train']
-    test_docs = [doc for doc in alldocs if doc.split == 'test']
-
-    print('%d docs: %d train-sentiment, %d test-sentiment' % 
-          (len(alldocs), len(train_docs), len(test_docs)))
-
-
+        fname = get_tmpfile(os.path.join(write_path, "doc2vec_model_" + dataset_name))
+        model.save(fname)
+        model = Doc2Vec.load(fname)  # you can continue training with the loaded model!
 
     return
 

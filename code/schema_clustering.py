@@ -149,6 +149,11 @@ def get_header_dict(csv_dir, csv_path_list,
                 for attribute in header_list:
                     if not (attribute == ""):
                         num_nonempty = num_nonempty + 1
+                
+                # if the header is still empty, skip file
+                if (len(header_list) == 0):
+                    continue                
+
                 fill_ratio = num_nonempty / len(header_list)                
 
                 # keep checking lines until you get one where there

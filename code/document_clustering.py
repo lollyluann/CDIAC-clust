@@ -32,14 +32,9 @@ import path_utilities
     RETURNS: a list of filenames and a list of the contents of the files 
     DOES: gets all the filenames and their contents of a directory '''   
 def get_document_contents(directory, dataset_path):
-    # setup output path as "file_place"
-    p = Path(Path(os.getcwd()).parent).parent
-    dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
-    file_place = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output")    
-    if not os.path.isdir(file_place):
-        os.mkdir(file_place)
+    dataset_name, file_place = initialize_output_location(dataset_path)
     
-    # load in the extension index from the output folder
+    # load in the extension index file from the output folder
     ext_dict_file_loc = os.path.join(file_place,"extension_index_" + dataset_name + ".npy") 
     ext_paths = np.load(ext_dict_file_loc).item()
     
@@ -112,8 +107,7 @@ def tokenize_and_stem(text):
                filtered_tokens.append(token)
     
     # stems the tokens
-    stems = [stemmer.stem(t) for t in filtered_tokens]
-    
+    stems = [stemmer.stem(t) for t in filtered_tokens]    
     return filtered_tokens, stems
 
 ''' PARAMETER: the text of a document
@@ -123,22 +117,31 @@ def tokenize_and_stem_call(text):
     ft, stems = tokenize_and_stem(text)
     return stems
 
+''' PARAMETER: the path leading to the dataset
+    RETURNS: the name of the dataset and the output path '''
+def initialize_output_location(dataset_path):
+    # setup output path as "file_place" outside the repo
+    p = Path(Path(os.getcwd()).parent).parent
+    dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
+    file_place = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output")    
+    
+    if not os.path.isdir(file_place):
+        os.mkdir(file_place)
+    return dataset_name, file_place
+    
 #=========1=========2=========3=========4=========5=========6=========7=
 
 ''' PARAMETERS: parameters explained in main_function
     RETURNS: a list of filenames and a list of file data
     DOES: retokenizes and catches errors '''
 def to_retokenize(retokenize, corpusdir, dataset_path): 
-    p = Path(Path(os.getcwd()).parent).parent
-    dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
-    file_place = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output")    
-    if not os.path.isdir(file_place):
-        os.mkdir(file_place)
+    dataset_name, file_place = initialize_output_location(dataset_path)
     
     # "fnames" is a list of the paths of each file in the  source dataset
     # "dataset" is a list of strings, each containing a document's text
     fnames, dataset = get_document_contents(corpusdir, dataset_path)
     
+    # if trying to skip tokenization, check for dependencies 
     if retokenize == "0":
         print("\nAttempting to bypass retokenizing...")
         vf = os.path.join(file_place, "vocab_frame_" + dataset_name + ".pkl")
@@ -146,9 +149,12 @@ def to_retokenize(retokenize, corpusdir, dataset_path):
         dm = os.path.join(file_place, "distance_matrix_" + dataset_name + ".npy")
         tf = os.path.join(file_place, "tfidf_matrix_" + dataset_name + ".npy")
 
+        # if any dependency is missing, set to retokenize
         if not os.path.isfile(vf) or not os.path.isfile(tms) or not os.path.isfile(dm) or not os.path.isfile(tf):
             print("One or more dependencies is missing... \nRetokenizing...")
             retokenize = "1"
+        else:
+            print("Success!")
             
     if retokenize == "1":     
         print("\nTokenizing", len(dataset), "documents...")
@@ -161,12 +167,11 @@ def to_retokenize(retokenize, corpusdir, dataset_path):
             totalvocab_stemmed.extend(allwords_stemmed) 
             totalvocab_tokenized.extend(allwords_tokenized)
 
-        # create vocab_frame with "totalvocab_stemmed" or "totalvocab_tokenized"
+        # vocab_frame contains all tokens mapped to their stemmed counterparts
         vocab_frame = pd.DataFrame({'words': totalvocab_tokenized}, 
                     index = totalvocab_stemmed)
         vocab_frame.to_pickle(os.path.join(file_place, "vocab_frame_" + dataset_name + ".pkl"))
         print('There are ' + str(vocab_frame.shape[0]) + ' items in vocab_frame')
-        print("vocaob frame", vocab_frame)
     
         #define vectorizer parameters
         tfidf_vectorizer = TfidfVectorizer(max_df=1.0, max_features=200000,
@@ -178,9 +183,12 @@ def to_retokenize(retokenize, corpusdir, dataset_path):
         tfidf_matrix = tfidf_vectorizer.fit_transform(dataset) 
         print("matrix", tfidf_matrix)
         np.save(os.path.join(file_place, "tfidf_matrix_" + dataset_name + ".npy"), tfidf_matrix)
+        
+        # the list of all feature names (tokens)
         terms = tfidf_vectorizer.get_feature_names()
-        print("length ofh t erms", len(terms))
         np.save(os.path.join(file_place, "terms_" + dataset_name + ".npy"), terms)
+        
+        # distance matrix from the tfidf matrix
         dist = 1 - cosine_similarity(tfidf_matrix)
         np.save(os.path.join(file_place, "distance_matrix_" + dataset_name + ".npy"), dist)
         print("Vectorizer fitted to data")
@@ -192,37 +200,39 @@ def to_retokenize(retokenize, corpusdir, dataset_path):
 ''' PARAMETERS: parameters explained in main_function
     DOES: reclusters and catches errors '''
 def to_recluster(num_clusters, retokenize, recluster, tfidf_matrix, dataset_path, minibatch):
-    p = Path(Path(os.getcwd()).parent).parent
-    dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
-    file_place = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output")    
-    if not os.path.isdir(file_place):
-        os.mkdir(file_place)
+    dataset_name, file_place = initialize_output_location(dataset_path)
     trailer_text = dataset_name + "_k=" + str(num_clusters)
    
+    # if try to bypass clustering, check for dependencies
     if recluster == "0":
         print("\nAttempting to bypass reclustering...") 
         dc = os.path.join(file_place, "doc_cluster_" + trailer_text + ".pkl")
         
+        # if dependency is missing, set to cluster
         if not os.path.isfile(dc):
             print("\"doc_cluster_" + trailer_text + ".pkl\" is missing... \nReclustering...")
             recluster = "1"
+        else:
+            print("Success!")
 
+        # if retokenize and recluster are 0, only regenerates graphs
         if retokenize == "0":
-            print("\nNo output if not retokenizing or reclustering. Please try again. \nExiting...")
-            exit()
+            print("\nNote: Running without overwriting tokens or clusters only regenerates graphs and text output.")
     
+    # if retokenizing, you must recluster
     if retokenize == "1":
         recluster = "1"
 
     if recluster == "1":
         clustert0 = time()
-        # cluster using KMeans on the tfidf matrix
-        print("\nClustering using kmeans with k = " + str(num_clusters) + "...")
         
+        # cluster using KMeans on the tfidf matrix
         if minibatch == "1":
             km = MiniBatchKMeans(n_clusters=num_clusters)
+            print("\nClustering using minibatch kmeans with k = " + str(num_clusters) + "...")
         else:
             km = KMeans(n_clusters=num_clusters, n_jobs=-1)
+            print("\nClustering using kmeans with k = " + str(num_clusters) + "...") 
         
         km.fit(tfidf_matrix)
         print("Kmeans clustering complete")
@@ -243,34 +253,32 @@ def to_recluster(num_clusters, retokenize, recluster, tfidf_matrix, dataset_path
              "distinct_cluster_labels" - list of distinct cluster labels '''
 def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, n_words, minibatch):
     #stopwords = nltk.download('stopwords')
-
     #nltk.download('punkt')
+
     stemmer = SnowballStemmer("english")
 
-    p = Path(Path(os.getcwd()).parent).parent
-    dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
-    file_place = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output")    
-    if not os.path.isdir(file_place):
-        os.mkdir(file_place)
+    dataset_name, file_place = initialize_output_location(dataset_path)
     trailer_text = dataset_name + "_k=" + str(num_clusters)
     
     print("\nAll outputs generated will be in \"~\\cluster-datalake-outputs\\" + dataset_name + "--output\"")
 
     #=========1=========2=========3=========4=========5=========6=======
-    
+
+    # tokenize and cluster    
     fnames, dataset = to_retokenize(retokenize, corpusdir, dataset_path)
     tfidf_matrix = np.load(os.path.join(file_place, "tfidf_matrix_" + dataset_name + ".npy")).item()
     to_recluster(num_clusters, retokenize, recluster, tfidf_matrix, dataset_path, minibatch)
     
+    # load in existing saved files
     km = joblib.load(os.path.join(file_place, 'doc_cluster_' + trailer_text + '.pkl'))
     vocab_frame = pd.read_pickle(os.path.join(file_place, "vocab_frame_" + dataset_name + ".pkl"))
     terms = np.load(os.path.join(file_place, "terms_" + dataset_name + ".npy")).tolist()
     dist = np.load(os.path.join(file_place, "distance_matrix_" + dataset_name + ".npy"))
-    print("\nLoaded in existing cluster profile...\n")
+    print("\nLoaded in existing dependencies...\n")
 
     clusters = km.labels_.tolist()
-    # get the actual number of clusters in the dataframe, in case some
-    # are omitted for some reason
+
+    # get the actual number of clusters in the dataframe
     distinct_cluster_labels = []
     for label in clusters:
         if label not in distinct_cluster_labels:
@@ -296,12 +304,6 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
     #sort cluster centers by proximity to centroid
     order_centroids = km.cluster_centers_.argsort()[:, ::-1] 
    
-    #print("Printing the index. ")
-    #print(frame.index)
-    #print(vocab_frame.to_string())   
-    #print("true number of clusters: ", true_num_clusters)
-
-    print("terms", terms)
     all_cluster_words = {}
     # for each cluster
 
@@ -320,13 +322,11 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
         print("Cluster %d words:" % i, end='')
         
         cluster_words = []
-        print("order_centroids", order_centroids[i,:])
-        for ind in order_centroids[i, :]: 
+        for ind in tqdm(order_centroids[i, :]): 
             test_var = vocab_frame.ix[terms[ind].split(" ")].values.tolist()[0]
             cluster_words.append(test_var[0])
-        print("unsorted", cluster_words)     
         cluster_words = unique(cluster_words)
-        print("sorted", cluster_words)
+        
         # print the first "n_words" words in a cluster
         #for ind in order_centroids[i, : n_words]:
         for ind in range(min(n_words, len(cluster_words))):
@@ -402,11 +402,7 @@ def bar_clusters(frame, distinct_cluster_labels, num_clusters, home_dir, dataset
   
     matplotlib.rcParams.update({'font.size': 4})
     
-    p = Path(Path(os.getcwd()).parent).parent
-    dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
-    file_place = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output")    
-    if not os.path.isdir(file_place):
-        os.mkdir(file_place)
+    dataset_name, file_place = initialize_output_location(dataset_path)
     trailer_text = dataset_name + "_k=" + str(num_clusters)
     
     print("\n\nGenerating barcharts...")    
@@ -492,11 +488,7 @@ def get_cluster_stats(one_cluster_directories):
     return unique+"\n"+avg+"\n"+med+"\n"+std+"\n"+nsd
 
 def print_cluster_stats(frame, top_words, dataset_path, num_clusters):
-    p = Path(Path(os.getcwd()).parent).parent
-    dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
-    file_place = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output")    
-    if not os.path.isdir(file_place):
-        os.mkdir(file_place)
+    dataset_name, file_place = initialize_output_location(dataset_path)
     trailer_text = dataset_name + "_k=" + str(num_clusters)
     cluster_directories = np.load(os.path.join(file_place, "cluster_directories_" + trailer_text + ".npy"))
     
