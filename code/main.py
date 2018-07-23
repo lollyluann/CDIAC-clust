@@ -15,6 +15,9 @@ def main():
     print("ARGUMENTS: ")
     args = load_arguments()
     print("Arguments loaded. ")
+
+    if args.num_clusters_end < args.num_clusters_start:
+        args.num_clusters_end = args.num_clusters_start
    
     if args.plot_extensions.lower() == 'y':
         tokenizer.plot_extensions(args.dataset_path,
@@ -28,7 +31,7 @@ def main():
     end = args.num_clusters_end
     num_clusters = start
 
-    print("Clustering for all k: " + start + "<=k<=" + end + "...\n")
+    print("Clustering for all k: " + str(start) + "<=k<=" + str(end) + "...\n")
     while num_clusters <= end:
         if args.cluster_struct.lower() == 'y':
             schema_clustering.runflow(args.dataset_path, 
@@ -41,7 +44,8 @@ def main():
             document_clustering.runflow(num_clusters, 
                                         args.overwrite_tokens_text,
                                         args.overwrite_clusters_text,
-                                        args.dataset_path)
+                                        args.dataset_path,
+                                        args.minibatch_kmeans)
         num_clusters += 1
  
 if __name__ == "__main__":

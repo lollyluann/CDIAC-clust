@@ -14,6 +14,7 @@ import nltk, re, os, codecs, mpld3, sys, random
 from nltk.stem.snowball import SnowballStemmer
 
 from sklearn.cluster import KMeans
+from sklearn.cluster import MiniBatchKMeans
 from sklearn.externals import joblib
 from sklearn import feature_extraction
 from sklearn.metrics.pairwise import cosine_similarity
@@ -34,7 +35,7 @@ def get_document_contents(directory, dataset_path):
     # setup output path as "file_place"
     p = Path(Path(os.getcwd()).parent).parent
     dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
-    file_place = os.path.join(p, "outputs/", dataset_name + "--output")    
+    file_place = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output")    
     if not os.path.isdir(file_place):
         os.mkdir(file_place)
     
@@ -130,7 +131,7 @@ def tokenize_and_stem_call(text):
 def to_retokenize(retokenize, corpusdir, dataset_path): 
     p = Path(Path(os.getcwd()).parent).parent
     dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
-    file_place = os.path.join(p, "outputs/", dataset_name + "--output")    
+    file_place = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output")    
     if not os.path.isdir(file_place):
         os.mkdir(file_place)
     
@@ -187,10 +188,10 @@ def to_retokenize(retokenize, corpusdir, dataset_path):
 
 ''' PARAMETERS: parameters explained in main_function
     DOES: reclusters and catches errors '''
-def to_recluster(num_clusters, retokenize, recluster, tfidf_matrix, dataset_path):
+def to_recluster(num_clusters, retokenize, recluster, tfidf_matrix, dataset_path, minibatch):
     p = Path(Path(os.getcwd()).parent).parent
     dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
-    file_place = os.path.join(p, "outputs/", dataset_name + "--output")    
+    file_place = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output")    
     if not os.path.isdir(file_place):
         os.mkdir(file_place)
     trailer_text = dataset_name + "_k=" + str(num_clusters)
@@ -211,12 +212,19 @@ def to_recluster(num_clusters, retokenize, recluster, tfidf_matrix, dataset_path
         recluster = "1"
 
     if recluster == "1":
+        clustert0 = time()
         # cluster using KMeans on the tfidf matrix
         print("\nClustering using kmeans with k = " + str(num_clusters) + "...")
-        km = KMeans(n_clusters=num_clusters)
+        
+        if minibatch == "1":
+            km = MiniBatchKMeans(n_clusters=num_clusters)
+        else:
+            km = KMeans(n_clusters=num_clusters)
+        
         km.fit(tfidf_matrix)
         print("Kmeans clustering complete")
-
+        print("Time to cluster:", time()-clustert0)    
+    
         # pickle the model, reload the model/reassign the labels as the clusters
         joblib.dump(km, os.path.join(file_place, 'doc_cluster_' + trailer_text + '.pkl'))
 
@@ -230,7 +238,7 @@ def to_recluster(num_clusters, retokenize, recluster, tfidf_matrix, dataset_path
     RETURNS: "frame" - dataframe containing clusters and file paths
              "all_cluster_words" - list of lists of top words in cluster
              "distinct_cluster_labels" - list of distinct cluster labels '''
-def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, n_words):
+def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, n_words, minibatch):
     #stopwords = nltk.download('stopwords')
 
     #nltk.download('punkt')
@@ -238,18 +246,18 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
 
     p = Path(Path(os.getcwd()).parent).parent
     dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
-    file_place = os.path.join(p, "outputs/", dataset_name + "--output")    
+    file_place = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output")    
     if not os.path.isdir(file_place):
         os.mkdir(file_place)
     trailer_text = dataset_name + "_k=" + str(num_clusters)
     
-    print("\nAll outputs generated will be in \"outputs\\" + dataset_name + "--output\"")
-    
+    print("\nAll outputs generated will be in \"~\\cluster-datalake-outputs\\" + dataset_name + "--output\"")
+
     #=========1=========2=========3=========4=========5=========6=======
     
     fnames, dataset = to_retokenize(retokenize, corpusdir, dataset_path)
     tfidf_matrix = np.load(os.path.join(file_place, "tfidf_matrix_" + dataset_name + ".npy")).item()
-    to_recluster(num_clusters, retokenize, recluster, tfidf_matrix, dataset_path)
+    to_recluster(num_clusters, retokenize, recluster, tfidf_matrix, dataset_path, minibatch)
     
     km = joblib.load(os.path.join(file_place, 'doc_cluster_' + trailer_text + '.pkl'))
     vocab_frame = pd.read_pickle(os.path.join(file_place, "vocab_frame_" + dataset_name + ".pkl"))
@@ -293,14 +301,22 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
     all_cluster_words = {}
     # for each cluster
 
- 
+    ''' terms contains all the feature labels of the clustering
+        vocab_frame contains all the tokens mapped to their stemmed counterparts
+        you're finding the token version of the stem you get
+        the stem you get is at the ind position of the terms list
+        ind is from order_centroids
+        order_centroids is a sorted array with num_clusters rows and len(terms) features
+        order_centroids[i] is the coordinates of cluster i
+        order_centroids[i,:] is the coordinates from ALL features for cluster i'''
+         
     distinct_cluster_labels = sorted(distinct_cluster_labels)
     for i in distinct_cluster_labels:
         fwriter.write("Cluster " + str(i) + " words: ")
         print("Cluster %d words:" % i, end='')
         
         cluster_words = []
-        
+        print("order_centroids", order_centroids[i,:])
         for ind in order_centroids[i, :]: 
             test_var = vocab_frame.ix[terms[ind].split(" ")].values.tolist()[0]
             cluster_words.append(test_var[0])
@@ -309,7 +325,6 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
     
         # print the first "n_words" words in a cluster
         #for ind in order_centroids[i, : n_words]:
-        print(min(n_words, len(cluster_words)))
         for ind in range(min(n_words, len(cluster_words))):
             #print("fuck mylife -  ")
             #test_var = vocab_frame.ix[terms[ind].split(" ")].values.tolist()[0]
@@ -385,7 +400,7 @@ def bar_clusters(frame, distinct_cluster_labels, num_clusters, home_dir, dataset
     
     p = Path(Path(os.getcwd()).parent).parent
     dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
-    file_place = os.path.join(p, "outputs/", dataset_name + "--output")    
+    file_place = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output")    
     if not os.path.isdir(file_place):
         os.mkdir(file_place)
     trailer_text = dataset_name + "_k=" + str(num_clusters)
@@ -475,23 +490,24 @@ def get_cluster_stats(one_cluster_directories):
 def print_cluster_stats(top_words, frame, dataset_path, num_clusters):
     p = Path(Path(os.getcwd()).parent).parent
     dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
-    file_place = os.path.join(p, "outputs/", dataset_name + "--output")    
+    file_place = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output")    
     if not os.path.isdir(file_place):
         os.mkdir(file_place)
     trailer_text = dataset_name + "_k=" + str(num_clusters)
     cluster_directories = np.load(os.path.join(file_place, "cluster_directories_" + trailer_text + ".npy"))
     
     fr = open(os.path.join(file_place, "cluster_stats_" + trailer_text + ".txt"), "w")
-    total_silhouette, scores = silhouette.compute_silhouette(cluster_directories, dataset_path)
+    #total_silhouette, scores = silhouette.compute_silhouette(cluster_directories, dataset_path)
     num_files_per_cluster = frame['cluster'].value_counts().sort_index().tolist()
 
     print("\n\nComputing cluster statistics...")
     for clust_num in tqdm(range(len(cluster_directories))):
         c_stats = "Cluster " + str(clust_num) + "\n" + str(num_files_per_cluster[clust_num]) + " files \n"
         c_stats = c_stats + get_cluster_stats(cluster_directories[clust_num])
-        c_stats = c_stats + "\nSilhouette score: " + str(scores[clust_num]) + "\nTop 10 words: " + ", ".join(top_words.get(clust_num))
+        # c_stats = c_stats + "\nSilhouette score: " + str(scores[clust_num]) + "\nTop 10 words: " + ", ".join(top_words.get(clust_num))
+        c_stats = c_stats + "\nTop 10 words: " + ", ".join(top_words.get(clust_num))
         fr.write(c_stats + "\n\n")
-    fr.write("\nTotal silhouette score: " + str(total_silhouette))
+    # fr.write("\nTotal silhouette score: " + str(total_silhouette))
     fr.close()
     print("Cluster stats written to \"cluster_stats_" + trailer_text + ".txt\"")
 
@@ -499,7 +515,7 @@ def print_cluster_stats(top_words, frame, dataset_path, num_clusters):
 
 # MAIN PROGRAM
 
-def runflow(num_clusters, retokenize, recluster, dataset_path):
+def runflow(num_clusters, retokenize, recluster, dataset_path, minibatch):
     
     if retokenize.lower() == 'y':
         retokenize = "1"
@@ -510,6 +526,9 @@ def runflow(num_clusters, retokenize, recluster, dataset_path):
         recluster = "1"
     else:
         recluster = "0"
+
+    if minibatch.lower() == 'y':
+        minibatch = "1"
  
     home_dir = path_utilities.remove_path_end(dataset_path)
     corpusdir = os.path.join(home_dir, "converted-" +  path_utilities.get_last_dir_from_path(dataset_path)) #eg. /home/ljung/converted/
@@ -517,9 +536,9 @@ def runflow(num_clusters, retokenize, recluster, dataset_path):
     # record initial time that program started
     t0 = time()
     
-    fr, all_cluster_words, distinct_cluster_labels = main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 10)
+    fr, all_cluster_words, distinct_cluster_labels = main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 10, minibatch)
     bar_clusters(fr, distinct_cluster_labels, num_clusters, home_dir, dataset_path)    
-    print_cluster_stats(all_cluster_words, fr, dataset_path, num_clusters)
+    print_cluster_stats(fr, all_cluster_words, dataset_path, num_clusters)
     
     # print total time taken to run program
     print("\nTime taken: ", time()-t0, " seconds\n")
