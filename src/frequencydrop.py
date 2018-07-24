@@ -82,7 +82,7 @@ def compute_freqdrop_score(list_cluster_lists):
     freqdrop_total = sum(freqdrop_scores)/len(freqdrop_scores)
     print("Total frequency drop score: ", freqdrop_total)
 
-    return freqdrop_score
+    return freqdrop_scores
 
 #=========1=========2=========3=========4=========5=========6=========7=
 #=========1=========2=========3=========4=========5=========6=========7=

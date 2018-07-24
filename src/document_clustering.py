@@ -322,21 +322,24 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
         print("Cluster %d words:" % i, end='')
         
         cluster_words = []
-        for ind in tqdm(order_centroids[i, :]): 
+        '''for ind in tqdm(order_centroids[i, :]): 
             test_var = vocab_frame.ix[terms[ind].split(" ")].values.tolist()[0]
             cluster_words.append(test_var[0])
-        cluster_words = unique(cluster_words)
+        cluster_words = unique(cluster_words)'''
         
+        seen = []
         # print the first "n_words" words in a cluster
-        #for ind in order_centroids[i, : n_words]:
-        for ind in range(min(n_words, len(cluster_words))):
+        for ind in order_centroids[i, : n_words]:
+        #for ind in range(min(n_words, len(cluster_words))):
             #print("fuck mylife -  ")
             #test_var = vocab_frame.ix[terms[ind].split(" ")].values.tolist()[0]
-            print(' %s' % cluster_words[ind], end=",")  
-            fwriter.write(cluster_words[ind].rstrip("\n") + ", ")
-            #print(' %s' % vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0], end=",")
-            #fwriter.write(vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0].rstrip('\n') + ", ")
-            #cluster_words.append(vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0])
+            
+            #print(' %s' % cluster_words[ind], end=",")  
+            #fwriter.write(cluster_words[ind].rstrip("\n") + ", ")
+            
+            print(' %s' % vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0], end=",")
+            fwriter.write(vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0].rstrip('\n') + ", ")
+            cluster_words.append(vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0])
         print()
         fwriter.write("\n")
          
