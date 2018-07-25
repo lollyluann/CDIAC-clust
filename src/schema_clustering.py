@@ -376,10 +376,15 @@ def runflow(dataset_path, num_clusters,
     if not os.path.isdir(write_path):
         os.system("mkdir " + write_path)
     print("All results printing to " + write_path)
+
     
     # get absolute paths 
     out_dir = os.path.abspath(out_dir)
     write_path = os.path.abspath(write_path)
+    
+    if not os.path.isdir(out_dir):
+        os.system("mkdir " + out_dir)
+    print("Converting to " + out_dir)
     
     # get the location of the extension index file
     print("Finding extension index file. ")

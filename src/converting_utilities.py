@@ -2,16 +2,21 @@ from bs4 import BeautifulSoup
 from itertools import repeat
 from tqdm import tqdm
 
+import parsl
+from parsl.app.app import python_app, bash_app
+from parsl.configs.local_threads import config
+
 import pandas as pd
 import numpy as np
-
-import path_utilities
-import textract
-import DFS
+import subprocess
 import sys
 import csv
 import os
 import re
+
+import path_utilities
+import textract
+import DFS
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -30,7 +35,7 @@ def check_valid_dir(some_dir):
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print("")
         print("DIES IST EIN UNGÜLTIGES VERZEICHNIS!!!!")
-        print("")
+        print("fix yo directory")
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -38,18 +43,25 @@ def check_valid_dir(some_dir):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
+@python_app
+def pdf_action(path, output_dir): 
+    transformed_path = path_utilities.str_encode(path)
+    if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
+        subprocess.run("ebook-convert " + path + " " + os.path.join(output_dir, transformed_path + ".txt")) 
+
 ''' DOES: converts all the pdfs whose paths are specified in "pdf_paths"
           and puts the resultant text files in "dest/pdf/" '''
 def convert_pdfs(pdf_paths, dest):
     num_pdfs = len(pdf_paths)
     print(num_pdfs, " pdfs for conversion")
+    output_dir = os.path.join(dest, "pdf")
+    if not os.path.isdir(output_dir):
+        os.mkdir(output_dir)
     for path in tqdm(pdf_paths):      
-        output_dir = os.path.join(dest, "pdf")
-        if not os.path.isdir(output_dir):
-            os.mkdir(output_dir)
-        transformed_path = path_utilities.str_encode(path)
-        if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
-            os.system("ebook-convert " + path + " " + os.path.join(output_dir, transformed_path + ".txt")) 
+        pdf_action(path, output_dir)
+        #transformed_path = path_utilities.str_encode(path)
+        #if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
+            #os.system("ebook-convert " + path + " " + os.path.join(output_dir, transformed_path + ".txt")) 
 
 def convert_doc(doc_paths, dest):
     num_docs = len(doc_paths)
@@ -242,6 +254,7 @@ def convert(dataset_path, num_top_exts):
     # get its absolute path
     write_path = os.path.abspath(write_path)
     if not os.path.isdir(write_path):
+        os.system("mkdir ../../cluster-datalake-outputs/") 
         os.system("mkdir " + write_path)
     check_valid_dir(write_path)
 

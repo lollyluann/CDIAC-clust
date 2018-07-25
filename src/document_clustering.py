@@ -126,6 +126,9 @@ def initialize_output_location(dataset_path):
     dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
     file_place = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output")    
     
+    if not os.path.isdir(path_utilities.remove_path_end(file_place)):
+        os.mkdir(path_utilities.remove_path_end(file_place)) 
+
     if not os.path.isdir(file_place):
         os.mkdir(file_place)
     return dataset_name, file_place
