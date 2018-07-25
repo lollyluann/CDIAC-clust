@@ -22,6 +22,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.manifold import MDS
 from mpl_toolkits.mplot3d import Axes3D
 
+import frequencydrop
 import silhouette
 import path_utilities
 
@@ -143,7 +144,7 @@ def to_retokenize(retokenize, corpusdir, dataset_path):
     
     # if trying to skip tokenization, check for dependencies 
     if retokenize == "0":
-        print("\nAttempting to bypass retokenizing...")
+        print("\nAttempting to bypass tokenizing...")
         vf = os.path.join(file_place, "vocab_frame_" + dataset_name + ".pkl")
         tms = os.path.join(file_place, "terms_" + dataset_name + ".npy")
         dm = os.path.join(file_place, "distance_matrix_" + dataset_name + ".npy")
@@ -151,7 +152,7 @@ def to_retokenize(retokenize, corpusdir, dataset_path):
 
         # if any dependency is missing, set to retokenize
         if not os.path.isfile(vf) or not os.path.isfile(tms) or not os.path.isfile(dm) or not os.path.isfile(tf):
-            print("One or more dependencies is missing... \nRetokenizing...")
+            print("One or more dependencies is missing... \nTokenizing...")
             retokenize = "1"
         else:
             print("Success!")
@@ -205,12 +206,12 @@ def to_recluster(num_clusters, retokenize, recluster, tfidf_matrix, dataset_path
    
     # if try to bypass clustering, check for dependencies
     if recluster == "0":
-        print("\nAttempting to bypass reclustering...") 
+        print("\nAttempting to bypass clustering...") 
         dc = os.path.join(file_place, "doc_cluster_" + trailer_text + ".pkl")
         
         # if dependency is missing, set to cluster
         if not os.path.isfile(dc):
-            print("\"doc_cluster_" + trailer_text + ".pkl\" is missing... \nReclustering...")
+            print("\"doc_cluster_" + trailer_text + ".pkl\" is missing... \nClustering...")
             recluster = "1"
         else:
             print("Success!")
@@ -321,21 +322,11 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
         fwriter.write("Cluster " + str(i) + " words: ")
         print("Cluster %d words:" % i, end='')
         
-        cluster_words = []
-        '''for ind in tqdm(order_centroids[i, :]): 
-            test_var = vocab_frame.ix[terms[ind].split(" ")].values.tolist()[0]
-            cluster_words.append(test_var[0])
-        cluster_words = unique(cluster_words)'''
-        
+        cluster_words = [] 
         seen = []
         # print the first "n_words" words in a cluster
         for ind in order_centroids[i, : n_words]:
-        #for ind in range(min(n_words, len(cluster_words))):
-            #print("fuck mylife -  ")
             #test_var = vocab_frame.ix[terms[ind].split(" ")].values.tolist()[0]
-            
-            #print(' %s' % cluster_words[ind], end=",")  
-            #fwriter.write(cluster_words[ind].rstrip("\n") + ", ")
             
             print(' %s' % vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0], end=",")
             fwriter.write(vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0].rstrip('\n') + ", ")
@@ -359,10 +350,16 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
 
     #=========1=========2=========3=========4=========5=========6========
     
-    # multidimensional scaling: convert distance matrix into 3-dimensions
-    mds = MDS(n_components=3, dissimilarity="precomputed", random_state=1)
-    print("\nFitting the distance matrix into 3 dimensions...")
-    pos = mds.fit_transform(dist)  # shape (n_components, n_samples)
+    if retokenize == "1":
+        print("\nBypassing MDS fitting...") 
+        # multidimensional scaling: convert distance matrix into 3-dimensions
+        mds = MDS(n_components=3, dissimilarity="precomputed", random_state=1)
+        print("\nFitting the distance matrix into 3 dimensions...")
+        pos_save = mds.fit_transform(dist)  # shape (n_components, n_samples)
+        np.save(os.path.join(file_place, "mds_pos_" + trailer_text + ".npy"), pos_save)
+
+    print("Loaded existing MDS fit.")
+    pos = np.load(os.path.join(file_place, "mds_pos_" + trailer_text + ".npy")).item()
     xs, ys, zs = pos[:, 0], pos[:, 1], pos[:, 2]
 
     # set up plot
@@ -497,15 +494,21 @@ def print_cluster_stats(frame, top_words, dataset_path, num_clusters):
     
     fr = open(os.path.join(file_place, "cluster_stats_" + trailer_text + ".txt"), "w")
     total_silhouette, scores = silhouette.compute_silhouette(cluster_directories, dataset_path)
+    frqscores = frequencydrop.compute_freqdrop_score(cluster_directories)
+    total_frq_score = sum(frqscores)/len(frqscores)
     num_files_per_cluster = frame['cluster'].value_counts().sort_index().tolist()
 
     print("\n\nComputing cluster statistics...")
     for clust_num in tqdm(range(len(cluster_directories))):
-        c_stats = "Cluster " + str(clust_num) + "\n" + str(num_files_per_cluster[clust_num]) + " files \n"
+        c_stats = "Cluster " + str(clust_num) + "\n"
+        c_stats = c_stats + str(num_files_per_cluster[clust_num]) + " files \n"
         c_stats = c_stats + get_cluster_stats(cluster_directories[clust_num])
-        c_stats = c_stats + "\nSilhouette score: " + str(scores[clust_num]) + "\nTop 10 words: " + ", ".join(top_words.get(clust_num))
+        c_stats = c_stats + "\nSilhouette score: " + str(scores[clust_num])
+        c_stats = c_stats + "\nFrequency drop score: " + str(frqscores[clust_num])
+        c_stats = c_stats + "\nTop 10 words: " + ", ".join(top_words.get(clust_num))
         fr.write(c_stats + "\n\n")
     fr.write("\nTotal silhouette score: " + str(total_silhouette))
+    fr.write("Average frequency drop score: " + str(total_frq_score))
     fr.close()
     print("Cluster stats written to \"cluster_stats_" + trailer_text + ".txt\"")
 

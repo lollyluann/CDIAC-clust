@@ -327,6 +327,7 @@ def agglomerative(jacc_matrix,
     print("Fitting model to the distance matrix. ")
     clustering.fit(jacc_matrix)
     labels = clustering.labels_
+    print("Done fitting the model. ")
 
     if (overwrite == 1):
         print("Replotting dendrogram. ")
