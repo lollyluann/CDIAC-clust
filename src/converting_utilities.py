@@ -2,9 +2,7 @@ from bs4 import BeautifulSoup
 from itertools import repeat
 from tqdm import tqdm
 
-import parsl
-from parsl.app.app import python_app, bash_app
-from parsl.configs.local_threads import config
+from multiprocessing import Pool
 
 import pandas as pd
 import numpy as np
@@ -21,12 +19,12 @@ import DFS
 #=========1=========2=========3=========4=========5=========6=========7=
 
 def parse_args():
-
     # ARGUMENTS
     dataset_path = sys.argv[1]         # the dataset location
     num_top_exts = int(sys.argv[2])      # use k most frequent extensions 
+    num_processes = int(sys.argv[3])
 
-    return dataset_path, num_top_exts
+    return dataset_path, num_top_exts, num_processes
 
 def check_valid_dir(some_dir):
     if not os.path.isdir(some_dir):
@@ -41,97 +39,93 @@ def check_valid_dir(some_dir):
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         exit()
 
-#=========1=========2=========3=========4=========5=========6=========7=
+def progressBar(value, endvalue, bar_length=40):
+        percent = float(value) / endvalue
+        arrow = '-' * int(round(percent * bar_length)-1) + '>'
+        spaces = ' ' * (bar_length - len(arrow))
 
-@python_app
+        sys.stdout.write("\rFile {0}/{1}: [{2}] {3}%".format(value, endvalue, arrow + spaces, int(round(percent * 100))))
+        sys.stdout.flush()
+
+#==================2=========3=========4=========5=========6=========7=
+
 def pdf_action(path, output_dir): 
     transformed_path = path_utilities.str_encode(path)
+    FNULL = open(os.devnull, 'w')
     if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
-        subprocess.run("ebook-convert " + path + " " + os.path.join(output_dir, transformed_path + ".txt")) 
+        subprocess.call(["ebook-convert", path, os.path.join(output_dir, transformed_path + ".txt")], 
+                         stdout=FNULL, stderr=subprocess.STDOUT, close_fds=True) 
 
 ''' DOES: converts all the pdfs whose paths are specified in "pdf_paths"
           and puts the resultant text files in "dest/pdf/" '''
-def convert_pdfs(pdf_paths, dest):
+def convert_pdfs(pdf_paths, dest, num_processes):
     num_pdfs = len(pdf_paths)
-    print(num_pdfs, " pdfs for conversion")
+    print("Converting", num_pdfs, "pdfs... This may take awhile.")
     output_dir = os.path.join(dest, "pdf")
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
-    for path in tqdm(pdf_paths):      
-        pdf_action(path, output_dir)
-        #transformed_path = path_utilities.str_encode(path)
-        #if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
-            #os.system("ebook-convert " + path + " " + os.path.join(output_dir, transformed_path + ".txt")) 
+    with Pool(num_processes) as p:
+        p.starmap(pdf_action, zip(pdf_paths, [output_dir]*num_pdfs))
 
-def convert_doc(doc_paths, dest):
+def docs_action(path, output_dir):
+    transformed_path = path_utilities.str_encode(path)
+    try:     
+        if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
+            f = open(os.path.join(output_dir, transformed_path+".txt"), "w")
+            contents = textract.process(path).decode("UTF-8").replace("\n", " ")
+            f.write(contents)
+            f.close()
+    except textract.exceptions.ShellError:
+        print("File skipped due to error") 
+    
+def convert_doc(doc_paths, dest, num_processes):
     num_docs = len(doc_paths)
-    print(num_docs, " docs for conversion")
-    for path in tqdm(doc_paths): 
-        try:     
-            output_dir = os.path.join(dest, "doc")
-            if not os.path.isdir(output_dir):
-                os.mkdir(output_dir)
-            transformed_path = path_utilities.str_encode(path)
-            os.chdir(output_dir)
-            if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
-                f = open(transformed_path+".txt", "w")
-                contents = textract.process(path).decode("UTF-8").replace("\n", " ")
-                f.write(contents)
-                f.close()
-        except textract.exceptions.ShellError:
-            continue
- 
-def convert_docx(docx_paths, dest):
+    print("Converting", num_docs, "docs... This may take awhile.")
+    output_dir = os.path.join(dest, "doc")
+    if not os.path.isdir(output_dir):
+        os.mkdir(output_dir)
+    with Pool(num_processes) as p:
+        p.starmap(docs_action, zip(doc_paths, [output_dir]*num_docs))
+
+def convert_docx(docx_paths, dest, num_processes):
     num_docxs = len(docx_paths)
-    print(num_docxs, " docxs for conversion")
-    for path in tqdm(docx_paths):     
-        try:
-            output_dir = os.path.join(dest, "docx")
-            if not os.path.isdir(output_dir):
-                os.mkdir(output_dir)
-            transformed_path = path_utilities.str_encode(path)
-            os.chdir(output_dir)
-            if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
-                f = open(transformed_path+".txt", "w")
-                contents = textract.process(path)
-                f.write(str(contents))
-                f.close()
-        except textract.exceptions.ShellError:
-            continue
+    print("Converting", num_docxs, "docxs... This may take awhile.")
+    output_dir = os.path.join(dest, "docx")
+    if not os.path.isdir(output_dir):
+        os.mkdir(output_dir)
+    with Pool(num_processes) as p:
+        p.starmap(docs_action, zip(docx_paths, [output_dir]*num_docxs))
 
-def convert_html(html_paths, dest):
-    num_htmls = len(html_paths)
-    print(num_htmls, " htmls for conversion")
-    for path in tqdm(html_paths):     
-        with open(path, 'r', errors="backslashreplace") as content_file:
-            contents = content_file.read()
+def mls_action(filetype, path, output_dir):
+    with open(path, 'r', errors="backslashreplace") as content_file:
+        contents = content_file.read()
+        if filetype == "html":
             soup = BeautifulSoup(contents, 'html.parser')         
-            output_dir = os.path.join(dest, "html")
-            if not os.path.isdir(output_dir):
-                os.mkdir(output_dir)
-            transformed_path = path_utilities.str_encode(path)
-            os.chdir(output_dir)
-            if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
-                f = open(transformed_path+".txt", "w")
-                f.write(soup.get_text())
-                f.close()
-
-def convert_xml(xml_paths, dest):
-    num_xmls = len(xml_paths)
-    print(num_xmls, " xmls for conversion")
-    for path in tqdm(xml_paths):     
-        with open(path, 'r', errors="backslashreplace") as content_file:
-            contents = content_file.read()
+        else:
             soup = BeautifulSoup(contents, 'xml')         
-            output_dir = os.path.join(dest, "xml")
-            if not os.path.isdir(output_dir):
-                os.mkdir(output_dir)
-            transformed_path = path_utilities.str_encode(path)
-            os.chdir(output_dir)
-            if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
-                f = open(transformed_path+".txt", "w")
-                f.write(soup.get_text())
-                f.close()
+        transformed_path = path_utilities.str_encode(path)
+        if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
+            f = open(os.path.join(output_dir,transformed_path+".txt"), "w")
+            f.write(soup.get_text())
+            f.close()
+
+def convert_html(html_paths, dest, num_processes):
+    num_htmls = len(html_paths)
+    print("Converting", num_htmls, "htmls... This may take awhile.")
+    output_dir = os.path.join(dest, "html")
+    if not os.path.isdir(output_dir):
+        os.mkdir(output_dir)
+    with Pool(num_processes) as p:
+        p.starmap(mls_action, zip(["html"]*len(html_paths), html_paths, [output_dir]*num_htmls))
+
+def convert_xml(xml_paths, dest, num_processes):
+    num_xmls = len(xml_paths)
+    print("Converting", num_xmls, "xmls... This may take awhile.")
+    output_dir = os.path.join(dest, "xml")
+    if not os.path.isdir(output_dir):
+        os.mkdir(output_dir)
+    with Pool(num_processes) as p:
+        p.starmap(mls_action, zip(["xml"]*len(xml_paths), xml_paths, [output_dir]*num_xmls))
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -139,40 +133,16 @@ def convert_xml(xml_paths, dest):
 def get_valid_filenames_struct(dir_list):
     print("size of virtual directory: ", len(dir_list))
     list_valid_exts = [".xls", ".xlsx", ".tsv"]
-    list_caps_exts = {".XLS":".xls", ".XLSX":".xlsx", ".TSV":".tsv"}
     valid_list = []
     # for each filename in the directory...
     for path in tqdm(dir_list):
         filename = path_utilities.get_fname_from_path(path)
         length = len(filename)
         valid = False
-        # we iterate on the characters starting from end of the string
-        pos = length - 1
-        # dot pos will be position of the first period from the end,
-        # i.e. the file extension dot. If it is still "length" at end,
-        # we know that there are no dots in the filename. 
-        dot_pos = length
-        while (pos >= 0):
-            if (filename[pos] == "."):
-                dot_pos = pos
-                break
-            pos = pos - 1
-        # if there is a dot somewhere in filename, i.e. if there is an
-        # extension...
-        if (dot_pos < length):
-            extension = filename[dot_pos:length]
-            if extension in list_valid_exts:
-                valid_list.append(path)
-                valid = True
-            # if the extension is an ALLCAPS version...
-            elif extension in list_caps_exts.keys():
-                #new_filename = filename[0:dot_pos] 
-                # + list_caps_exts[extension]
-                # change it to lowercase and add it to valid_list
-                #os.system("mv " + os.path.join(dataset_path, filename) 
-                # + " " + os.path.join(dataset_path, new_filename))
-                valid_list.append(path)
-                valid = True
+        extension = path_utilities.get_single_extension(filename).lower()
+        if extension in list_valid_exts:
+            valid_list.append(path)
+            valid = True
         if (valid == False):
             print(extension)
             print("This filename is invalid: ", filename)
@@ -182,59 +152,57 @@ def get_valid_filenames_struct(dir_list):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
+def tabular_action(path, out_path):
+    subprocess.call(["ssconvert", path, out_path, ".csv > /dev/null 2>&1 -s"], 
+                     stdout=FNULL, stderr=subprocess.STDOUT, close_fds=True) 
+
 # DOES: converts all the files in valid list to csv, and puts the
 #       resultant files in out_dir. 
-def convert_tabular(valid_list, out_dir):
-
-    for path in tqdm(valid_list):
-
-        # output will look like <encoded_filepath_w/_extension>.csv.<i>
-        encoded_filename = path_utilities.str_encode(path)
-        out_path = os.path.join(out_dir, encoded_filename)
-        if not os.path.isfile(out_path + ".csv.0"):
-            print("out_path: ", out_path)
-            print("converting")
-            os.system("ssconvert " + path + " " 
-                      + out_path + ".csv > /dev/null 2>&1 -s")
-    return
+def convert_tabular(valid_list, out_dir, num_processes):
+    encoded_names = []
+    out_path = []
+    for path in valid_list:
+        encoded_names.append(path_utilities.str_encode(path))
+        out_path.append(os.path.join(out_dir, path_utilities.str_encode(path)))
+    # output will look like <encoded_filepath_w/_extension>.csv.<i>
+    print("Converting", len(valid_list), "tabular files... This may take awhile.")
+    with Pool(num_processes) as p:
+        p.starmap(tabular_action, zip(encoded_names, out_path))
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-def convert_tsv(valid_list, out_dir):
+def tsv_action(path, out_path):
+    try:
+        # use 'with' if the program isn't going to immediately terminate
+        # so you don't leave files open
+        # the 'b' is necessary on Windows
+        # it prevents \x1a, Ctrl-z, from ending the stream prematurely
+        # and also stops Python converting to / from different line terminators
+        # On other platforms, it has no effect
+        in_txt = csv.reader(open(path, "r"), delimiter = '\t')
+        out_csv = csv.writer(open(out_path, 'w'))
 
-    for path in tqdm(valid_list):
-
-        # output will look like <encoded_filepath_w/_extension>.csv.<i>
-        encoded_filename = path_utilities.str_encode(path)
-        out_path = os.path.join(out_dir, encoded_filename)
-        if not os.path.isfile(out_path + ".csv.0"):
-            print("out_path: ", out_path)
-            print("converting") 
-            try:
-
-                # use 'with' if the program isn't going to immediately terminate
-                # so you don't leave files open
-                # the 'b' is necessary on Windows
-                # it prevents \x1a, Ctrl-z, from ending the stream prematurely
-                # and also stops Python converting to / from different line terminators
-                # On other platforms, it has no effect
-                in_txt = csv.reader(open(path, "r"), delimiter = '\t')
-                out_csv = csv.writer(open(out_path, 'w'))
-
-                out_csv.writerows(in_txt)
-                if not os.path.isfile(out_path):
-                    print("Did not save converted .tsv correctly. ")
-            except UnicodeDecodeError:
-                continue
-            except MemoryError:
-                print("Memory error, skipping this file. ")
-                continue
-    return
+        out_csv.writerows(in_txt)
+        if not os.path.isfile(out_path):
+            print("Did not save converted .tsv correctly. ")
+    except:
+        print("File skipped due to error")
+    
+def convert_tsv(valid_list, out_dir, num_processes): 
+    encoded_names = []
+    out_path = []
+    for path in valid_list:
+        encoded_names.append(path_utilities.str_encode(path))
+        out_path.append(os.path.join(out_dir, path_utilities.str_encode(path)))
+    # output will look like <encoded_filepath_w/_extension>.csv.<i>
+    print("Converting", len(valid_list), "tsvs... This may take awhile.")
+    with Pool(num_processes) as p:
+        p.starmap(tsv_action, zip(encoded_names, out_path))  
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # MAIN FUNCTION
-def convert(dataset_path, num_top_exts):
+def convert(dataset_path, num_top_exts, num_processes):
     
     check_valid_dir(dataset_path)
 
@@ -243,7 +211,8 @@ def convert(dataset_path, num_top_exts):
 
     # get its absolute path
     dataset_path = os.path.abspath(dataset_path)
-    dest = os.path.join(dataset_path, "../converted-" + dataset_name + "/")
+    dest = os.path.join(dataset_path, "../finalconverted-" + dataset_name + "/")
+####################################################################################################################################################
     if not os.path.isdir(dest):
         os.system("mkdir " + dest)
     check_valid_dir(dest)
@@ -276,32 +245,32 @@ def convert(dataset_path, num_top_exts):
      
     if "pdf" in ext_locations:
         pdf_paths = ext_locations.get("pdf")
-        convert_pdfs(pdf_paths, dest)
+        convert_pdfs(pdf_paths, dest, num_processes)
     if "doc" in ext_locations:
         doc_paths = ext_locations.get("doc")
-        convert_doc(doc_paths, dest)
+        convert_doc(doc_paths, dest, num_processes)
     if "docx" in ext_locations:
         docx_paths = ext_locations.get("docx")
-        convert_docx(docx_paths, dest)
+        convert_docx(docx_paths, dest, num_processes)
     if "html" in ext_locations:
         html_paths = ext_locations.get("html")
-        convert_html(html_paths, dest)
+        convert_html(html_paths, dest, num_processes)
     if "xml" in ext_locations:
         xml_paths = ext_locations.get("xml")
-        convert_xml(xml_paths, dest)
+        convert_xml(xml_paths, dest, num_processes)
     
     if "xls" in ext_locations:
         xls_paths = ext_locations.get("xls")
         valid_xls = get_valid_filenames_struct(xls_paths)
-        convert_tabular(valid_xls, csv_dest)
+        convert_tabular(valid_xls, csv_dest, num_processes)
     if "xlsx" in ext_locations:
         xlsx_paths = ext_locations.get("xlsx")
         valid_xlsx = get_valid_filenames_struct(xlsx_paths)
-        convert_tabular(valid_xlsx, csv_dest)
+        convert_tabular(valid_xlsx, csv_dest, num_processes)
     if "tsv" in ext_locations:
         tsv_paths = ext_locations.get("tsv")
         valid_tsv = get_valid_filenames_struct(tsv_paths)
-        convert_tsv(valid_tsv, csv_dest)
+        convert_tsv(valid_tsv, csv_dest, num_processes)
     
 def main():
     

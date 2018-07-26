@@ -25,7 +25,8 @@ def main():
 
     if args.convert.lower() == 'y':
         converting_utilities.convert(args.dataset_path, 
-                                     args.num_extensions)
+                                     args.num_extensions,
+                                     args.num_processes)
 
     start = args.num_clusters_start
     end = args.num_clusters_end

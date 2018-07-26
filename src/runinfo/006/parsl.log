@@ -1,0 +1,7 @@
+2018-07-25 21:18:14 parsl.dataflow.dflow:78 [INFO]  Parsl version: 0.6.1
+2018-07-25 21:18:14 parsl.dataflow.dflow:79 [INFO]  Libsubmit version: 0.5.0
+2018-07-25 21:18:14 parsl.dataflow.usage_tracking.usage:126 [DEBUG]  Tracking status: True
+2018-07-25 21:18:14 parsl.dataflow.usage_tracking.usage:127 [DEBUG]  Testing mode   : False
+2018-07-25 21:18:14 parsl.dataflow.dflow:95 [INFO]  Run id is: /usr/local/lib/python3.5/dist-packages/parsl/dataflow/dflow.py-18
+2018-07-25 21:18:14 parsl.dataflow.memoization:52 [INFO]  App caching initialized
+2018-07-25 21:18:14 parsl.dataflow.strategy:122 [DEBUG]  Scaling strategy: simple

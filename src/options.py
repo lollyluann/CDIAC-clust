@@ -1,4 +1,5 @@
 import argparse
+import multiprocessing
 import pprint
 import sys
 
@@ -25,6 +26,9 @@ def load_arguments():
     argparser.add_argument('--num_extensions',
             type=int,
             default=15)
+    argparser.add_argument('--num_processes',
+            type=int,
+            default=multiprocessing.cpu_count()-1)
     argparser.add_argument('--fill_threshold',
             type=int,
             default=0.4)
