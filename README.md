@@ -1,4 +1,4 @@
-#This readme hasn't been updated in aeons -- we'll get to it eventually :(
+# This readme hasn't been updated in aeons -- we'll get to it eventually :(
 # CDIAC-clust
 
 Information about files and folders in this directory:
@@ -22,5 +22,5 @@ What you're currently reading.
 
 ## commit\_work.py
 First argument: string in quotes for commit message. 
-Example: `commut_work.py "updated the grow_apples.py script."`
+Example: `commit_work.py "updated the grow_apples.py script."`
 
