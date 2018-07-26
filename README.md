@@ -1,3 +1,4 @@
+#This readme hasn't been updated in aeons -- we'll get to it eventually :(
 # CDIAC-clust
 
 Information about files and folders in this directory:
