@@ -256,8 +256,15 @@ def to_recluster(num_clusters, retokenize, recluster, tfidf_matrix, dataset_path
              "all_cluster_words" - list of lists of top words in cluster
              "distinct_cluster_labels" - list of distinct cluster labels '''
 def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, n_words, minibatch):
-    #stopwords = nltk.download('stopwords')
-    #nltk.download('punkt')
+    try:
+        nltk.data.find('tokenizers/stopwords')
+    except:
+        stopwords = nltk.download('stopwords')
+    
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except:
+        nltk.download('punkt')
 
     stemmer = SnowballStemmer("english")
 

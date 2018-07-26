@@ -11,6 +11,7 @@ import sys
 import csv
 import os
 import re
+from unipath import Path
 
 import path_utilities
 import textract
@@ -97,17 +98,20 @@ def convert_docx(docx_paths, dest, num_processes):
         p.starmap(docs_action, zip(docx_paths, [output_dir]*num_docxs))
 
 def mls_action(filetype, path, output_dir):
-    with open(path, 'r', errors="backslashreplace") as content_file:
-        contents = content_file.read()
-        if filetype == "html":
-            soup = BeautifulSoup(contents, 'html.parser')         
-        else:
-            soup = BeautifulSoup(contents, 'xml')         
-        transformed_path = path_utilities.str_encode(path)
-        if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
-            f = open(os.path.join(output_dir,transformed_path+".txt"), "w")
-            f.write(soup.get_text())
-            f.close()
+    try:
+        with open(path, 'r', errors="backslashreplace") as content_file:
+            contents = content_file.read()
+            if filetype == "html":
+                soup = BeautifulSoup(contents, 'html.parser')         
+            else:
+                soup = BeautifulSoup(contents, 'xml')         
+            transformed_path = path_utilities.str_encode(path)
+            if not os.path.isfile(os.path.join(output_dir, transformed_path + ".txt")):
+                f = open(os.path.join(output_dir,transformed_path+".txt"), "w")
+                f.write(soup.get_text())
+                f.close()
+    except:
+        print("File skipped due to error.")
 
 def convert_html(html_paths, dest, num_processes):
     num_htmls = len(html_paths)
@@ -131,11 +135,11 @@ def convert_xml(xml_paths, dest, num_processes):
 
 # RETURNS: list of filepaths which are candidates for conversion.
 def get_valid_filenames_struct(dir_list):
-    print("size of virtual directory: ", len(dir_list))
-    list_valid_exts = [".xls", ".xlsx", ".tsv"]
+    #print("Size of virtual directory: ", len(dir_list))
+    list_valid_exts = ["xls", "xlsx", "tsv"]
     valid_list = []
     # for each filename in the directory...
-    for path in tqdm(dir_list):
+    for path in dir_list:
         filename = path_utilities.get_fname_from_path(path)
         length = len(filename)
         valid = False
@@ -147,13 +151,14 @@ def get_valid_filenames_struct(dir_list):
             print(extension)
             print("This filename is invalid: ", filename)
         
-    print("There are ", len(valid_list), " candidates for conversion. ")
+    #print("There are ", len(valid_list), " candidates for conversion. ")
     return valid_list
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
 def tabular_action(path, out_path):
-    subprocess.call(["ssconvert", path, out_path, ".csv > /dev/null 2>&1 -s"], 
+    FNULL = open(os.devnull, 'w')
+    subprocess.call(["ssconvert", path, out_path, "> /dev/null 2>&1 -s"], 
                      stdout=FNULL, stderr=subprocess.STDOUT, close_fds=True) 
 
 # DOES: converts all the files in valid list to csv, and puts the
@@ -163,41 +168,41 @@ def convert_tabular(valid_list, out_dir, num_processes):
     out_path = []
     for path in valid_list:
         encoded_names.append(path_utilities.str_encode(path))
-        out_path.append(os.path.join(out_dir, path_utilities.str_encode(path)))
+        out_path.append(os.path.join(out_dir, path_utilities.str_encode(path) + ".csv"))
     # output will look like <encoded_filepath_w/_extension>.csv.<i>
     print("Converting", len(valid_list), "tabular files... This may take awhile.")
     with Pool(num_processes) as p:
-        p.starmap(tabular_action, zip(encoded_names, out_path))
+        p.starmap(tabular_action, zip(valid_list, out_path))
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
 def tsv_action(path, out_path):
-    try:
+    #try:
         # use 'with' if the program isn't going to immediately terminate
         # so you don't leave files open
         # the 'b' is necessary on Windows
         # it prevents \x1a, Ctrl-z, from ending the stream prematurely
         # and also stops Python converting to / from different line terminators
         # On other platforms, it has no effect
-        in_txt = csv.reader(open(path, "r"), delimiter = '\t')
+        in_txt = csv.reader(open(path, "r", errors='ignore'), delimiter = '\t')
         out_csv = csv.writer(open(out_path, 'w'))
 
         out_csv.writerows(in_txt)
         if not os.path.isfile(out_path):
             print("Did not save converted .tsv correctly. ")
-    except:
-        print("File skipped due to error")
+    #except:
+    #    print("File skipped due to error")
     
 def convert_tsv(valid_list, out_dir, num_processes): 
     encoded_names = []
     out_path = []
     for path in valid_list:
         encoded_names.append(path_utilities.str_encode(path))
-        out_path.append(os.path.join(out_dir, path_utilities.str_encode(path)))
+        out_path.append(os.path.join(out_dir, path_utilities.str_encode(path) + ".csv"))
     # output will look like <encoded_filepath_w/_extension>.csv.<i>
     print("Converting", len(valid_list), "tsvs... This may take awhile.")
     with Pool(num_processes) as p:
-        p.starmap(tsv_action, zip(encoded_names, out_path))  
+        p.starmap(tsv_action, zip(valid_list, out_path))  
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -211,8 +216,8 @@ def convert(dataset_path, num_top_exts, num_processes):
 
     # get its absolute path
     dataset_path = os.path.abspath(dataset_path)
-    dest = os.path.join(dataset_path, "../finalconverted-" + dataset_name + "/")
-####################################################################################################################################################
+    #dest = os.path.join(dataset_path, "../finalconverted-" + dataset_name + "/")
+    dest = os.path.join(Path(dataset_path).parent, "converted-" + dataset_name + "/")
     if not os.path.isdir(dest):
         os.system("mkdir " + dest)
     check_valid_dir(dest)
