@@ -97,8 +97,9 @@ def generate_results(filename_header_pairs, labels, num_clusters,
     print("Total silhouette for entire clustering: ", sil)
 
     # get the frequency drop score of the clusters
-    freqdrop_scores = compute_freqdrop_score(cluster_directories) 
-    freqdrop_total = sum(freqdrop_scores) / len(freqdrop_scores)   
+    fd_scores, fd_total = compute_freqdrop_score(cluster_directories) 
+    freqdrop_total = fd_total 
+    freqdrop_scores = fd_scores
  
     # just make font a bit smaller
     matplotlib.rcParams.update({'font.size': 4})
@@ -158,9 +159,11 @@ def generate_results(filename_header_pairs, labels, num_clusters,
         # print to .txt file as well
         f.write(fig_title)
         f.write("\n\n")
-    
+   
+    ensemble_score = ((sil+1)/2 + freqdrop_total)/2 
     f.write("Total_silhouette: " + str(sil))
     f.write("Total_frequency drop: " + str(freqdrop_total))
+    f.write("Total ensemble score: " + str(ensemble_score))
     f.close()
     pdf.close()
-    return list_cluster_lists
+    return list_cluster_lists, ensemble_score

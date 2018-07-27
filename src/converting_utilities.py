@@ -259,6 +259,7 @@ def convert(dataset_path, num_top_exts, num_processes):
         convert_docx(docx_paths, dest, num_processes)
     if "html" in ext_locations:
         html_paths = ext_locations.get("html")
+        html_paths.extend(ext_locations.get("htm"))
         convert_html(html_paths, dest, num_processes)
     if "xml" in ext_locations:
         xml_paths = ext_locations.get("xml")

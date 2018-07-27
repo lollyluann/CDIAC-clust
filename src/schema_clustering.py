@@ -440,7 +440,7 @@ def runflow(dataset_path, num_clusters,
  
     # generate results in pdf and text files
     print("Generating results. ")
-    list_cluster_lists = generate_results(filename_header_pairs, 
+    list_cluster_lists, ensemble = generate_results(filename_header_pairs, 
                                           labels, 
                                           num_clusters, 
                                           dataset_path, 
@@ -454,7 +454,7 @@ def runflow(dataset_path, num_clusters,
                                               num_clusters,
                                               write_path, 
                                               dataset_name) 
-    return
+    return ensemble
 
 #=========1=========2=========3=========4=========5=========6=========7=
 #=========1=========2=========3=========4=========5=========6=========7=

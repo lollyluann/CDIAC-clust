@@ -5,11 +5,15 @@ import matplotlib.backends.backend_pdf
 
 import numpy as np
 import pandas as pd
+import time
 from time import time
 from tqdm import tqdm
 from glob import glob
 from unipath import Path
 from six import string_types
+import multiprocessing as mp
+import multiprocessing.queues
+from multiprocessing import Pool
 import nltk, re, os, codecs, mpld3, sys, random
 from nltk.stem.snowball import SnowballStemmer
 
@@ -67,7 +71,7 @@ def get_document_contents(directory, dataset_path):
     # for each folder in the directory (e.g. pdf/ doc/)
     for folder in conv_folders:
         filetype = path_utilities.get_last_dir_from_path(folder)
-        if filetype in ["pdf", "doc", "docx"]: #, "xml", "html"]:
+        if filetype in ["pdf", "doc", "docx", "html", "htm"]: #, "xml"]:
             print("Getting ."+folder+" contents")
             for filename in tqdm(os.listdir(folder)):
                 cur_file = os.path.join(folder,filename)
@@ -91,12 +95,93 @@ def get_document_contents(directory, dataset_path):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
+def tokenize_action(text):
+    stemmer = SnowballStemmer("english")
+    # tokenize by sentence, then by word so punctuation is its own token
+    tokens = [word for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)] 
+    
+    # filter out tokens without letters (e.g., numbers, punctuation)
+    filtered_tokens = []
+    for token in tokens:
+        if re.search('[a-zA-Z]', token):
+            # removes tokens with length 1
+            if len(token)>1:
+               filtered_tokens.append(token)
+    
+    # stems the tokens
+    stems = [stemmer.stem(t) for t in filtered_tokens]    
+    return [filtered_tokens, stems]
+
+#=========1=========2=========3=========4=========5=========6=========7=
+
+# ARGUMENTS: "docstring" is a single string containing text of an 
+#                        entire document
+#            "index"     is the index of the document in "dataset" 
+def tokenize_action_docwise(docstring, index):
+
+    stemmer = SnowballStemmer("english")
+    
+    # tokenize by sentence, then by word so punctuation is its own token
+    tokens = [word for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)] 
+    
+    # filter out tokens without letters (e.g., numbers, punctuation)
+    filtered_tokens = []
+    for token in tokens:
+        if re.search('[a-zA-Z]', token):
+    
+            # removes tokens with length 1
+            if len(token)>1:
+               filtered_tokens.append(token)
+    
+    # stems the tokens
+    stems = [stemmer.stem(t) for t in filtered_tokens]    
+    return [[filtered_tokens, stems], index]
+
+#=========1=========2=========3=========4=========5=========6=========7=
+
+# ARGUMENTS: "dataset"  list of all document text strings
+def tokenize_action_par(dataset, input_queue, output_queue):
+
+    print("Starting a process. ") 
+    sys.stdout.flush()
+
+    # for each document
+    while not input_queue.empty():
+        iteration = input_queue.get()
+        print("Iteration: ", iteration)
+
+        stemmer = SnowballStemmer("english")
+        
+        # tokenize by sentence, then by word so punctuation is its own token, only for a single doc at a time
+        tokens = [word for sent in nltk.sent_tokenize(dataset[iteration]) for word in nltk.word_tokenize(sent)] 
+        
+        # filter out tokens without letters (e.g., numbers, punctuation)
+        filtered_tokens = []
+        for token in tokens:
+            if re.search('[a-zA-Z]', token):
+        
+                # removes tokens with length 1
+                if len(token)>1:
+                   filtered_tokens.append(token)
+        
+        # stems the tokens
+        stems = [stemmer.stem(t) for t in filtered_tokens]
+
+        sys.stdout.flush()
+
+        output_queue.put([[filtered_tokens, stems], iteration])
+
+
+    print("Ending a process. ")
+    sys.stdout.flush() 
+    return
+
+#=========1=========2=========3=========4=========5=========6=========7=
+
 ''' PARAMETER: the text of a document
     RETURN: list of filtered tokens and a list of stems
     DOES: splits a document into a list of tokens & stems each token '''
 def tokenize_and_stem(text):
-    stemmer = SnowballStemmer("english")
-    # tokenize by sentence, then by word so punctuation is its own token
     tokens = [word for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
     
     # filter out tokens without letters (e.g., numbers, punctuation)
@@ -115,8 +200,7 @@ def tokenize_and_stem(text):
     RETURN: a list of stems
     DOES: for use with Tfidf Vectorizer '''
 def tokenize_and_stem_call(text):
-    ft, stems = tokenize_and_stem(text)
-    return stems
+    return tokenize_action(text)[1] 
 
 ''' PARAMETER: the path leading to the dataset
     RETURNS: the name of the dataset and the output path '''
@@ -135,10 +219,17 @@ def initialize_output_location(dataset_path):
     
 #=========1=========2=========3=========4=========5=========6=========7=
 
+def mkproc(func, arguments):
+    p = mp.Process(target=func, args=arguments)
+    p.start()
+    return p
+
+#=========1=========2=========3=========4=========5=========6=========7=
+
 ''' PARAMETERS: parameters explained in main_function
     RETURNS: a list of filenames and a list of file data
     DOES: retokenizes and catches errors '''
-def to_retokenize(retokenize, corpusdir, dataset_path): 
+def to_retokenize(retokenize, corpusdir, dataset_path, num_processes): 
     dataset_name, file_place = initialize_output_location(dataset_path)
     
     # "fnames" is a list of the paths of each file in the  source dataset
@@ -162,21 +253,104 @@ def to_retokenize(retokenize, corpusdir, dataset_path):
             
     if retokenize == "1":     
         print("\nTokenizing", len(dataset), "documents...")
-        totalvocab_stemmed = []
-        totalvocab_tokenized = []
+        data_part = (sys.getsizeof(dataset)/1000)//10
+        ind = 0
+        tokens_and_stems = []
+        num_docs = len(dataset)
+        
+        while ind<len(dataset):
+            incr = int((len(dataset)/data_part)+1) 
+            dataset_p = dataset[ind:ind+incr]
+            ind += incr
+
+    #===================================================================        
+    #   PARALLELIZING TOKENIZATION
+    #===================================================================        
+
+        # we instantiate the queue
+        input_queue = mp.Queue()
+        output_queue = mp.Queue()
+
+        # So we need each Process to take from an input queue, and to
+        # output to an output queue. All batch generation prcoesses
+        # will read from the same input queue, and what they will be
+        # reading is just an integer which corresponds to an iteration
+        for iteration in tqdm(range(num_docs)):
+            input_queue.put(iteration)
+
+        # CREATE MATRIXMULT PROCESSES
+        tokenize_args = (dataset, input_queue, output_queue)
+        allprocs = [mkproc(tokenize_action_par, tokenize_args) for x in range(num_processes)]
+
+        # get the tokens and stems from each document out of 
+        # "output_queue" and sort them in a list
+        # tokens_stems_list is a list of tuples, one for each document
+        # these tuples look like ((tokens_for_doc, stems_for_doc), iteration) where
+        # "tokens_for_doc" and "stems_for_doc" are lists of the tokens and stems for
+        # that document, and "iteration" is the index of the document
+        # in the dataset. 
+        # CAUTION: they may not be returned in order, iteration not 
+        # strictly increasing
+        tokens_stems_list = []
+        while len(tokens_stems_list) < num_docs:
+            tokens_stems_list.append(output_queue.get())
+
+        # join the processes, i.e. end them
+        for process in allprocs:
+            process.terminate()
+
+        # join the processes, i.e. end them
+        for process in allprocs:
+            process.join()
+        
+        # we sort "tokens_stems_list" so "iteration" is strictly
+        # increasing
+        sorted_tokens_stems_2tuple = sorted(tokens_stems_list, key=lambda x: x[1]) 
+        
+        # lists of tokens and stems for whole dataset
+        tokens = []
+        stems = []
+
+        # for each tuple ((tokens_for_doc, stems_for_doc),iteration)
+        for two_tuple in sorted_tokens_stems_2tuple:
+
+            # get the tuple (tokens_for_doc,stems_for_doc)
+            tokens_stems_for_doc = two_tuple[0] 
+            tokens_for_doc = tokens_stems_for_doc[0]
+            stems_for_doc = tokens_stems_for_doc[1]
+
+            # extend the list of tokens and stems for whole dataset
+            tokens.extend(tokens_for_doc)
+            stems.extend(stems_for_doc)
+
+        print("We're done. ")
+        exit()
+
+    #===================================================================        
+    #   DONE
+    #===================================================================        
+
+        totalvocab_stemmed = tokens
+        totalvocab_tokenized = stems
+
+        ''''
         for i in tqdm(dataset):
             # for each item in the dataset, tokenize and stem
             allwords_tokenized, allwords_stemmed = tokenize_and_stem(i)
+            with Pool(num_processes) as p:
             # extend "totalvocab_stemmed" and "totalvocab_tokenized"
             totalvocab_stemmed.extend(allwords_stemmed) 
             totalvocab_tokenized.extend(allwords_tokenized)
+        '''
 
         # vocab_frame contains all tokens mapped to their stemmed counterparts
         vocab_frame = pd.DataFrame({'words': totalvocab_tokenized}, 
                     index = totalvocab_stemmed)
         vocab_frame.to_pickle(os.path.join(file_place, "vocab_frame_" + dataset_name + ".pkl"))
         print('There are ' + str(vocab_frame.shape[0]) + ' items in vocab_frame')
-    
+   
+        print(vocab_frame)
+ 
         #define vectorizer parameters
         tfidf_vectorizer = TfidfVectorizer(max_df=1.0, max_features=200000,
                               min_df=1, stop_words='english', use_idf=True, 
@@ -185,7 +359,6 @@ def to_retokenize(retokenize, corpusdir, dataset_path):
         #fits the vectorizer to the dataset
         print("\nFitting vectorizer to data...")
         tfidf_matrix = tfidf_vectorizer.fit_transform(dataset) 
-        print("matrix", tfidf_matrix)
         np.save(os.path.join(file_place, "tfidf_matrix_" + dataset_name + ".npy"), tfidf_matrix)
         
         # the list of all feature names (tokens)
@@ -255,7 +428,7 @@ def to_recluster(num_clusters, retokenize, recluster, tfidf_matrix, dataset_path
     RETURNS: "frame" - dataframe containing clusters and file paths
              "all_cluster_words" - list of lists of top words in cluster
              "distinct_cluster_labels" - list of distinct cluster labels '''
-def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, n_words, minibatch):
+def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, n_words, minibatch, num_processes):
     try:
         nltk.data.find('tokenizers/stopwords')
     except:
@@ -276,7 +449,7 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
     #=========1=========2=========3=========4=========5=========6=======
 
     # tokenize and cluster    
-    fnames, dataset = to_retokenize(retokenize, corpusdir, dataset_path)
+    fnames, dataset = to_retokenize(retokenize, corpusdir, dataset_path, num_processes)
     tfidf_matrix = np.load(os.path.join(file_place, "tfidf_matrix_" + dataset_name + ".npy")).item()
     to_recluster(num_clusters, retokenize, recluster, tfidf_matrix, dataset_path, minibatch)
     
@@ -504,8 +677,7 @@ def print_cluster_stats(frame, top_words, dataset_path, num_clusters):
     
     fr = open(os.path.join(file_place, "cluster_stats_" + trailer_text + ".txt"), "w")
     total_silhouette, scores = silhouette.compute_silhouette(cluster_directories, dataset_path)
-    frqscores = frequencydrop.compute_freqdrop_score(cluster_directories)
-    total_frq_score = sum(frqscores)/len(frqscores)
+    frqscores, total_frq_score = frequencydrop.compute_freqdrop_score(cluster_directories)
     num_files_per_cluster = frame['cluster'].value_counts().sort_index().tolist()
 
     print("\n\nComputing cluster statistics...")
@@ -517,16 +689,19 @@ def print_cluster_stats(frame, top_words, dataset_path, num_clusters):
         c_stats = c_stats + "\nFrequency drop score: " + str(frqscores[clust_num])
         c_stats = c_stats + "\nTop 10 words: " + ", ".join(top_words.get(clust_num))
         fr.write(c_stats + "\n\n")
+    ensemble_score = ((total_silhouette+1)/2 + total_frq_score)/2
     fr.write("\nTotal silhouette score: " + str(total_silhouette))
     fr.write("Average frequency drop score: " + str(total_frq_score))
+    fr.write("Total ensemble score: " + str(ensemble_score))
     fr.close()
     print("Cluster stats written to \"cluster_stats_" + trailer_text + ".txt\"")
+    return ensemble_score
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # MAIN PROGRAM
 
-def runflow(num_clusters, retokenize, recluster, dataset_path, minibatch):
+def runflow(num_clusters, retokenize, recluster, dataset_path, minibatch, num_processes):
     
     if retokenize.lower() == 'y':
         retokenize = "1"
@@ -547,12 +722,13 @@ def runflow(num_clusters, retokenize, recluster, dataset_path, minibatch):
     # record initial time that program started
     t0 = time()
     
-    fr, all_cluster_words, distinct_cluster_labels = main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 10, minibatch)
+    fr, all_cluster_words, distinct_cluster_labels = main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 10, minibatch, num_processes)
     bar_clusters(fr, distinct_cluster_labels, num_clusters, home_dir, dataset_path)    
-    print_cluster_stats(fr, all_cluster_words, dataset_path, num_clusters)
+    ensemble_score = print_cluster_stats(fr, all_cluster_words, dataset_path, num_clusters)
     
     # print total time taken to run program
     print("\nTime taken: ", time()-t0, " seconds\n")
+    return ensemble_score
 
 if __name__ == "__main__":
     # stuff only to run when not called via 'import' here
