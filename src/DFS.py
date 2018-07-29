@@ -47,7 +47,7 @@ def extension_indexer(dataset_path, n, write_path):
     sorted_tuple = extensions.count_and_sort_exts(exts, n, 
                                                  write_path, dataset_path)
     sorted_exts, sorted_counts = sorted_tuple
-    top_n_exts = sorted_exts[:n]
+    top_n_exts = sorted_exts#UNCOMMENT FOR ONLY CONVERTING TOP N EXTS [:n]
      
     # makes a dictionary key for each of the top extensions
     ext_locations = {}

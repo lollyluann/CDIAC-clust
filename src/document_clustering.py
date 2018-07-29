@@ -6,6 +6,7 @@ import matplotlib.backends.backend_pdf
 import numpy as np
 import pandas as pd
 import time
+import queue
 from time import time
 from tqdm import tqdm
 from glob import glob
@@ -51,9 +52,11 @@ def get_document_contents(directory, dataset_path):
     
     # get contents of txt files still in original dataset
     txt_paths = ext_paths.get("txt")
+    #txt_paths.extend(ext_paths.get("py"))
     print("Getting .txt contents from " + dataset_path)
     for path in tqdm(txt_paths):
         if os.path.isfile(path):
+
             i = i+1
             # add the path of the file to "filenames" 
             filenames.append(path)
@@ -71,7 +74,7 @@ def get_document_contents(directory, dataset_path):
     # for each folder in the directory (e.g. pdf/ doc/)
     for folder in conv_folders:
         filetype = path_utilities.get_last_dir_from_path(folder)
-        if filetype in ["pdf", "doc", "docx", "html", "htm"]: #, "xml"]:
+        if filetype in ["pdf", "doc"]:#, "docx", "html", "htm"]: #, "xml"]:
             print("Getting ."+folder+" contents")
             for filename in tqdm(os.listdir(folder)):
                 cur_file = os.path.join(folder,filename)
@@ -114,31 +117,6 @@ def tokenize_action(text):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-# ARGUMENTS: "docstring" is a single string containing text of an 
-#                        entire document
-#            "index"     is the index of the document in "dataset" 
-def tokenize_action_docwise(docstring, index):
-
-    stemmer = SnowballStemmer("english")
-    
-    # tokenize by sentence, then by word so punctuation is its own token
-    tokens = [word for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)] 
-    
-    # filter out tokens without letters (e.g., numbers, punctuation)
-    filtered_tokens = []
-    for token in tokens:
-        if re.search('[a-zA-Z]', token):
-    
-            # removes tokens with length 1
-            if len(token)>1:
-               filtered_tokens.append(token)
-    
-    # stems the tokens
-    stems = [stemmer.stem(t) for t in filtered_tokens]    
-    return [[filtered_tokens, stems], index]
-
-#=========1=========2=========3=========4=========5=========6=========7=
-
 # ARGUMENTS: "dataset"  list of all document text strings
 def tokenize_action_par(dataset, input_queue, output_queue):
 
@@ -146,8 +124,11 @@ def tokenize_action_par(dataset, input_queue, output_queue):
     sys.stdout.flush()
 
     # for each document
-    while not input_queue.empty():
-        iteration = input_queue.get()
+    while True:
+        try:
+            iteration = input_queue.get()
+        except Queue.Empty:
+            break
         print("Iteration: ", iteration)
 
         stemmer = SnowballStemmer("english")
@@ -229,7 +210,8 @@ def mkproc(func, arguments):
 ''' PARAMETERS: parameters explained in main_function
     RETURNS: a list of filenames and a list of file data
     DOES: retokenizes and catches errors '''
-def to_retokenize(retokenize, corpusdir, dataset_path, num_processes): 
+def to_retokenize(retokenize, corpusdir, dataset_path, num_processes):
+    trot = time() 
     dataset_name, file_place = initialize_output_location(dataset_path)
     
     # "fnames" is a list of the paths of each file in the  source dataset
@@ -324,7 +306,6 @@ def to_retokenize(retokenize, corpusdir, dataset_path, num_processes):
             stems.extend(stems_for_doc)
 
         print("We're done. ")
-        exit()
 
     #===================================================================        
     #   DONE
@@ -345,12 +326,13 @@ def to_retokenize(retokenize, corpusdir, dataset_path, num_processes):
 
         # vocab_frame contains all tokens mapped to their stemmed counterparts
         vocab_frame = pd.DataFrame({'words': totalvocab_tokenized}, 
-                    index = totalvocab_stemmed)
+                                   index = totalvocab_stemmed)
         vocab_frame.to_pickle(os.path.join(file_place, "vocab_frame_" + dataset_name + ".pkl"))
         print('There are ' + str(vocab_frame.shape[0]) + ' items in vocab_frame')
    
-        print(vocab_frame)
- 
+        print("Time to tokenize:", time()-trot)    
+     
+        tfit = time()
         #define vectorizer parameters
         tfidf_vectorizer = TfidfVectorizer(max_df=1.0, max_features=200000,
                               min_df=1, stop_words='english', use_idf=True, 
@@ -369,7 +351,8 @@ def to_retokenize(retokenize, corpusdir, dataset_path, num_processes):
         dist = 1 - cosine_similarity(tfidf_matrix)
         np.save(os.path.join(file_place, "distance_matrix_" + dataset_name + ".npy"), dist)
         print("Vectorizer fitted to data")
-        
+        print("Time to fit tokenizer:", time() - tfit)
+
     return fnames, dataset
       
 #=========1=========2=========3=========4=========5=========6=========7=
@@ -504,6 +487,20 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
     for i in distinct_cluster_labels:
         fwriter.write("Cluster " + str(i) + " words: ")
         print("Cluster %d words:" % i, end='')
+        print("")
+        print("=======================")
+        print("DEBUGGING. ")
+        
+        print("length of terms: ", len(terms))
+        print("lengh of index of vocab_frame: ", len(vocab_frame.index))
+
+        
+        for ind in order_centroids[i, : n_words]:
+            #test_var = vocab_frame.ix[terms[ind].split(" ")].values.tolist()[0]
+            
+            print(' %s' % terms[ind].split(' '))
+
+        print("=======================")
         
         cluster_words = [] 
         seen = []
@@ -572,6 +569,7 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
 def unique(sequence):
     seen = set()
     return [x for x in sequence if not (x in seen or seen.add(x))]
+
 #=========1=========2=========3=========4=========5=========6=========7=
 
 ''' PARAMETERS: "frame" - a dataframe containing which files are in which clusters

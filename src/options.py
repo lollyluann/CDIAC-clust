@@ -1,5 +1,5 @@
-import argparse
 import multiprocessing
+import argparse
 import pprint
 import sys
 

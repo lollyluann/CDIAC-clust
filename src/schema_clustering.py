@@ -43,6 +43,7 @@ def parse_args():
     fill_threshold = float(sys.argv[3]) # ignore rows filled less
     overwrite = sys.argv[3]             # overwrite the distance matrix
     overwrite_plot = sys.argv[4]        # overwrite plot cache 
+    
     # overwrite is a string, should be "0" for don't overwrite, and "1"
     # for do
     arg_list = [
@@ -229,7 +230,7 @@ def dist_mat_generator(header_dict,
                        write_path, overwrite, dataset_name):
 
     #===================================================================
-    #=#BLOCK#=#: Get paths, read from header_dict, and initialize stuff. 
+    #=#: Get paths, read from header_dict, and initialize stuff. 
     #===================================================================
     print("Getting write paths for the distance matrix. ")   
  
@@ -254,7 +255,7 @@ def dist_mat_generator(header_dict,
     jacc_matrix = np.zeros((2,1))
     
     #===================================================================
-    #=#BLOCK#=#: Regenerate and overwrite the Jaccard distance matrix 
+    #=#: Regenerate and overwrite the Jaccard distance matrix 
     #            and save to a file, or else, read old one from file.  
     #===================================================================
 
@@ -349,7 +350,7 @@ def runflow(dataset_path, num_clusters,
             overwrite, overwrite_plot, fill_threshold):
    
     #===================================================================
-    #=#BLOCK#=#: Get read and write paths for cluster functions 
+    #=#: Get read and write paths for cluster functions 
     #===================================================================
     print("Getting read and write paths for cluster functions. ")  
  
@@ -404,8 +405,8 @@ def runflow(dataset_path, num_clusters,
     csv_dir = os.path.join(out_dir, "csv/")
 
     #===================================================================
-    #=#BLOCK#=#: Generates the files needed for clustering, clusters,
-    #            and and prints various results. 
+    #=#: Generates the files needed for clustering, clusters,
+    #    and prints various results. 
     #===================================================================
     
     # if csvs have less than fill_threshold*100% nonempty cells in 

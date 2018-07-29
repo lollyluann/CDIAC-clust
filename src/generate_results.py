@@ -1,3 +1,4 @@
+from matplotlib.backends.backend_pdf import PdfPages
 from frequencydrop import compute_freqdrop_score
 from silhouette import compute_silhouette
 import get_cluster_stats as get_stats
@@ -92,7 +93,7 @@ def generate_results(filename_header_pairs, labels, num_clusters,
     sil, sil_list = compute_silhouette(cluster_directories,dataset_path)
     l = 0
     for coeff in sil_list:
-        print("Silhouette score for cluster " + str(l)+": "+str(coeff))
+        # print("Silhouette score for cluster " + str(l)+": "+str(coeff))
         l += 1
     print("Total silhouette for entire clustering: ", sil)
 
@@ -110,7 +111,7 @@ def generate_results(filename_header_pairs, labels, num_clusters,
                             + "_k=" + str(num_clusters) + ".pdf")
     txt_path = os.path.join(write_path, "structured_stats_" + dataset_name 
                             + "_k=" + str(num_clusters) + ".txt")
-    pdf = matplotlib.backends.backend_pdf.PdfPages(pdf_path)
+    pdf = PdfPages(pdf_path)
     f = open(txt_path,'w')
     
     # for each cluster
@@ -159,8 +160,10 @@ def generate_results(filename_header_pairs, labels, num_clusters,
         # print to .txt file as well
         f.write(fig_title)
         f.write("\n\n")
-   
-    ensemble_score = ((sil+1)/2 + freqdrop_total)/2 
+  
+    # setting ensemble to just freqdrop 
+    # ensemble_score = ((sil+1)/2 + freqdrop_total)/2 
+    ensemble_score = freqdrop_total
     f.write("Total_silhouette: " + str(sil))
     f.write("Total_frequency drop: " + str(freqdrop_total))
     f.write("Total ensemble score: " + str(ensemble_score))

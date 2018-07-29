@@ -3,6 +3,7 @@ from collections import Counter
 import pandas as pd
 import numpy as np
 
+import math
 import sys
 import os
 
@@ -46,8 +47,8 @@ def compute_freqdrop_score(cluster_directories):
         
         # in the nontrivial case
         if m > 1:
-
             sigma = 0
+            delta = 1
 
             # get the total number of files in cluster
             cluster_size = 0
@@ -84,22 +85,34 @@ def compute_freqdrop_score(cluster_directories):
             max_diff = 0
             max_diff_index = 0
             for i in range(len(diffs)):
+                # print(diffs[i])
                 if diffs[i] >= max_diff:
                     max_diff = diffs[i]
                     max_diff_index = i
+            # print("max_diff_index: ", max_diff_index)
 
             # get number of files in the head
             head_size = 0
-            for i in range(max_diff_index):
+            for i in range(max_diff_index + 1):
                 head_size += freq_list[i]
+            # print("head_size: ", head_size)
 
             if m == 2:
+                # print("thinks m = 2. ")
                 sigma = 0 
             else:
+                # print(" IN else. ")
                 delta = max_diff_index + 1
-                sigma = math.log(delta, m - 1)    
-
-            freqdrop_score = ((1 - sigma) * head_size) / cluster_size
+                sigma = math.log(delta, m - 1)
+            print("m: ", m)
+            print("sigma: ", sigma)
+            print("delta: ", delta)
+            print("cluster_size: ", cluster_size)
+            
+            numerator = 1 - sigma
+            print("1 - sigma: ", numerator)
+            numerator = math.pow(numerator, 2)
+            freqdrop_score = (numerator * head_size) / cluster_size
         
         else:
             freqdrop_score = 1

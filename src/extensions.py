@@ -145,13 +145,16 @@ def count_and_sort_exts(extensions, num_slices, write_path, dataset_path):
                     ext_count_dict.update({ext:1})
     sorted_extensions = []
     sorted_counts = []
+
+    fd = open(os.path.join(write_path, "all_ext_counts_" + dataset_name + ".txt"), "w")
     # for each extension in the dict, iterating from largest to smallest count 
     for ext in sorted(ext_count_dict, key=ext_count_dict.get, reverse=True):
         # add the extension to a sorted list of extensions
         sorted_extensions.append(ext)
         # add the corresponding count to a list of counts
         sorted_counts.append(ext_count_dict[ext])    
-        print(ext, ext_count_dict[ext]) 
+        fd.write(ext + ": " + str(ext_count_dict[ext])+ "\n")
+    fd.close()
 
     f = open(os.path.join(write_path, "top_exts_" + dataset_name + ".txt" ),'w')
     if (len(sorted_extensions) < num_slices):
@@ -172,7 +175,7 @@ def plot_extension_pie(extensions, num_slices,
     sorted_tuple = count_and_sort_exts(extensions, num_slices,
                                        write_path, dataset_path)
     sorted_exts, sorted_counts = sorted_tuple
-    print("length of sorted_exts: ",len(sorted_exts))
+    print("Number of unique extensions: ",len(sorted_exts))
     dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
     labels = []
     sizes = []
@@ -196,9 +199,11 @@ def plot_extension_pie(extensions, num_slices,
 def plot_extensions(dataset_path, num_extensions):
     
     allpaths = DFS.DFS(dataset_path) 
-    p = Path(os.getcwd()).parent
+    p = Path(os.getcwd()).parent.parent
     dataset_name = path_utilities.get_last_dir_from_path(dataset_path)
-    write_path = os.path.join(p, "outputs/", dataset_name + "--output/")
+    write_path = os.path.join(p, "cluster-datalake-outputs/", dataset_name + "--output/") 
+    if not os.path.isdir(os.path.join(p,"cluster-datalake-outputs/")):
+        os.mkdir(os.path.join(p,"cluster-datalake-outputs/"))
     if not os.path.isdir(write_path):
         os.mkdir(write_path)
 

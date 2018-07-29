@@ -28,13 +28,14 @@ def main():
                                      args.num_extensions,
                                      args.num_processes)
 
-    start = args.num_clusters_start
-    end = args.num_clusters_end
-    num_clusters = start
-    max_struct_ensemble = [0,num_clusters]
-    print("Clustering structured files for all k: " + str(start) + "<=k<=" + str(end) + "...\n")
-    while num_clusters <= end:
-        if args.cluster_struct.lower() == 'y':
+    if args.cluster_struct.lower() == 'y':
+        start = args.num_clusters_start
+        end = args.num_clusters_end
+        num_clusters = start
+        max_struct_ensemble = 0
+        optimal_k = start
+        print("Clustering structured files for all k: " + str(start) + "<=k<=" + str(end) + "...\n") 
+        while num_clusters <= end:
             struct_ensemble = schema_clustering.runflow(args.dataset_path, 
                                       num_clusters, 
                                       args.overwrite_distmat_struct, 
@@ -42,18 +43,19 @@ def main():
                                       args.fill_threshold)
             print("Schema clustering with k="+str(num_clusters)+" yields ensemble score of " + str(struct_ensemble))
             if struct_ensemble>max_struct_ensemble:
-                max_struct_ensemble = [struct_ensemble, num_clusters]
-        num_clusters += 1
-    print("K with highest ensemble score:", str(max_struct_ensemble[1]))
+                max_struct_ensemble = struct_ensemble
+                optimal_k = num_clusters
+            num_clusters += 1
+        print("K with highest ensemble score:", str(optimal_k))
 
     
-    start = args.num_clusters_start
-    end = args.num_clusters_end
-    num_clusters = start
-    max_text_ensemble = [0,num_clusters]
-    print("Clustering text files for all k: " + str(start) + "<=k<=" + str(end) + "...\n")
-    while num_clusters <= end:
-        if args.cluster_text.lower() == 'y':
+    if args.cluster_text.lower() == 'y':
+        start = args.num_clusters_start
+        end = args.num_clusters_end
+        num_clusters = start
+        max_text_ensemble = [0,num_clusters]
+        print("Clustering text files for all k: " + str(start) + "<=k<=" + str(end) + "...\n")
+        while num_clusters <= end:
             text_ensemble = document_clustering.runflow(num_clusters, 
                                         args.overwrite_tokens_text,
                                         args.overwrite_clusters_text,
@@ -63,8 +65,8 @@ def main():
             print("Text clustering with k="+str(num_clusters)+" yields ensemble score of " + str(text_ensemble))
             if text_ensemble>max_text_ensemble:
                 max_text_ensemble = [text_ensemble, num_clusters]
-        num_clusters += 1
-    print("K with highest ensemble score:", str(max_text_ensemble[1]))
+            num_clusters += 1
+        print("K with highest ensemble score:", str(max_text_ensemble[1]))
  
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here

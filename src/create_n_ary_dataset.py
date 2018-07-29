@@ -17,16 +17,31 @@ import os
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-# ARGUMENTS
-# the directory in which to place the toy dataset
-dest = sys.argv[1]
-try:
-    n = int(sys.argv[2])
-    depth = int(sys.argv[3])
-except TypeError:
-    print("You probably tried to pass a non-integer argument. These"
-          + " are supposed to be natural numbers. ")
-    exit()
+def parse_args():
+
+    # ARGUMENTS
+    # the directory in which to place the toy dataset
+    print("Parsing arguments. ")
+    dest = sys.argv[1]
+    n = 1
+    depth = 0
+    try:
+        n = int(sys.argv[2])
+        depth = int(sys.argv[3])
+    except TypeError:
+        print("You probably tried to pass a non-integer argument. These"
+              + " are supposed to be natural numbers. ")
+        exit()
+   
+    arg_list = [
+                dest, 
+                n, 
+                depth, 
+               ]
+    print("Arguments parsed. ")
+    return arg_list
+
+#=========1=========2=========3=========4=========5=========6=========7=
 
 # DOES: checks whether or not a directory argument is valid 
 def check_valid_dir(some_dir):
@@ -41,20 +56,6 @@ def check_valid_dir(some_dir):
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         exit()
-
-# check if destination is valid, get its absolute path
-check_valid_dir(dest)
-dest = os.path.abspath(dest)
-# generate path to the new root of our toy dataset
-dataset_name = str(n) + "-ary_toy_dataset"
-dataset_path = os.path.join(dest, dataset_name)
-# make sure a directory with the same name doesn't already exist
-if os.path.isdir(dataset_path):
-    print("This directory already exists, change the existing "
-          + "directory's name, or try a different destination. ")
-    exit()
-# create the directory
-os.system("mkdir " + dataset_path)
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -76,6 +77,12 @@ def read_seed():
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
+# DOES: recursively generates an n-ary tree toy dataset with sample
+#       text files in the leaf directories. 
+# NOTE: depth should always be passed in as the height of the tree down
+#       to the leaf directories PLUS ONE, since depth should be the 
+#       height of the text files within the tree, which are inside the
+#       leaf directories. Same holds for csv function.  
 def generate_dataset_txt(dataset_path, num_children, depth, word_list):   
  
     if (depth == 1):
@@ -109,10 +116,8 @@ def generate_dataset_csv(dataset_path, num_children, depth, word_list):
     if (depth == 1):
         word = random.choice(word_list)
         row_list = []
-        for k in tqdm(range(8)):
+        for k in tqdm(range(10)):
             row_list.append(word)
-        row_list.append(random.choice(word_list))
-        row_list.append(random.choice(word_list))
         word_string = ','.join(token for token in row_list)
         text_file_path = os.path.join(dataset_path, word + "_1" + ".csv")
         with open(text_file_path, 'a') as the_file: 
@@ -135,10 +140,32 @@ def generate_dataset_csv(dataset_path, num_children, depth, word_list):
 #=========1=========2=========3=========4=========5=========6=========7=
 
 def main():
-    print("Just the main function. ")
+
+    arg_list = parse_args()
+    dest = arg_list[0]
+    n = arg_list[1]
+    depth = arg_list[2]
+
+    # check if destination is valid, get its absolute path
+    check_valid_dir(dest)
+    dest = os.path.abspath(dest)
+    
+    # generate path to the new root of our toy dataset
+    dataset_name = str(n) + "-ary_toy_dataset"
+    dataset_path = os.path.join(dest, dataset_name)
+    
+    # make sure a directory with the same name doesn't already exist
+    if os.path.isdir(dataset_path):
+        print("This directory already exists, change the existing "
+              + "directory's name, or try a different destination. ")
+        exit()
+    
+    # create the directory
+    os.system("mkdir " + dataset_path)
+
     word_list = read_seed()
-    generate_dataset_txt(dataset_path, n, depth, word_list)
-    generate_dataset_csv(dataset_path, n, depth, word_list)
+    generate_dataset_txt(dataset_path, n, depth + 1, word_list)
+    generate_dataset_csv(dataset_path, n, depth + 1, word_list)
     print("Should have worked. If you see a bunch of copy errors, "
           + "make sure there are no spaces between words in your "
           + "seed_words.csv file. ")

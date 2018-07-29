@@ -1,21 +1,21 @@
+from multiprocessing import Pool
 from bs4 import BeautifulSoup
 from itertools import repeat
+from unipath import Path
 from tqdm import tqdm
 
-from multiprocessing import Pool
+import path_utilities
+import DFS
 
 import pandas as pd
 import numpy as np
+
 import subprocess
+import textract
 import sys
 import csv
 import os
 import re
-from unipath import Path
-
-import path_utilities
-import textract
-import DFS
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -61,7 +61,7 @@ def pdf_action(path, output_dir):
           and puts the resultant text files in "dest/pdf/" '''
 def convert_pdfs(pdf_paths, dest, num_processes):
     num_pdfs = len(pdf_paths)
-    print("Converting", num_pdfs, "pdfs... This may take awhile.")
+    print("Converting", num_pdfs, "pdfs to .txt... This may take awhile.")
     output_dir = os.path.join(dest, "pdf")
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
@@ -81,7 +81,7 @@ def docs_action(path, output_dir):
     
 def convert_doc(doc_paths, dest, num_processes):
     num_docs = len(doc_paths)
-    print("Converting", num_docs, "docs... This may take awhile.")
+    print("Converting", num_docs, "docs to .txt... This may take awhile.")
     output_dir = os.path.join(dest, "doc")
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
@@ -90,7 +90,7 @@ def convert_doc(doc_paths, dest, num_processes):
 
 def convert_docx(docx_paths, dest, num_processes):
     num_docxs = len(docx_paths)
-    print("Converting", num_docxs, "docxs... This may take awhile.")
+    print("Converting", num_docxs, "docxs to .txt... This may take awhile.")
     output_dir = os.path.join(dest, "docx")
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
@@ -115,7 +115,7 @@ def mls_action(filetype, path, output_dir):
 
 def convert_html(html_paths, dest, num_processes):
     num_htmls = len(html_paths)
-    print("Converting", num_htmls, "htmls... This may take awhile.")
+    print("Converting", num_htmls, "htmls to .txt... This may take awhile.")
     output_dir = os.path.join(dest, "html")
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
@@ -124,13 +124,24 @@ def convert_html(html_paths, dest, num_processes):
 
 def convert_xml(xml_paths, dest, num_processes):
     num_xmls = len(xml_paths)
-    print("Converting", num_xmls, "xmls... This may take awhile.")
+    print("Converting", num_xmls, "xmls to .txt... This may take awhile.")
     output_dir = os.path.join(dest, "xml")
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
     with Pool(num_processes) as p:
         p.starmap(mls_action, zip(["xml"]*len(xml_paths), xml_paths, [output_dir]*num_xmls))
 
+def handle_compressed(comp_paths, dest):
+    num_comp = len(comp_paths)
+    output_dir = os.path.join(dest, "compressed")
+    if not os.path.isdir(output_dir):
+        os.mkdir(output_dir)
+    for path in comp_paths:
+        filename = path_utilities.get_fname_from_path(path)
+        p = subprocess.call(["gzip -d -q -k -f", filename, ">", os.path.join(dest, path_utilities.remove_extension(filename))], cwd=path_utilities.remove_path_end(path), shell=True)
+        p.wait()        
+        p2 = subprocess.call(["rm", path_utilities.remove_extension(filename)], cwd=path_utilities.remove_path_end(path), shell=True)
+        p2.wait()
 #=========1=========2=========3=========4=========5=========6=========7=
 
 # RETURNS: list of filepaths which are candidates for conversion.
@@ -170,7 +181,7 @@ def convert_tabular(valid_list, out_dir, num_processes):
         encoded_names.append(path_utilities.str_encode(path))
         out_path.append(os.path.join(out_dir, path_utilities.str_encode(path) + ".csv"))
     # output will look like <encoded_filepath_w/_extension>.csv.<i>
-    print("Converting", len(valid_list), "tabular files... This may take awhile.")
+    print("Converting", len(valid_list), "excel files to .csv... This may take awhile.")
     with Pool(num_processes) as p:
         p.starmap(tabular_action, zip(valid_list, out_path))
 
@@ -200,7 +211,7 @@ def convert_tsv(valid_list, out_dir, num_processes):
         encoded_names.append(path_utilities.str_encode(path))
         out_path.append(os.path.join(out_dir, path_utilities.str_encode(path) + ".csv"))
     # output will look like <encoded_filepath_w/_extension>.csv.<i>
-    print("Converting", len(valid_list), "tsvs... This may take awhile.")
+    print("Converting", len(valid_list), "tsvs to .csv... This may take awhile.")
     with Pool(num_processes) as p:
         p.starmap(tsv_action, zip(valid_list, out_path))  
 
@@ -246,8 +257,14 @@ def convert(dataset_path, num_top_exts, num_processes):
                                           num_top_exts, write_path)
 
     # if we have extensions with the following names, performs 
-    # conversion.
-     
+    # conversion. 
+    comp_paths = [] 
+    if "z" in ext_locations:    
+        comp_paths = ext_locations.get("z")
+        comp_paths.extend(ext_locations.get("gz"))
+        comp_paths.extend(ext_locations.get("zip"))
+        handle_compressed(comp_paths, dest)
+
     if "pdf" in ext_locations:
         pdf_paths = ext_locations.get("pdf")
         convert_pdfs(pdf_paths, dest, num_processes)
