@@ -88,8 +88,9 @@ def shuffle(dataset_path, shuffle_ratio, warning):
         # get the randomly chosen destination directory
         dest_dir = directory_list[permuted_index]
         
-        # move the file
-        os.system("mv " + next_file + " " + dest_dir)
+        # move the file, only if dest dir isn't parent of next_file
+        if remove_path_end(next_file) != dest_dir:
+            os.system("mv " + next_file + " " + dest_dir)
 
 #=========1=========2=========3=========4=========5=========6=========7=
 

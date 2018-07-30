@@ -258,12 +258,14 @@ def convert(dataset_path, num_top_exts, num_processes):
 
     # if we have extensions with the following names, performs 
     # conversion. 
+    '''
     comp_paths = [] 
     if "z" in ext_locations:    
         comp_paths = ext_locations.get("z")
         comp_paths.extend(ext_locations.get("gz"))
         comp_paths.extend(ext_locations.get("zip"))
         handle_compressed(comp_paths, dest)
+    '''
 
     if "pdf" in ext_locations:
         pdf_paths = ext_locations.get("pdf")

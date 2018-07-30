@@ -32,41 +32,44 @@ def main():
         start = args.num_clusters_start
         end = args.num_clusters_end
         num_clusters = start
-        max_struct_ensemble = 0
-        optimal_k = start
+        max_struct_score = 0
+        optimal_num_clusters = start
         print("Clustering structured files for all k: " + str(start) + "<=k<=" + str(end) + "...\n") 
         while num_clusters <= end:
-            struct_ensemble = schema_clustering.runflow(args.dataset_path, 
+            scores = schema_clustering.runflow(args.dataset_path, 
                                       num_clusters, 
                                       args.overwrite_distmat_struct, 
                                       args.overwrite_plot_struct,
                                       args.fill_threshold)
-            print("Schema clustering with k="+str(num_clusters)+" yields ensemble score of " + str(struct_ensemble))
-            if struct_ensemble>max_struct_ensemble:
-                max_struct_ensemble = struct_ensemble
-                optimal_k = num_clusters
+            struct_score = scores[0]
+            print("Schema clustering with k="+str(num_clusters)+" yields freqdrop score of " + str(struct_score))
+            if struct_score>max_struct_score:
+                max_struct_score = struct_score
+                optimal_num_clusters = num_clusters
             num_clusters += 1
-        print("K with highest ensemble score:", str(optimal_k))
+        print("k with highest freqdrop score:", str(optimal_num_clusters))
 
     
     if args.cluster_text.lower() == 'y':
         start = args.num_clusters_start
         end = args.num_clusters_end
         num_clusters = start
-        max_text_ensemble = [0,num_clusters]
+        max_text_score = 0
+        optimal_num_clusters = start
         print("Clustering text files for all k: " + str(start) + "<=k<=" + str(end) + "...\n")
         while num_clusters <= end:
-            text_ensemble = document_clustering.runflow(num_clusters, 
+            text_score = document_clustering.runflow(num_clusters, 
                                         args.overwrite_tokens_text,
                                         args.overwrite_clusters_text,
                                         args.dataset_path,
                                         args.minibatch_kmeans,
                                         args.num_processes)
-            print("Text clustering with k="+str(num_clusters)+" yields ensemble score of " + str(text_ensemble))
-            if text_ensemble>max_text_ensemble:
-                max_text_ensemble = [text_ensemble, num_clusters]
+            print("Text clustering with k="+str(num_clusters)+" yields freqdrop score of " + str(text_score))
+            if text_score > max_text_score:
+                max_text_score = text_score
+                optimal_num_clusters = num_clusters
             num_clusters += 1
-        print("K with highest ensemble score:", str(max_text_ensemble[1]))
+        print("k with highest freqdrop score:", str(optimal_num_clusters))
  
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here

@@ -311,8 +311,8 @@ def to_retokenize(retokenize, corpusdir, dataset_path, num_processes):
     #   DONE
     #===================================================================        
 
-        totalvocab_stemmed = tokens
-        totalvocab_tokenized = stems
+        totalvocab_stemmed = stems
+        totalvocab_tokenized = tokens
 
         ''''
         for i in tqdm(dataset):
@@ -487,26 +487,11 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
     for i in distinct_cluster_labels:
         fwriter.write("Cluster " + str(i) + " words: ")
         print("Cluster %d words:" % i, end='')
-        print("")
-        print("=======================")
-        print("DEBUGGING. ")
-        
-        print("length of terms: ", len(terms))
-        print("lengh of index of vocab_frame: ", len(vocab_frame.index))
-
-        
-        for ind in order_centroids[i, : n_words]:
-            #test_var = vocab_frame.ix[terms[ind].split(" ")].values.tolist()[0]
-            
-            print(' %s' % terms[ind].split(' '))
-
-        print("=======================")
-        
         cluster_words = [] 
         seen = []
+        
         # print the first "n_words" words in a cluster
         for ind in order_centroids[i, : n_words]:
-            #test_var = vocab_frame.ix[terms[ind].split(" ")].values.tolist()[0]
             
             print(' %s' % vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0], end=",")
             fwriter.write(vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0].rstrip('\n') + ", ")
@@ -530,16 +515,20 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
 
     #=========1=========2=========3=========4=========5=========6========
     
+    ''' 
+    if not os.path.isfile(os.path.join(file_place, "mds_pos_" + trailer_text + ".npy")):
+        retokenize = "1"
+    
     if retokenize == "1":
-        print("\nBypassing MDS fitting...") 
         # multidimensional scaling: convert distance matrix into 3-dimensions
         mds = MDS(n_components=3, dissimilarity="precomputed", random_state=1)
         print("\nFitting the distance matrix into 3 dimensions...")
         pos_save = mds.fit_transform(dist)  # shape (n_components, n_samples)
         np.save(os.path.join(file_place, "mds_pos_" + trailer_text + ".npy"), pos_save)
 
+    position_array = np.load(os.path.join(file_place, "mds_pos_" + trailer_text + ".npy"))
     print("Loaded existing MDS fit.")
-    pos = np.load(os.path.join(file_place, "mds_pos_" + trailer_text + ".npy")).item()
+    pos = position_array
     xs, ys, zs = pos[:, 0], pos[:, 1], pos[:, 2]
 
     # set up plot
@@ -548,6 +537,7 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
 
     # create data frame with MDS results, cluster numbers, and filenames
     df = pd.DataFrame(dict(x=xs, y=ys, z=zs, label=clusters, filename=fnames)) 
+    
     # group by cluster
     groups = df.groupby('label')
 
@@ -563,7 +553,8 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
 
     plt.savefig(os.path.join(file_place, "3D_document_cluster_" + trailer_text + ".png"), dpi=300)
     print("Scatter plot written to \"3D_document_cluster_" + trailer_text + ".png\"")
-           
+    '''      
+       
     return frame, all_cluster_words, distinct_cluster_labels
 
 def unique(sequence):
@@ -596,16 +587,13 @@ def bar_clusters(frame, distinct_cluster_labels, num_clusters, home_dir, dataset
         paths_in_cluster = {}
         # get the files associated with the current cluster
         cluster_files = frame.loc[frame['cluster']==i]
-        count = 0 
         for index, row in cluster_files.iterrows():
-            if count>1:
-                path = path_utilities.remove_path_end(row['filename'])
-                # if the path is already in the cluster, add to count
-                if path in paths_in_cluster:
-                    paths_in_cluster.update({path:paths_in_cluster.get(path)+1})
-                else:
-                    paths_in_cluster.update({path:1})
-            count+=1
+            path = path_utilities.remove_path_end(row['filename'])
+            # if the path is already in the cluster, add to count
+            if path in paths_in_cluster:
+                paths_in_cluster.update({path:paths_in_cluster.get(path)+1})
+            else:
+                paths_in_cluster.update({path:1})
         cluster_directories.append(paths_in_cluster)
         sorted_names = []
         sorted_counts = []
@@ -637,23 +625,25 @@ def bar_clusters(frame, distinct_cluster_labels, num_clusters, home_dir, dataset
 ''' PARAMETER: a list of filepaths
     RETURNS: nearest shared parent directory of all the files given '''
 def nearest_shared_parent(filepaths):
-    path1 = filepaths[0]
-    path1_folders = path1.split("/")
-    shared_index = len(path1_folders)
-    for i in range(1,len(filepaths)):
-        path2 = filepaths[i]
-        path2_folders = path2.split("/")
-        min_folderlist_len = min(len(path1_folders), len(path2_folders))
-        for j in range(min_folderlist_len):
-            # if the folder matches
-            if path1_folders[j]==path2_folders[j]:
-                # save the shared path
-                shared_index = j+1
-            # once they are no longer equal, stop iterating. 
-            else:
-                break
-    path1 = path1_folders[:shared_index]
-    return path1
+    if len(filepaths)>=0:
+        path1 = filepaths[0]
+        path1_folders = path1.split("/")
+        shared_index = len(path1_folders)
+        if len(filepaths)>0:
+            for i in range(1,len(filepaths)):
+                path2 = filepaths[i]
+                path2_folders = path2.split("/")
+                min_folderlist_len = min(len(path1_folders), len(path2_folders))
+                for j in range(min_folderlist_len):
+                    # if the folder matches
+                    if path1_folders[j]==path2_folders[j]:
+                        # save the shared path
+                        shared_index = j+1
+                    # once they are no longer equal, stop iterating. 
+                    else:
+                        break
+            path1 = path1_folders[:shared_index]
+        return path1
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -723,7 +713,9 @@ def runflow(num_clusters, retokenize, recluster, dataset_path, minibatch, num_pr
     fr, all_cluster_words, distinct_cluster_labels = main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 10, minibatch, num_processes)
     bar_clusters(fr, distinct_cluster_labels, num_clusters, home_dir, dataset_path)    
     ensemble_score = print_cluster_stats(fr, all_cluster_words, dataset_path, num_clusters)
-    
+    # freqdrop_score = scores[0]   
+    print("Ensemble score is: ", ensemble_score) 
+
     # print total time taken to run program
     print("\nTime taken: ", time()-t0, " seconds\n")
     return ensemble_score

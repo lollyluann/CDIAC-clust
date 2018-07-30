@@ -1,3 +1,4 @@
+from calculate_file_distances import compute_naive_score
 from matplotlib.backends.backend_pdf import PdfPages
 from frequencydrop import compute_freqdrop_score
 from silhouette import compute_silhouette
@@ -101,6 +102,10 @@ def generate_results(filename_header_pairs, labels, num_clusters,
     fd_scores, fd_total = compute_freqdrop_score(cluster_directories) 
     freqdrop_total = fd_total 
     freqdrop_scores = fd_scores
+
+    # get the naive tree dist score of the clusters
+    td_scores, td_total = compute_naive_score(list_cluster_lists,
+                                              cluster_directories)
  
     # just make font a bit smaller
     matplotlib.rcParams.update({'font.size': 4})
@@ -162,11 +167,15 @@ def generate_results(filename_header_pairs, labels, num_clusters,
         f.write("\n\n")
   
     # setting ensemble to just freqdrop 
-    # ensemble_score = ((sil+1)/2 + freqdrop_total)/2 
-    ensemble_score = freqdrop_total
+    ensemble_score = ((sil+1)/2 + freqdrop_total)/2
+    scores = [] 
+    scores.append(freqdrop_total)
+    scores.append(sil)
+    scores.append(td_total)
     f.write("Total_silhouette: " + str(sil))
     f.write("Total_frequency drop: " + str(freqdrop_total))
     f.write("Total ensemble score: " + str(ensemble_score))
+    f.write("Total naive score: " + str(td_total))
     f.close()
     pdf.close()
-    return list_cluster_lists, ensemble_score
+    return list_cluster_lists, scores

@@ -45,15 +45,15 @@ def compute_freqdrop_score(cluster_directories):
         freqdrop_score = 0
         freqdrop_scaled = 0
         
+        # get the total number of files in cluster
+        cluster_size = 0
+        for key, value in path_counts.items():
+            cluster_size += value
+        
         # in the nontrivial case
         if m > 1:
             sigma = 0
             delta = 1
-
-            # get the total number of files in cluster
-            cluster_size = 0
-            for key, value in path_counts.items():
-                cluster_size += value
  
             # Create a dataframe from path_counts        
             df = pd.DataFrame.from_dict(path_counts, orient='index')
@@ -104,13 +104,13 @@ def compute_freqdrop_score(cluster_directories):
                 # print(" IN else. ")
                 delta = max_diff_index + 1
                 sigma = math.log(delta, m - 1)
-            print("m: ", m)
-            print("sigma: ", sigma)
-            print("delta: ", delta)
-            print("cluster_size: ", cluster_size)
+            # print("m: ", m)
+            # print("sigma: ", sigma)
+            # print("delta: ", delta)
+            # print("cluster_size: ", cluster_size)
             
             numerator = 1 - sigma
-            print("1 - sigma: ", numerator)
+            # print("1 - sigma: ", numerator)
             numerator = math.pow(numerator, 2)
             freqdrop_score = (numerator * head_size) / cluster_size
         
@@ -123,6 +123,8 @@ def compute_freqdrop_score(cluster_directories):
         j += 1
     
         freqdrop_scaled = freqdrop_score * cluster_size / dataset_size
+        # print("cluster_size: ", cluster_size)
+        # print("Scaled single cluster score: ", freqdrop_scaled)
         freqdrop_scores_scaled.append(freqdrop_scaled) 
 
     freqdrop_total = sum(freqdrop_scores_scaled)

@@ -1,5 +1,9 @@
 from tqdm import tqdm
 import path_utilities
+
+import numpy as np
+
+from tqdm import tqdm
 import sys
 import os
 
@@ -86,20 +90,71 @@ def naive_max_dist(root):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-''' DEPRECATED
-    PARAMETER: all the paths in a cluster
+''' PARAMETER: all the paths in a cluster
     RETURNS: the average intracluster distance '''
-def intracluster_dist(cluster_paths):
+def intracluster_dist(cluster_paths, cluster_directory_dict):
+    
     distances = []
-    for i in range(len(cluster_paths)-1):
-        path1 = cluster_paths[i]
-        path2 = cluster_paths[i+1]
-        dirOf_path1 = path_utilities.remove_path_end(path1)
-        dirOf_path2 = path_utilities.remove_path_end(path2)
-        distances.append(path_dist(dirOf_path1, dirOf_path2))
+    for directory_a, freq_a in tqdm(cluster_directory_dict.items()):
+        for directory_b, freq_b in cluster_directory_dict.items():
+            dist = path_dist(directory_a, directory_b)
+            for i in range(freq_a * freq_b):
+                distances.append(dist)
     dists = np.array(distances)
-    return np.mean(dists)
+    
+    # compute the max distance over all directories in this cluster
+    max_dist = 0
+    for directory_a, freq_a in tqdm(cluster_directory_dict.items()):
+        for directory_b, freq_b in cluster_directory_dict.items():
+            dist = path_dist(directory_a, directory_b)
+            if (max_dist < dist):
+                max_dist = dist
+    if max_dist == 0:
+        max_dist = 1
+ 
+    return np.mean(dists) / max_dist
 
+#=========1=========2=========3=========4=========5=========6=========7=
+
+''' PARAMETER: all the paths in each cluster, and a dict mapping unique
+               directories to counts. 
+    RETURNS: tuple of a list of the naive intracluster distances
+             for each cluster and the total normalized version of these
+             scores.  '''
+def compute_naive_score(list_cluster_lists, cluster_directories):
+    
+    # number of files in each cluster 
+    cluster_file_counts = []
+    num_clusters = len(list_cluster_lists)
+
+    for i in tqdm(range(num_clusters)):
+
+        # list of the paths in the ith cluster
+        cluster_paths = list_cluster_lists[i]
+        cluster_file_count = len(cluster_paths)
+        cluster_file_counts.append(cluster_file_count)
+
+    total_num_files = sum(cluster_file_counts)
+
+    # naive tree dist scores for each cluster    
+    cluster_scores = []
+    
+    # scores scaled by cluster size, sum is normalized
+    scaled_scores = []
+    for i in tqdm(range(num_clusters)):
+        cluster_paths = list_cluster_lists[i]
+        cluster_directory_dict = cluster_directories[i]
+        naive_score = 1 - intracluster_dist(cluster_paths, 
+                                            cluster_directory_dict)
+        cluster_weight = cluster_file_counts[i] / total_num_files
+        scaled_scores.append(naive_score * cluster_weight)
+        cluster_scores.append(naive_score)
+        print("Naive score for cluster ", i, "is: ", naive_score)
+    
+    total_naive_score = sum(scaled_scores)
+    print("Total naive score: ", total_naive_score)
+    return cluster_scores, total_naive_score
+        
 #=========1=========2=========3=========4=========5=========6=========7=
 
 def main():
