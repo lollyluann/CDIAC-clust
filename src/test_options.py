@@ -14,18 +14,21 @@ def load_arguments():
     argparser.add_argument('--cluster_text',
             type=str,
             default='y')
-    argparser.add_argument('--num_children',
-            type=int,
-            default=3)
-    argparser.add_argument('--height',
-            type=int,
-            default=3)
     argparser.add_argument('--step',
             type=float,
             default=0.1)
-    argparser.add_argument('--dest',
+    argparser.add_argument('--num_clusters',
+            type=int,
+            default=10)
+    argparser.add_argument('--num_extensions',
+            type=int,
+            default=15)
+    argparser.add_argument('--num_processes',
+            type=int,
+            default=multiprocessing.cpu_count()-1)
+    argparser.add_argument('--dataset_path',
             type=str,
-            default='~/')
+            default='')
     
     args = argparser.parse_args()
 

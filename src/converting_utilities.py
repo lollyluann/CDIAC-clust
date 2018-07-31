@@ -34,7 +34,7 @@ def check_valid_dir(some_dir):
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print("")
         print("DIES IST EIN UNGÜLTIGES VERZEICHNIS!!!!")
-        print("fix yo directory")
+        print("")
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -266,7 +266,8 @@ def convert(dataset_path, num_top_exts, num_processes):
         comp_paths.extend(ext_locations.get("zip"))
         handle_compressed(comp_paths, dest)
     '''
-
+    
+    '''    
     if "pdf" in ext_locations:
         pdf_paths = ext_locations.get("pdf")
         convert_pdfs(pdf_paths, dest, num_processes)
@@ -283,7 +284,8 @@ def convert(dataset_path, num_top_exts, num_processes):
     if "xml" in ext_locations:
         xml_paths = ext_locations.get("xml")
         convert_xml(xml_paths, dest, num_processes)
-    
+    '''
+
     if "xls" in ext_locations:
         xls_paths = ext_locations.get("xls")
         valid_xls = get_valid_filenames_struct(xls_paths)
@@ -300,8 +302,8 @@ def convert(dataset_path, num_top_exts, num_processes):
 def main():
     
     # get the arguments
-    dataset_path, num_top_exts = parse_args()
-    convert(dataset_path, num_top_exts)
+    dataset_path, num_top_exts, num_processes = parse_args()
+    convert(dataset_path, num_top_exts, num_processes)
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here
    main() 

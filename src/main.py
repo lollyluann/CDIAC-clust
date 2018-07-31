@@ -56,20 +56,24 @@ def main():
         num_clusters = start
         max_text_score = 0
         optimal_num_clusters = start
+        allscores = []
         print("Clustering text files for all k: " + str(start) + "<=k<=" + str(end) + "...\n")
         while num_clusters <= end:
-            text_score = document_clustering.runflow(num_clusters, 
+            sil, frqdrop, text_score = document_clustering.runflow(num_clusters, 
                                         args.overwrite_tokens_text,
                                         args.overwrite_clusters_text,
                                         args.dataset_path,
                                         args.minibatch_kmeans,
                                         args.num_processes)
-            print("Text clustering with k="+str(num_clusters)+" yields freqdrop score of " + str(text_score))
-            if text_score > max_text_score:
-                max_text_score = text_score
+            print("Text clustering with k="+str(num_clusters)+" yields freqdrop score of " + str(frqdrop))
+            allscores.append(frqdrop)
+            if frqdrop > max_text_score:
+                max_text_score = frqdrop
                 optimal_num_clusters = num_clusters
             num_clusters += 1
-        print("k with highest freqdrop score:", str(optimal_num_clusters))
+        for x in range(len(allscores)):
+            print("k=" + str(start+x) + " cleanliness=" + allscores[x])
+        print("k with highest cleanliness score:", str(optimal_num_clusters))
  
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here

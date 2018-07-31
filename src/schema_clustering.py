@@ -138,6 +138,7 @@ def get_header_dict(csv_dir, csv_path_list,
             
             # read csv and get the header as a list
             reader = csv.reader(f)
+            header_list = []
             try:
                 header_list = next(reader)
                 
@@ -199,6 +200,8 @@ def get_header_dict(csv_dir, csv_path_list,
                 continue
             
             # throw a key value pair in the dict, with filename as key
+            if header_list == []:
+                continue
             header_dict.update({filename:header_list})
     print("Throwing out this number of files, all have less than ", 
           fill_threshold*100, 
@@ -330,6 +333,7 @@ def agglomerative(jacc_matrix,
     labels = clustering.labels_
     print("Done fitting the model. ")
 
+    '''
     if (overwrite == 1):
         print("Replotting dendrogram. ")
         plt.figure(figsize=(17,9))
@@ -339,7 +343,8 @@ def agglomerative(jacc_matrix,
                                  + "_k=" + str(num_clusters))
         plt.savefig(dend_path, dpi=300)
         print("Dendrogram written to \"dendrogram.png\"")
-    
+    '''   
+ 
     return labels
 
 #=========1=========2=========3=========4=========5=========6=========7=

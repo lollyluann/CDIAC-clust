@@ -679,11 +679,11 @@ def print_cluster_stats(frame, top_words, dataset_path, num_clusters):
         fr.write(c_stats + "\n\n")
     ensemble_score = ((total_silhouette+1)/2 + total_frq_score)/2
     fr.write("\nTotal silhouette score: " + str(total_silhouette))
-    fr.write("Average frequency drop score: " + str(total_frq_score))
-    fr.write("Total ensemble score: " + str(ensemble_score))
+    fr.write("\nTotal frequency drop score: " + str(total_frq_score))
+    fr.write("\nTotal ensemble score: " + str(ensemble_score))
     fr.close()
     print("Cluster stats written to \"cluster_stats_" + trailer_text + ".txt\"")
-    return ensemble_score
+    return silhouette, frqdrop, ensemble_score
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -712,13 +712,12 @@ def runflow(num_clusters, retokenize, recluster, dataset_path, minibatch, num_pr
     
     fr, all_cluster_words, distinct_cluster_labels = main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 10, minibatch, num_processes)
     bar_clusters(fr, distinct_cluster_labels, num_clusters, home_dir, dataset_path)    
-    ensemble_score = print_cluster_stats(fr, all_cluster_words, dataset_path, num_clusters)
-    # freqdrop_score = scores[0]   
+    silhouette, frqdrop, ensemble_score = print_cluster_stats(fr, all_cluster_words, dataset_path, num_clusters)
     print("Ensemble score is: ", ensemble_score) 
 
     # print total time taken to run program
     print("\nTime taken: ", time()-t0, " seconds\n")
-    return ensemble_score
+    return silhouette, frqdrop, ensemble_score
 
 if __name__ == "__main__":
     # stuff only to run when not called via 'import' here
