@@ -515,17 +515,17 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
 
     #=========1=========2=========3=========4=========5=========6========
     
-    ''' 
+     
     if not os.path.isfile(os.path.join(file_place, "mds_pos_" + trailer_text + ".npy")):
         retokenize = "1"
     
     if retokenize == "1":
         # multidimensional scaling: convert distance matrix into 3-dimensions
-        mds = MDS(n_components=3, dissimilarity="precomputed", random_state=1)
+        mds = MDS(n_components=2, dissimilarity="precomputed", random_state=1)
         print("\nFitting the distance matrix into 3 dimensions...")
         pos_save = mds.fit_transform(dist)  # shape (n_components, n_samples)
         np.save(os.path.join(file_place, "mds_pos_" + trailer_text + ".npy"), pos_save)
-
+    '''
     position_array = np.load(os.path.join(file_place, "mds_pos_" + trailer_text + ".npy"))
     print("Loaded existing MDS fit.")
     pos = position_array
@@ -553,7 +553,7 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
 
     plt.savefig(os.path.join(file_place, "3D_document_cluster_" + trailer_text + ".png"), dpi=300)
     print("Scatter plot written to \"3D_document_cluster_" + trailer_text + ".png\"")
-    '''      
+    '''   
        
     return frame, all_cluster_words, distinct_cluster_labels
 
@@ -658,7 +658,7 @@ def get_cluster_stats(one_cluster_directories):
     nsd = "Nearest shared directory: " + "/".join(nearest_shared_parent(list(one_cluster_directories.keys())))
     return unique+"\n"+avg+"\n"+med+"\n"+std+"\n"+nsd
 
-def print_cluster_stats(frame, top_words, dataset_path, num_clusters):
+def print_cluster_stats(frame, top_words, dataset_path, num_clusters, distinct_cluster_labels):
     dataset_name, file_place = initialize_output_location(dataset_path)
     trailer_text = dataset_name + "_k=" + str(num_clusters)
     cluster_directories = np.load(os.path.join(file_place, "cluster_directories_" + trailer_text + ".npy"))
@@ -668,8 +668,15 @@ def print_cluster_stats(frame, top_words, dataset_path, num_clusters):
     frqscores, total_frq_score = frequencydrop.compute_freqdrop_score(cluster_directories)
     num_files_per_cluster = frame['cluster'].value_counts().sort_index().tolist()
 
+    print(top_words)
+
+
+
     print("\n\nComputing cluster statistics...")
-    for clust_num in tqdm(range(len(cluster_directories))):
+    for clust_num in tqdm(distinct_cluster_labels): #range(len(cluster_directories))):
+        print("clust_num", clust_num)
+        print(top_words.get(clust_num))
+
         c_stats = "Cluster " + str(clust_num) + "\n"
         c_stats = c_stats + str(num_files_per_cluster[clust_num]) + " files \n"
         c_stats = c_stats + get_cluster_stats(cluster_directories[clust_num])
@@ -683,7 +690,7 @@ def print_cluster_stats(frame, top_words, dataset_path, num_clusters):
     fr.write("\nTotal ensemble score: " + str(ensemble_score))
     fr.close()
     print("Cluster stats written to \"cluster_stats_" + trailer_text + ".txt\"")
-    return silhouette, frqdrop, ensemble_score
+    return silhouette, total_frq_score, ensemble_score
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -712,7 +719,7 @@ def runflow(num_clusters, retokenize, recluster, dataset_path, minibatch, num_pr
     
     fr, all_cluster_words, distinct_cluster_labels = main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 10, minibatch, num_processes)
     bar_clusters(fr, distinct_cluster_labels, num_clusters, home_dir, dataset_path)    
-    silhouette, frqdrop, ensemble_score = print_cluster_stats(fr, all_cluster_words, dataset_path, num_clusters)
+    silhouette, frqdrop, ensemble_score = print_cluster_stats(fr, all_cluster_words, dataset_path, num_clusters, distinct_cluster_labels)
     print("Ensemble score is: ", ensemble_score) 
 
     # print total time taken to run program

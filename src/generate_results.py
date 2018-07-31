@@ -168,7 +168,8 @@ def generate_results(filename_header_pairs, labels, num_clusters,
   
     # setting ensemble to just freqdrop 
     ensemble_score = ((sil+1)/2 + freqdrop_total)/2
-    scores = [] 
+    scores = []
+    sil = (sil + 1) / 2
     scores.append(freqdrop_total)
     scores.append(sil)
     scores.append(td_total)
