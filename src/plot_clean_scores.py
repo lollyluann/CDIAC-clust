@@ -3,6 +3,7 @@ matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
 
+import pandas as pd
 import numpy as np
 
 import csv
@@ -22,13 +23,14 @@ def plot_scores(scores_path):
         
         # delete last column, it's empty
         scores_array = np.delete(scores_array, 4, 1)
-        print(scores_array)
+        scores = pd.DataFrame(scores_array)
+        # scores.columns = ['shuffle_ratio', 'freqdrop_score', 'silhouette_score', 'naive_tree_dist_score']
+        print(scores)
 
-
-    fig = plt.figure(figsize=(5,5))
-    plt.plot(scores_array[:,0], scores_array[:,1])
-
-    plt.savefig("scores_plot", dpi=300)
+        fig = plt.figure(figsize=(5,5))
+        scores = scores.astype(float)
+        scores.plot()
+        plt.savefig("scores_plot", dpi=300)
 
     scores_list = []    
     return scores_list
