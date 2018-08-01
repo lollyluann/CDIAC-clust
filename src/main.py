@@ -57,8 +57,11 @@ def main():
         max_text_score = 0
         optimal_num_clusters = start
         allscores = []
+        retokenize = args.overwrite_tokens_text
         print("Clustering text files for all k: " + str(start) + "<=k<=" + str(end) + "...\n")
         while num_clusters <= end:
+            if num_clusters > start:
+                retokenize = "n"
             sil, frqdrop, text_score = document_clustering.runflow(num_clusters, 
                                         args.overwrite_tokens_text,
                                         args.overwrite_clusters_text,
@@ -72,7 +75,7 @@ def main():
                 optimal_num_clusters = num_clusters
             num_clusters += 1
         for x in range(len(allscores)):
-            print("k=" + str(start+x) + " cleanliness=" + allscores[x])
+            print("k=" + str(start+x) + " cleanliness=" + str(allscores[x]))
         print("k with highest cleanliness score:", str(optimal_num_clusters))
  
 if __name__ == "__main__":

@@ -664,22 +664,17 @@ def print_cluster_stats(frame, top_words, dataset_path, num_clusters, distinct_c
     frqscores, total_frq_score = frequencydrop.compute_freqdrop_score(cluster_directories)
     num_files_per_cluster = frame['cluster'].value_counts().sort_index().tolist()
 
-    print(top_words)
-
-
-
     print("\n\nComputing cluster statistics...")
-    for clust_num in tqdm(distinct_cluster_labels): #range(len(cluster_directories))):
-        print("clust_num", clust_num)
-        print(top_words.get(clust_num))
+    for clust_num in range(len(cluster_directories)):
 
-        c_stats = "Cluster " + str(clust_num) + "\n"
-        c_stats = c_stats + str(num_files_per_cluster[clust_num]) + " files \n"
-        c_stats = c_stats + get_cluster_stats(cluster_directories[clust_num])
-        c_stats = c_stats + "\nSilhouette score: " + str(scores[clust_num])
-        c_stats = c_stats + "\nFrequency drop score: " + str(frqscores[clust_num])
-        c_stats = c_stats + "\nTop 10 words: " + ", ".join(top_words.get(clust_num))
-        fr.write(c_stats + "\n\n")
+        if top_words.get(clust_num) is not None:
+            c_stats = "Cluster " + str(clust_num) + "\n"
+            c_stats = c_stats + str(num_files_per_cluster[int(clust_num)]) + " files \n"
+            c_stats = c_stats + get_cluster_stats(cluster_directories[clust_num])
+            c_stats = c_stats + "\nSilhouette score: " + str(scores[clust_num])
+            c_stats = c_stats + "\nFrequency drop score: " + str(frqscores[clust_num])
+            c_stats = c_stats + "\nTop 10 words: " + ", ".join(top_words.get(clust_num))
+            fr.write(c_stats + "\n\n")
     ensemble_score = ((total_silhouette+1)/2 + total_frq_score)/2
     fr.write("\nTotal silhouette score: " + str(total_silhouette))
     fr.write("\nTotal frequency drop score: " + str(total_frq_score))

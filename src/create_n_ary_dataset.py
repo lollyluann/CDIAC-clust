@@ -84,9 +84,16 @@ def read_seed():
 #       height of the text files within the tree, which are inside the
 #       leaf directories. Same holds for csv function.  
 def generate_dataset_txt(dataset_path, num_children, depth, word_list):   
- 
+    total_words_needed = num_children**depth
+    if len(word_list)<total_words_needed:
+        print("You only have", len(word_list), "seed words in your file.\nYou need at least", total_words_needed)
+        exit()
+    used_words = []
     if (depth == 1):
         word = random.choice(word_list)
+        while word in used_words:
+            word = random.choice(word_list)
+        used_words.append(word)
         row_list = []
         for k in tqdm(range(10)):
             row_list.append(word)
