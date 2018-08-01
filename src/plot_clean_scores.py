@@ -46,7 +46,7 @@ def plot_scores(scores_path):
         
         plt.xticks(range(11), labels)
 
-        scores.plot(x='shuffle_ratio', ax=ax, use_index=False, legend=False)
+        scores_graph = scores.plot(x='shuffle_ratio', ax=ax, use_index=False, legend=False)
         
 
         # ax.set_xlim([-0.1, 1.1])

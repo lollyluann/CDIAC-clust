@@ -1,14 +1,19 @@
 from calculate_file_distances import compute_naive_score
-from matplotlib.backends.backend_pdf import PdfPages
 from frequencydrop import compute_freqdrop_score
 from silhouette import compute_silhouette
-import get_cluster_stats as get_stats
-from matplotlib import pyplot as plt
 from collections import Counter
 from tqdm import tqdm
-import path_utilities
+
+from matplotlib.backends.backend_pdf import PdfPages
+
+from matplotlib import pyplot as plt
+
+import get_cluster_stats as get_stats
 import pandas as pd
+
+import path_utilities
 import matplotlib
+import pickle
 import os
 
 # DOES: generates barcharts which show the distribution of unique
@@ -116,9 +121,15 @@ def generate_results(filename_header_pairs, labels, num_clusters,
                             + "_k=" + str(num_clusters) + ".pdf")
     txt_path = os.path.join(write_path, "structured_stats_" + dataset_name 
                             + "_k=" + str(num_clusters) + ".txt")
+    pkl_path = os.path.join(write_path, "histogram_data_" + dataset_name 
+                            + "_k=" + str(num_clusters) + ".pkl")
     pdf = PdfPages(pdf_path)
     f = open(txt_path,'w')
-    
+
+    # save list_cluster_lists to a pkl file
+    with open(pkl_path, 'wb') as filehandle:      
+        pickle.dump(list_cluster_lists, filehandle)
+ 
     # for each cluster
     for k in range(num_clusters):
         single_cluster_stats = cluster_stats[k]

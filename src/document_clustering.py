@@ -240,10 +240,6 @@ def to_retokenize(retokenize, corpusdir, dataset_path, num_processes):
         tokens_and_stems = []
         num_docs = len(dataset)
         
-        while ind<len(dataset):
-            incr = int((len(dataset)/data_part)+1) 
-            dataset_p = dataset[ind:ind+incr]
-            ind += incr
 
     #===================================================================        
     #   PARALLELIZING TOKENIZATION
