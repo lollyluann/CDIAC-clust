@@ -1,0 +1,11 @@
+Shuffle ratio: 0.000 Freqdrop score: 1.000 Silhouette score: 1.000 Naive score: 1.000
+Shuffle ratio: 0.100 Freqdrop score: 0.907 Silhouette score: -0.229 Naive score: 0.839
+Shuffle ratio: 0.200 Freqdrop score: 0.792 Silhouette score: -0.487 Naive score: 0.670
+Shuffle ratio: 0.300 Freqdrop score: 0.722 Silhouette score: -0.449 Naive score: 0.574
+Shuffle ratio: 0.400 Freqdrop score: 0.593 Silhouette score: -0.438 Naive score: 0.426
+Shuffle ratio: 0.500 Freqdrop score: 0.526 Silhouette score: -0.413 Naive score: 0.365
+Shuffle ratio: 0.600 Freqdrop score: 0.451 Silhouette score: -0.370 Naive score: 0.302
+Shuffle ratio: 0.700 Freqdrop score: 0.298 Silhouette score: -0.297 Naive score: 0.208
+Shuffle ratio: 0.800 Freqdrop score: 0.225 Silhouette score: -0.234 Naive score: 0.180
+Shuffle ratio: 0.900 Freqdrop score: 0.127 Silhouette score: -0.187 Naive score: 0.152
+Shuffle ratio: 1.000 Freqdrop score: 0.106 Silhouette score: -0.179 Naive score: 0.146

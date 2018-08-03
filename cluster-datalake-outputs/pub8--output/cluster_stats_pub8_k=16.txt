@@ -1,0 +1,180 @@
+Cluster 0
+212 files 
+23 unique directories
+Avg dir frequency: 9.217391304347826
+Median dir frequency: 6.0
+Std-dev dir frequency: 9.240536977334683
+Nearest shared directory: /home/ubuntu/pub8/oceans
+Silhouette score: -0.05359854206981654
+Frequency drop score: 0.20154543746596515
+Top 10 words: VariableName, Unit, CO2, equilibration, °C, µatm, given, hPa, precision, calibrated
+
+Cluster 1
+158 files 
+24 unique directories
+Avg dir frequency: 6.583333333333333
+Median dir frequency: 6.0
+Std-dev dir frequency: 3.0265032995558125
+Nearest shared directory: /home/ubuntu/pub8/oceans
+Silhouette score: -0.2925501728150645
+Frequency drop score: 0.09454770853988727
+Top 10 words: equilibration, pCO2, air, samples, Use, Gas, CO2, analyzed, Waters, temperature
+
+Cluster 2
+108 files 
+5 unique directories
+Avg dir frequency: 21.6
+Median dir frequency: 29.0
+Std-dev dir frequency: 11.77454882362802
+Nearest shared directory: /home/ubuntu/pub8/oceans/VOS_Explorer_line
+Silhouette score: 0.39636363636363636
+Frequency drop score: 0.03668417494051512
+Top 10 words: dataset, day, CMDL, Jersey, New, Bayonne, Bayonne, day, day, Bayonne
+
+Cluster 3
+14 files 
+10 unique directories
+Avg dir frequency: 1.4
+Median dir frequency: 1.0
+Std-dev dir frequency: 0.66332495807108
+Nearest shared directory: /home/ubuntu/pub8/oceans/Moorings
+Silhouette score: -0.023214285714285736
+Frequency drop score: 0.125
+Top 10 words: predictive, changes, predictive, submit, submit, data, changes, adjusted, Licor, data
+
+Cluster 4
+63 files 
+11 unique directories
+Avg dir frequency: 5.7272727272727275
+Median dir frequency: 5.0
+Std-dev dir frequency: 3.719504099177961
+Nearest shared directory: /home/ubuntu/pub8/oceans/VOS_Colibri_Line
+Silhouette score: 0.06093670369780734
+Frequency drop score: 0.2222222222222222
+Top 10 words: Waters, equilibration, Gas, temperature, pressure, air, Gas, CO2, FS, inlet
+
+Cluster 5
+40 files 
+40 unique directories
+Avg dir frequency: 1.0
+Median dir frequency: 1.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/pub8/oceans/Moorings
+Silhouette score: -0.02321428571428571
+Frequency drop score: 0.0
+Top 10 words: mol-fraction, umol/mol, umol/mol, mol-fraction, column, umol/mol, gasColumn, mol-fraction, mol-fraction, uatm
+
+Cluster 6
+16 files 
+1 unique directories
+Avg dir frequency: 16.0
+Median dir frequency: 16.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/pub8/oceans/NOAA_Workshop/Lequere_Data/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: knot, EQPAC_west, EQPAC, EQ155W, EQ155W, EQ155W, EQPAC_east, EQPAC_west, EQPAC_east, knot
+
+Cluster 7
+23 files 
+23 unique directories
+Avg dir frequency: 1.0
+Median dir frequency: 1.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/pub8/oceans/VOS_Palmer_Lines
+Silhouette score: 0.21959948798433504
+Frequency drop score: 0.0
+Top 10 words: valves, flow, equilibration, samples, tubing, Pump, module, inches, analyzed, pCO2
+
+Cluster 8
+166 files 
+22 unique directories
+Avg dir frequency: 7.545454545454546
+Median dir frequency: 5.5
+Std-dev dir frequency: 8.228151635625279
+Nearest shared directory: /home/ubuntu/pub8/oceans
+Silhouette score: -0.15714073821327784
+Frequency drop score: 0.24096385542168675
+Top 10 words: variability, Unit, Unit, equilibration, Celsius, degree, CO2, Waters, resolution, resolution
+
+Cluster 9
+1415 files 
+543 unique directories
+Avg dir frequency: 2.605893186003683
+Median dir frequency: 1.0
+Std-dev dir frequency: 4.026080066657837
+Nearest shared directory: /home/ubuntu/pub8/oceans
+Silhouette score: -0.051194172990845166
+Frequency drop score: 0.03674911660777385
+Top 10 words: data, samples, CO2, Waters, Measurements, calibrated, CTD, stations, Use, temperature
+
+Cluster 10
+139 files 
+139 unique directories
+Avg dir frequency: 1.0
+Median dir frequency: 1.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/pub8/oceans
+Silhouette score: -0.08176027933376913
+Frequency drop score: 0.0
+Top 10 words: Oak, Oak, Ridge, Ridge, Tennessee, National, Laboratory, Laboratory, Department, Oak
+
+Cluster 11
+18 files 
+2 unique directories
+Avg dir frequency: 9.0
+Median dir frequency: 9.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/pub8/oceans/NOAA_Workshop
+Silhouette score: 0.0
+Frequency drop score: 0.5
+Top 10 words: uatm, uatm, dPCO2, dPCO2, pCO2, pCO2, dPCO2, mol/m2/y, uatm, uatm
+
+Cluster 12
+39 files 
+4 unique directories
+Avg dir frequency: 9.75
+Median dir frequency: 9.0
+Std-dev dir frequency: 2.5860201081971503
+Nearest shared directory: /home/ubuntu/pub8/oceans/VOS_Tangaroa
+Silhouette score: 0.44875592434512324
+Frequency drop score: 0.358974358974359
+Top 10 words: NIWA, VariableName, calibrated, NIWA, Wellington, Unit, CO2, calibrated, prepared, calibrated
+
+Cluster 13
+32 files 
+5 unique directories
+Avg dir frequency: 6.4
+Median dir frequency: 6.0
+Std-dev dir frequency: 2.870540018881465
+Nearest shared directory: /home/ubuntu/pub8/oceans/VOS_Skogafoss_Lines
+Silhouette score: 0.4576140896233281
+Frequency drop score: 0.0
+Top 10 words: data, AOML, CCGG, Gasses, CCGG, SKOGAFOSS, Carbon, CCGG, cycle, adapted
+
+Cluster 14
+76 files 
+13 unique directories
+Avg dir frequency: 5.846153846153846
+Median dir frequency: 5.0
+Std-dev dir frequency: 3.4383840982503084
+Nearest shared directory: /home/ubuntu/pub8/oceans
+Silhouette score: 0.17076119882844532
+Frequency drop score: 0.05733307036838993
+Top 10 words: pCO, air, equilibration, samples, Waters, Use, analyzed, Gas, time, temperature
+
+Cluster 15
+78 files 
+26 unique directories
+Avg dir frequency: 3.0
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.2105595007244934
+Nearest shared directory: /home/ubuntu/pub8/oceans/VOS_Palmer_Lines
+Silhouette score: -0.2924055338999412
+Frequency drop score: 0.11228412656015838
+Top 10 words: equilibration, Use, Gas, pCO2, samples, data, CO2, Waters, air, flow
+
+
+Total silhouette score: -0.03031065118865985
+Total frequency drop score: 0.0852882313459193
+Total ensemble score: 0.2850664528757947

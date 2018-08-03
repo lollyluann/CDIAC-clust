@@ -1,0 +1,143 @@
+Cluster 0
+3 files 
+3 unique directories
+Avg dir frequency: 1.0
+Median dir frequency: 1.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/CDIAC/cdiac.ornl.gov
+Silhouette score: -0.26344148989848787
+Frequency drop score: 0.0
+Top 10 words: CTD, RV, sensor, deployment, oxygen, investigator, CTD, RV, procCTD, calibrations
+
+Cluster 1
+5760 files 
+2070 unique directories
+Avg dir frequency: 2.782608695652174
+Median dir frequency: 1.0
+Std-dev dir frequency: 5.910368107463484
+Nearest shared directory: /home/ubuntu/CDIAC/cdiac.ornl.gov
+Silhouette score: -0.1738656400434471
+Frequency drop score: 0.04511975851335827
+Top 10 words: Data, CO2, Water, using, Samples, measures, values, temperature, equilibrator, calibrations
+
+Cluster 2
+193 files 
+103 unique directories
+Avg dir frequency: 1.8737864077669903
+Median dir frequency: 1.0
+Std-dev dir frequency: 6.209419108347914
+Nearest shared directory: /home/ubuntu/CDIAC/cdiac.ornl.gov/cdiac.ornl.gov/pub
+Silhouette score: -0.23460389981959517
+Frequency drop score: 0.34450906129862474
+Top 10 words: DOI, Variable_Name, 1023.10N071, 1023.10N044, 1023.10N044, 1023.10N044, 1023.10N044, 1023.10MRI_, 1023.10MINV, 1023.10M361
+
+Cluster 3
+2 files 
+2 unique directories
+Avg dir frequency: 1.0
+Median dir frequency: 1.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/CDIAC/cdiac.ornl.gov
+Silhouette score: -0.0917098445595852
+Frequency drop score: 0.5
+Top 10 words: climate, Data, U.S., developed, U.S., management, Department, ORNL, climate, capability
+
+Cluster 4
+68 files 
+45 unique directories
+Avg dir frequency: 1.511111111111111
+Median dir frequency: 1.0
+Std-dev dir frequency: 2.061522869921621
+Nearest shared directory: /home/ubuntu/CDIAC/cdiac.ornl.gov
+Silhouette score: -0.23201721334793143
+Frequency drop score: 0.21586285879949824
+Top 10 words: LI1-6BRW, muestra, LI1-6BRW, EL, LI1-6BRW, LA, aguas, en, Para, del
+
+Cluster 5
+934 files 
+84 unique directories
+Avg dir frequency: 11.119047619047619
+Median dir frequency: 6.5
+Std-dev dir frequency: 13.4769686802061
+Nearest shared directory: /home/ubuntu/CDIAC/cdiac.ornl.gov
+Silhouette score: -0.004995901480930864
+Frequency drop score: 0.1131229530415447
+Top 10 words: variables, units, equilibrator, units, Water, CO2, sea, degrees, celsius, degrees
+
+Cluster 6
+85 files 
+13 unique directories
+Avg dir frequency: 6.538461538461538
+Median dir frequency: 2.0
+Std-dev dir frequency: 6.879349081634268
+Nearest shared directory: /home/ubuntu/CDIAC/cdiac.ornl.gov
+Silhouette score: -0.25444450749385567
+Frequency drop score: 0.10806222909488974
+Top 10 words: SU3-3MLO, -999.9SK05W, 35MF20000115, -999.9AH01E, 35MF20000115, -999.9AH01E, -999.9AH01E, 35MF20000115, A001, B001
+
+Cluster 7
+704 files 
+110 unique directories
+Avg dir frequency: 6.4
+Median dir frequency: 6.0
+Std-dev dir frequency: 3.273030289002421
+Nearest shared directory: /home/ubuntu/CDIAC/cdiac.ornl.gov
+Silhouette score: -0.08018023934986288
+Frequency drop score: 0.045696230511704995
+Top 10 words: equilibrator, air, pCO2, using, Samples, Water, gas, temperature, analyzed, CO2
+
+Cluster 8
+506 files 
+2 unique directories
+Avg dir frequency: 253.0
+Median dir frequency: 253.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/CDIAC/cdiac.ornl.gov
+Silhouette score: -0.27646188008882316
+Frequency drop score: 0.5
+Top 10 words: /title, TITLE, sequence=, sequence=, contributor_role=, contributor_role=, /surname, /surname, /given_name, given_name
+
+Cluster 9
+15178 files 
+633 unique directories
+Avg dir frequency: 23.977883096366508
+Median dir frequency: 1.0
+Std-dev dir frequency: 125.27773688562466
+Nearest shared directory: /home/ubuntu/CDIAC/cdiac.ornl.gov/cdiac.ornl.gov/pub8/oceans
+Silhouette score: -0.03884295569323451
+Frequency drop score: 0.1784420406475254
+Top 10 words: Variable_Name, 1023.10AZ01, 1023.10N044, 1023.10N044, 1023.10N044, 1023.10N044, 1023.10MRI_, 1023.10MINV, 1023.10M361, 1023.10M361
+
+Cluster 10
+237 files 
+81 unique directories
+Avg dir frequency: 2.925925925925926
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.173103702311688
+Nearest shared directory: /home/ubuntu/CDIAC/cdiac.ornl.gov
+Silhouette score: -0.06616715424208014
+Frequency drop score: 0.06603911076867137
+Top 10 words: equilibrator, using, gas, pCO2, Data, temperature, Samples, air, Water, CO2
+
+Cluster 11
+646 files 
+77 unique directories
+Avg dir frequency: 8.38961038961039
+Median dir frequency: 6.0
+Std-dev dir frequency: 9.094247995378755
+Nearest shared directory: /home/ubuntu/CDIAC/cdiac.ornl.gov/pub8old/pub8/oceans/VOS_Ronald_Brown
+Silhouette score: -0.11256220950613478
+Frequency drop score: 0.11332889693914308
+Top 10 words: Variablename, units, equilibrator, CO2, °C, given, calibrations, hPa, µatm, precision
+
+Cluster 12
+407 files 
+407 unique directories
+Avg dir frequency: 1.0
+Median dir frequency: 1.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/CDIAC/cdiac.ornl.gov
+Silhouette score: -0.08460520190203136
+Frequency drop score: 0.0
+Top 10 words: Oak, Oak, Ridge, Data, Data, National, laboratory, laboratory, Ridge, Tennessee
+

@@ -1,0 +1,235 @@
+Cluster 1
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/0/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: aeronautics, aeronautics, aeronautics, conjugate, bedeck, aqueduct, aqueduct, baritone, baritone, baritone
+
+Cluster 3
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/2/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: bigamist, bigamist, bigamist, abundant, accompany, aqueduct, aqueduct, baritone, baritone, baritone
+
+Cluster 4
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/0/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: characterize, characterize, characterize, conjugate, bigamist, aqueduct, aqueduct, aqueduct, baritone, baritone
+
+Cluster 5
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/2/2/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: characteristic, characteristic, characteristic, bigamist, ancestry, aqueduct, aqueduct, aqueduct, baritone, baritone
+
+Cluster 7
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/1/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: aloof, aloof, aloof, conjugate, bedeck, aqueduct, aqueduct, baritone, baritone, baritone
+
+Cluster 8
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/2/0/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: comport, comport, comport, conjugate, baritone, ancestry, aqueduct, aqueduct, aqueduct, baritone
+
+Cluster 9
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/2/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: confluence, confluence, confluence, conjugate, bedeck, ancestry, aqueduct, aqueduct, aqueduct, baritone
+
+Cluster 10
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/2/1/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: aqueduct, aqueduct, aqueduct, conjugate, bedeck, baritone, baritone, baritone, bedeck, bedeck
+
+Cluster 11
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/0/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: collegian, collegian, collegian, baritone, ancestry, ancestry, aqueduct, aqueduct, aqueduct, baritone
+
+Cluster 12
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/2/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: confinement, confinement, confinement, conjugate, bedeck, ancestry, aqueduct, aqueduct, aqueduct, baritone
+
+Cluster 13
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/0/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: brittle, brittle, brittle, bedeck, aqueduct, aqueduct, aqueduct, baritone, baritone, baritone
+
+Cluster 14
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/2/2/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: bibliophile, bibliophile, bibliophile, conjugate, bedeck, aqueduct, aqueduct, aqueduct, baritone, baritone
+
+Cluster 16
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/1/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: abundant, abundant, abundant, bedeck, aqueduct, aqueduct, baritone, baritone, baritone, bedeck
+
+Cluster 17
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/2/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: census, census, census, conjugate, bigamist, aqueduct, aqueduct, aqueduct, baritone, baritone
+
+Cluster 18
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/1/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: acrid, acrid, acrid, conjugate, bedeck, aqueduct, aqueduct, baritone, baritone, baritone
+
+Cluster 20
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/2/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: bedeck, bedeck, bedeck, aqueduct, aqueduct, aqueduct, baritone, baritone, baritone, conjugate
+
+Cluster 21
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/1/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: accompany, accompany, accompany, conjugate, bedeck, aqueduct, aqueduct, baritone, baritone, baritone
+
+Cluster 22
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/0/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: ancestry, ancestry, ancestry, bibliophile, bibliophile, bibliophile, belittle, belittle, belittle, bigamist
+
+Cluster 23
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/2/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: bodice, bodice, bodice, conjugate, bedeck, aqueduct, aqueduct, aqueduct, baritone, baritone
+
+Cluster 24
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/2/1/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: admonish, admonish, admonish, aqueduct, aqueduct, baritone, baritone, baritone, bedeck, bedeck
+
+Cluster 25
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/2/0/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: brigade, brigade, brigade, conjugate, bedeck, aqueduct, aqueduct, aqueduct, baritone, baritone
+
+
+Total silhouette score: 0.8765432098765432
+Total frequency drop score: 0.9629629629629624
+Total ensemble score: 0.950617283950617

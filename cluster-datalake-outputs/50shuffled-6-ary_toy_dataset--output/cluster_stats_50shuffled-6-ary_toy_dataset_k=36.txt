@@ -1,0 +1,400 @@
+Cluster 0
+20 files 
+9 unique directories
+Avg dir frequency: 2.2222222222222223
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.1190375216929334
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.42158411142234675
+Frequency drop score: 0.55
+Top 10 words: allot, allot, allot, convalesce, apprehensible, arrogant, arrogant, arrogant, assassin, assassin
+
+Cluster 1
+20 files 
+8 unique directories
+Avg dir frequency: 2.5
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.968626966596886
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.4110878378378378
+Frequency drop score: 0.65
+Top 10 words: assuage, assuage, assuage, convalesce, atomizer, apprehensible, apprehensible, arrogant, arrogant, arrogant
+
+Cluster 2
+20 files 
+12 unique directories
+Avg dir frequency: 1.6666666666666667
+Median dir frequency: 1.0
+Std-dev dir frequency: 1.6499158227686108
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.4683055171530978
+Frequency drop score: 0.35
+Top 10 words: afresh, afresh, afresh, arrogant, arrogant, arrogant, assassin, assassin, assassin, assuage
+
+Cluster 3
+20 files 
+9 unique directories
+Avg dir frequency: 2.2222222222222223
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.1190375216929334
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.4498825295884119
+Frequency drop score: 0.55
+Top 10 words: baleful, baleful, baleful, abrupt, atomizer, arrogant, arrogant, arrogant, assassin, assassin
+
+Cluster 4
+20 files 
+11 unique directories
+Avg dir frequency: 1.8181818181818181
+Median dir frequency: 1.0
+Std-dev dir frequency: 2.289032420366213
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.413201833607006
+Frequency drop score: 0.45
+Top 10 words: bigamist, bigamist, bigamist, convalesce, atomizer, apprehensible, arrogant, arrogant, arrogant, assassin
+
+Cluster 5
+20 files 
+11 unique directories
+Avg dir frequency: 1.8181818181818181
+Median dir frequency: 1.0
+Std-dev dir frequency: 2.5873180855923104
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.41800734945471785
+Frequency drop score: 0.5
+Top 10 words: cardinal, cardinal, cardinal, convalesce, assuage, apprehensible, arrogant, arrogant, arrogant, assassin
+
+Cluster 6
+20 files 
+11 unique directories
+Avg dir frequency: 1.8181818181818181
+Median dir frequency: 1.0
+Std-dev dir frequency: 2.289032420366213
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.4463833591995357
+Frequency drop score: 0.45
+Top 10 words: austere, austere, austere, convalesce, assuage, apprehensible, apprehensible, arrogant, arrogant, arrogant
+
+Cluster 7
+20 files 
+10 unique directories
+Avg dir frequency: 2.0
+Median dir frequency: 1.0
+Std-dev dir frequency: 2.6832815729997477
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.42489083848333076
+Frequency drop score: 0.5
+Top 10 words: absence, absence, absence, convalesce, atomizer, arrogant, arrogant, arrogant, assassin, assassin
+
+Cluster 8
+20 files 
+10 unique directories
+Avg dir frequency: 2.0
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.0
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.40119947153035385
+Frequency drop score: 0.55
+Top 10 words: convalesce, convalesce, convalesce, abrupt, abrupt, apprehensible, arrogant, arrogant, arrogant, assassin
+
+Cluster 9
+20 files 
+8 unique directories
+Avg dir frequency: 2.5
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.968626966596886
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.3473635135135135
+Frequency drop score: 0.65
+Top 10 words: atomizer, atomizer, atomizer, apprehensible, apprehensible, arrogant, arrogant, arrogant, assassin, assassin
+
+Cluster 10
+20 files 
+11 unique directories
+Avg dir frequency: 1.8181818181818181
+Median dir frequency: 1.0
+Std-dev dir frequency: 1.9917183909278766
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.454918742134535
+Frequency drop score: 0.4
+Top 10 words: comely, comely, comely, convalesce, apprehensible, apprehensible, apprehensible, arrogant, arrogant, arrogant
+
+Cluster 11
+20 files 
+6 unique directories
+Avg dir frequency: 3.3333333333333335
+Median dir frequency: 1.0
+Std-dev dir frequency: 5.217491947499509
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.3276459067763416
+Frequency drop score: 0.75
+Top 10 words: beneficent, beneficent, beneficent, convalesce, atomizer, apprehensible, arrogant, arrogant, arrogant, assassin
+
+Cluster 12
+20 files 
+10 unique directories
+Avg dir frequency: 2.0
+Median dir frequency: 1.0
+Std-dev dir frequency: 2.6832815729997477
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.4608817746317747
+Frequency drop score: 0.5
+Top 10 words: conjugation, conjugation, conjugation, convalesce, assuage, apprehensible, apprehensible, apprehensible, arrogant, arrogant
+
+Cluster 13
+20 files 
+11 unique directories
+Avg dir frequency: 1.8181818181818181
+Median dir frequency: 1.0
+Std-dev dir frequency: 1.9917183909278766
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.4556632670801469
+Frequency drop score: 0.4
+Top 10 words: blase, blase, blase, atomizer, apprehensible, arrogant, arrogant, arrogant, assassin, assassin
+
+Cluster 14
+20 files 
+8 unique directories
+Avg dir frequency: 2.5
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.605551275463989
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.3198428571428571
+Frequency drop score: 0.6
+Top 10 words: chronology, chronology, chronology, convalesce, assuage, apprehensible, apprehensible, apprehensible, arrogant, arrogant
+
+Cluster 15
+20 files 
+9 unique directories
+Avg dir frequency: 2.2222222222222223
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.456966485800899
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.42769519519519517
+Frequency drop score: 0.6
+Top 10 words: Christendom, Christendom, Christendom, convalesce, assuage, apprehensible, apprehensible, apprehensible, arrogant, arrogant
+
+Cluster 16
+20 files 
+7 unique directories
+Avg dir frequency: 2.857142857142857
+Median dir frequency: 1.0
+Std-dev dir frequency: 4.15515416349971
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset/5
+Silhouette score: -0.33904761904761904
+Frequency drop score: 0.65
+Top 10 words: allay, allay, allay, convalesce, apprehensible, arrogant, arrogant, arrogant, assassin, assassin
+
+Cluster 17
+20 files 
+8 unique directories
+Avg dir frequency: 2.5
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.24037034920393
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.4824666988416988
+Frequency drop score: 0.55
+Top 10 words: congeal, congeal, congeal, convalesce, assuage, apprehensible, apprehensible, apprehensible, arrogant, arrogant
+
+Cluster 18
+20 files 
+14 unique directories
+Avg dir frequency: 1.4285714285714286
+Median dir frequency: 1.0
+Std-dev dir frequency: 1.049781318335648
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.4217594452637556
+Frequency drop score: 0.25
+Top 10 words: choral, choral, choral, convalesce, assuage, apprehensible, apprehensible, apprehensible, arrogant, arrogant
+
+Cluster 19
+20 files 
+11 unique directories
+Avg dir frequency: 1.8181818181818181
+Median dir frequency: 1.0
+Std-dev dir frequency: 1.9917183909278766
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.43055886517955494
+Frequency drop score: 0.4
+Top 10 words: assassin, assassin, assassin, convalesce, atomizer, apprehensible, apprehensible, arrogant, arrogant, arrogant
+
+Cluster 20
+20 files 
+8 unique directories
+Avg dir frequency: 2.5
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.968626966596886
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.3906573573573574
+Frequency drop score: 0.65
+Top 10 words: ambrosial, ambrosial, ambrosial, convalesce, apprehensible, arrogant, arrogant, arrogant, assassin, assassin
+
+Cluster 21
+20 files 
+9 unique directories
+Avg dir frequency: 2.2222222222222223
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.1190375216929334
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.34571216216216216
+Frequency drop score: 0.55
+Top 10 words: complication, complication, complication, assuage, apprehensible, apprehensible, apprehensible, arrogant, arrogant, arrogant
+
+Cluster 22
+20 files 
+8 unique directories
+Avg dir frequency: 2.5
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.968626966596886
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.3305574324324324
+Frequency drop score: 0.65
+Top 10 words: baritone, baritone, baritone, convalesce, atomizer, apprehensible, arrogant, arrogant, arrogant, assassin
+
+Cluster 23
+20 files 
+9 unique directories
+Avg dir frequency: 2.2222222222222223
+Median dir frequency: 1.0
+Std-dev dir frequency: 2.7799991118215117
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.3720922680922681
+Frequency drop score: 0.5
+Top 10 words: brigand, brigand, brigand, convalesce, apprehensible, arrogant, arrogant, arrogant, assassin, assassin
+
+Cluster 24
+20 files 
+9 unique directories
+Avg dir frequency: 2.2222222222222223
+Median dir frequency: 1.0
+Std-dev dir frequency: 2.7799991118215117
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.45821626984126984
+Frequency drop score: 0.5
+Top 10 words: accommodate, accommodate, accommodate, convalesce, atomizer, arrogant, arrogant, arrogant, assassin, assassin
+
+Cluster 25
+20 files 
+6 unique directories
+Avg dir frequency: 3.3333333333333335
+Median dir frequency: 1.0
+Std-dev dir frequency: 5.21749194749951
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.2572531488978858
+Frequency drop score: 0.75
+Top 10 words: apprehensible, apprehensible, apprehensible, atomizer, arrogant, arrogant, arrogant, assassin, assassin, assassin
+
+Cluster 26
+20 files 
+10 unique directories
+Avg dir frequency: 2.0
+Median dir frequency: 1.0
+Std-dev dir frequency: 2.04939015319192
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.4060872967122967
+Frequency drop score: 0.4
+Top 10 words: brine, brine, brine, convalesce, assuage, apprehensible, arrogant, arrogant, arrogant, assassin
+
+Cluster 27
+20 files 
+9 unique directories
+Avg dir frequency: 2.2222222222222223
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.1190375216929334
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.3719211725094078
+Frequency drop score: 0.55
+Top 10 words: arrogant, arrogant, arrogant, convalesce, atomizer, apprehensible, apprehensible, assassin, assassin, assassin
+
+Cluster 28
+20 files 
+11 unique directories
+Avg dir frequency: 1.8181818181818181
+Median dir frequency: 1.0
+Std-dev dir frequency: 2.289032420366213
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.4524999463749463
+Frequency drop score: 0.45
+Top 10 words: aura, aura, aura, convalesce, assuage, apprehensible, apprehensible, arrogant, arrogant, arrogant
+
+Cluster 29
+20 files 
+9 unique directories
+Avg dir frequency: 2.2222222222222223
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.119037521692934
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset/5
+Silhouette score: -0.37793513513513516
+Frequency drop score: 0.55
+Top 10 words: conjoin, conjoin, conjoin, convalesce, assuage, apprehensible, apprehensible, apprehensible, arrogant, arrogant
+
+Cluster 30
+20 files 
+8 unique directories
+Avg dir frequency: 2.5
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.278719262151
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.3870211387858446
+Frequency drop score: 0.55
+Top 10 words: Antarctic, Antarctic, Antarctic, apprehensible, apprehensible, arrogant, arrogant, arrogant, assassin, assassin
+
+Cluster 31
+20 files 
+10 unique directories
+Avg dir frequency: 2.0
+Median dir frequency: 1.0
+Std-dev dir frequency: 2.6832815729997477
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.4110773273273273
+Frequency drop score: 0.5
+Top 10 words: acrimonious, acrimonious, acrimonious, convalesce, atomizer, arrogant, arrogant, arrogant, assassin, assassin
+
+Cluster 32
+20 files 
+9 unique directories
+Avg dir frequency: 2.2222222222222223
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.456966485800899
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.39343134920634926
+Frequency drop score: 0.6
+Top 10 words: aurora, aurora, aurora, convalesce, assuage, apprehensible, apprehensible, arrogant, arrogant, arrogant
+
+Cluster 33
+20 files 
+13 unique directories
+Avg dir frequency: 1.5384615384615385
+Median dir frequency: 1.0
+Std-dev dir frequency: 1.598816130063579
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.47760117079671166
+Frequency drop score: 0.35
+Top 10 words: abrupt, abrupt, abrupt, atomizer, apprehensible, arrogant, arrogant, arrogant, assassin, assassin
+
+Cluster 34
+20 files 
+11 unique directories
+Avg dir frequency: 1.8181818181818181
+Median dir frequency: 1.0
+Std-dev dir frequency: 1.9917183909278768
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.4005989382239382
+Frequency drop score: 0.4
+Top 10 words: chastity, chastity, chastity, austere, aurora, Antarctic, apprehensible, apprehensible, apprehensible, arrogant
+
+Cluster 35
+20 files 
+10 unique directories
+Avg dir frequency: 2.0
+Median dir frequency: 1.0
+Std-dev dir frequency: 2.3664319132398464
+Nearest shared directory: /home/ubuntu/50shuffled-6-ary_toy_dataset/6-ary_toy_dataset
+Silhouette score: -0.38515115726880433
+Frequency drop score: 0.45
+Top 10 words: characterize, characterize, characterize, convalesce, assuage, apprehensible, arrogant, arrogant, arrogant, assassin
+
+
+Total silhouette score: -0.403894444561327
+Total frequency drop score: 0.5194444444444444
+Total ensemble score: 0.4087486110818904

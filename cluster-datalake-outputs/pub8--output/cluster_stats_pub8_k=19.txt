@@ -1,0 +1,211 @@
+Cluster 0
+26 files 
+2 unique directories
+Avg dir frequency: 13.0
+Median dir frequency: 13.0
+Std-dev dir frequency: 3.0
+Nearest shared directory: /home/ubuntu/pub8/oceans/VOS_Explorer_line
+Silhouette score: 0.0
+Frequency drop score: 0.6153846153846154
+Top 10 words: variability, Unit, degree, Celsius, AMhttp, Unit, equilibration, CO2, Waters, degree
+
+Cluster 1
+78 files 
+26 unique directories
+Avg dir frequency: 3.0
+Median dir frequency: 1.0
+Std-dev dir frequency: 3.2105595007244934
+Nearest shared directory: /home/ubuntu/pub8/oceans/VOS_Palmer_Lines
+Silhouette score: -0.015590281351643807
+Frequency drop score: 0.11228412656015838
+Top 10 words: equilibration, Use, Gas, pCO2, samples, Waters, CO2, data, temperature, flow
+
+Cluster 2
+109 files 
+7 unique directories
+Avg dir frequency: 15.571428571428571
+Median dir frequency: 8.0
+Std-dev dir frequency: 13.414886644078265
+Nearest shared directory: /home/ubuntu/pub8/oceans
+Silhouette score: 0.012407048900470258
+Frequency drop score: 0.2448845236672249
+Top 10 words: VariableName, Unit, CO2, equilibration, µatm, °C, given, hPa, Use, 's
+
+Cluster 3
+76 files 
+4 unique directories
+Avg dir frequency: 19.0
+Median dir frequency: 21.5
+Std-dev dir frequency: 11.811011811017716
+Nearest shared directory: /home/ubuntu/pub8/oceans/VOS_Explorer_line
+Silhouette score: 0.0
+Frequency drop score: 0.10753645799907248
+Top 10 words: CMDL, dataset, day, Jersey, New, Bayonne, day, Bayonne, day, Bayonne
+
+Cluster 4
+1567 files 
+624 unique directories
+Avg dir frequency: 2.511217948717949
+Median dir frequency: 1.0
+Std-dev dir frequency: 4.031113265293666
+Nearest shared directory: /home/ubuntu/pub8/oceans
+Silhouette score: -0.0005085089472762983
+Frequency drop score: 0.03318442884492661
+Top 10 words: data, CO2, samples, Waters, Measurements, Sea, calibrated, stations, CTD, Oak
+
+Cluster 5
+39 files 
+4 unique directories
+Avg dir frequency: 9.75
+Median dir frequency: 9.0
+Std-dev dir frequency: 2.5860201081971503
+Nearest shared directory: /home/ubuntu/pub8/oceans/VOS_Tangaroa
+Silhouette score: 0.45064214562764565
+Frequency drop score: 0.358974358974359
+Top 10 words: NIWA, VariableName, calibrated, NIWA, Wellington, Unit, CO2, prepared, calibrated, calibrated
+
+Cluster 6
+158 files 
+24 unique directories
+Avg dir frequency: 6.583333333333333
+Median dir frequency: 6.0
+Std-dev dir frequency: 3.026503299555813
+Nearest shared directory: /home/ubuntu/pub8/oceans
+Silhouette score: -0.1935529372658025
+Frequency drop score: 0.09454770853988727
+Top 10 words: equilibration, air, pCO2, samples, Use, CO2, Gas, analyzed, Waters, temperature
+
+Cluster 7
+62 files 
+7 unique directories
+Avg dir frequency: 8.857142857142858
+Median dir frequency: 7.0
+Std-dev dir frequency: 6.727949622466637
+Nearest shared directory: /home/ubuntu/pub8/oceans
+Silhouette score: -0.36834285068606554
+Frequency drop score: 0.3870967741935484
+Top 10 words: variability, Unit, degree, Celsius, equilibration, Unit, CO2, Waters, degree, resolution
+
+Cluster 8
+36 files 
+36 unique directories
+Avg dir frequency: 1.0
+Median dir frequency: 1.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/pub8/oceans
+Silhouette score: -0.1915623786522676
+Frequency drop score: 0.0
+Top 10 words: local, local, benefit, thetimes, data, observational, pCO2, lags, rejected, TSG
+
+Cluster 9
+76 files 
+13 unique directories
+Avg dir frequency: 5.846153846153846
+Median dir frequency: 5.0
+Std-dev dir frequency: 3.4383840982503084
+Nearest shared directory: /home/ubuntu/pub8/oceans
+Silhouette score: 0.17168504050826017
+Frequency drop score: 0.05733307036838993
+Top 10 words: pCO, air, equilibration, samples, Waters, Use, analyzed, Gas, time, temperature
+
+Cluster 10
+34 files 
+14 unique directories
+Avg dir frequency: 2.4285714285714284
+Median dir frequency: 2.0
+Std-dev dir frequency: 1.4982983545287878
+Nearest shared directory: /home/ubuntu/pub8/oceans/Moorings
+Silhouette score: 0.4429957626627434
+Frequency drop score: 0.1722963489350026
+Top 10 words: air, changes, predictive, predictive, data, submit, submit, adjusted, data, data
+
+Cluster 11
+12 files 
+4 unique directories
+Avg dir frequency: 3.0
+Median dir frequency: 2.5
+Std-dev dir frequency: 1.8708286933869707
+Nearest shared directory: /home/ubuntu/pub8/oceans/VOS_Ronald_Brown
+Silhouette score: 0.4531813330826218
+Frequency drop score: 0.5
+Top 10 words: VariableName, Unit, CO2, equilibration, °C, µatm, hPa, given, Use, ESRL
+
+Cluster 12
+63 files 
+11 unique directories
+Avg dir frequency: 5.7272727272727275
+Median dir frequency: 5.0
+Std-dev dir frequency: 3.7195040991779607
+Nearest shared directory: /home/ubuntu/pub8/oceans
+Silhouette score: 0.06287364739619694
+Frequency drop score: 0.2222222222222222
+Top 10 words: Waters, equilibration, Gas, temperature, pressure, air, CO2, Gas, FS, inlet
+
+Cluster 13
+32 files 
+1 unique directories
+Avg dir frequency: 32.0
+Median dir frequency: 32.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/pub8/oceans/VOS_Explorer_line/EXP2012/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: dataset, ESRL, day, Bayonne, day, day, Bayonne, Bayonne, Jersey, New
+
+Cluster 14
+91 files 
+14 unique directories
+Avg dir frequency: 6.5
+Median dir frequency: 5.5
+Std-dev dir frequency: 4.531634835874828
+Nearest shared directory: /home/ubuntu/pub8/oceans
+Silhouette score: -0.3063614830352854
+Frequency drop score: 0.08997561347539329
+Top 10 words: VariableName, Unit, CO2, equilibration, °C, hPa, µatm, given, calibrated, manufacturer
+
+Cluster 15
+78 files 
+15 unique directories
+Avg dir frequency: 5.2
+Median dir frequency: 4.0
+Std-dev dir frequency: 4.4
+Nearest shared directory: /home/ubuntu/pub8/oceans
+Silhouette score: -0.3311622326278893
+Frequency drop score: 0.20512820512820512
+Top 10 words: variability, Unit, μatm, Unit, Waters, equilibration, PMhttp, CO2, hours, every
+
+Cluster 16
+9 files 
+1 unique directories
+Avg dir frequency: 9.0
+Median dir frequency: 9.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/pub8/oceans/Bigelow_ECoast/HB2011_2012/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: Scott-Marrin, dataset, JA02285, JA02285, Bigelow, Sept, Licor, July, standard, JA02285
+
+Cluster 17
+19 files 
+2 unique directories
+Avg dir frequency: 9.5
+Median dir frequency: 9.5
+Std-dev dir frequency: 2.5
+Nearest shared directory: /home/ubuntu/pub8/oceans/Gordon_Gunter
+Silhouette score: 0.409090909090909
+Frequency drop score: 0.631578947368421
+Top 10 words: Scott-Marrin, Scott-Marrin, Gunter, Gordon, dataset, Gordon, ja, ja, Gordon, Gunter
+
+Cluster 18
+32 files 
+5 unique directories
+Avg dir frequency: 6.4
+Median dir frequency: 6.0
+Std-dev dir frequency: 2.870540018881465
+Nearest shared directory: /home/ubuntu/pub8/oceans/VOS_Skogafoss_Lines
+Silhouette score: 0.4595328398624164
+Frequency drop score: 0.0
+Top 10 words: data, AOML, SKOGAFOSS, adapted, NOAA, Earth, ESDL, ESDL, ESDL, CCGG
+
+
+Total silhouette score: 0.0014928894574724506Average frequency drop score: 0.1047227777230266Total ensemble score: 0.3027346112258814

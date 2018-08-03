@@ -1,0 +1,444 @@
+Cluster 0
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/3/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: animate, animate, animate, converge, assailant, archbishop, archbishop, archbishop, aristocrat, aristocrat
+
+Cluster 1
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/10/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: avarice, avarice, avarice, converge, assailant, arborescent, arborescent, archbishop, archbishop, archbishop
+
+Cluster 2
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/34/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: arrival, arrival, arrival, converge, converge, arborescent, arborescent, archbishop, archbishop, archbishop
+
+Cluster 3
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/14/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: archbishop, archbishop, archbishop, converge, converge, arborescent, arborescent, aristocrat, aristocrat, aristocrat
+
+Cluster 4
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/7/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: anticlimax, anticlimax, anticlimax, converge, assailant, archbishop, archbishop, archbishop, aristocrat, aristocrat
+
+Cluster 5
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/30/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: comparative, comparative, comparative, converge, apprehensible, arborescent, arborescent, arborescent, archbishop, archbishop
+
+Cluster 6
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: adamant, adamant, adamant, converge, arrival, assailant, assailant, arrival, arrival, assassin
+
+Cluster 7
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/19/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: commotion, commotion, commotion, converge, apprehensible, arborescent, arborescent, arborescent, archbishop, archbishop
+
+Cluster 8
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/36/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: contradictory, contradictory, contradictory, archbishop, arrival, arrival, aristocrat, aristocrat, aristocrat, converge
+
+Cluster 9
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/6/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: apprehensible, apprehensible, apprehensible, assailant, arborescent, archbishop, archbishop, archbishop, aristocrat, aristocrat
+
+Cluster 10
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/18/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: anthropomorphous, anthropomorphous, anthropomorphous, converge, assailant, archbishop, archbishop, archbishop, aristocrat, aristocrat
+
+Cluster 11
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/20/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: coincident, coincident, coincident, benefactor, arrival, apprehensible, arborescent, arborescent, arborescent, archbishop
+
+Cluster 12
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/11/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: consignee, consignee, consignee, converge, arrival, arrival, aristocrat, aristocrat, aristocrat, assailant
+
+Cluster 13
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/26/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: complaisant, complaisant, complaisant, converge, apprehensible, arborescent, arborescent, arborescent, archbishop, archbishop
+
+Cluster 14
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: coagulate, coagulate, coagulate, converge, arborescent, arborescent, archbishop, archbishop, archbishop, aristocrat
+
+Cluster 15
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/9/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: aristocrat, aristocrat, aristocrat, converge, converge, arborescent, arborescent, archbishop, archbishop, archbishop
+
+Cluster 16
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/35/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: converge, converge, converge, abrade, assailant, arborescent, archbishop, archbishop, archbishop, aristocrat
+
+Cluster 17
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/28/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: betide, betide, betide, abrade, arborescent, archbishop, archbishop, archbishop, aristocrat, aristocrat
+
+Cluster 18
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/39/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: cajolery, cajolery, cajolery, arborescent, archbishop, archbishop, archbishop, aristocrat, aristocrat, aristocrat
+
+Cluster 19
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/38/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: ballad, ballad, ballad, converge, assailant, arborescent, arborescent, archbishop, archbishop, archbishop
+
+Cluster 20
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/25/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: conduce, conduce, conduce, arborescent, arborescent, arborescent, archbishop, archbishop, archbishop, aristocrat
+
+Cluster 21
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/23/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: acreage, acreage, acreage, converge, aristocrat, assailant, assailant, arrival, arrival, arrival
+
+Cluster 22
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/8/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: abrade, abrade, abrade, assailant, arborescent, archbishop, archbishop, archbishop, aristocrat, aristocrat
+
+Cluster 23
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/16/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: bore, bore, bore, converge, assailant, arborescent, archbishop, archbishop, archbishop, aristocrat
+
+Cluster 24
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/13/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: boatswain, boatswain, boatswain, converge, assailant, arborescent, archbishop, archbishop, archbishop, aristocrat
+
+Cluster 25
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/22/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: contrive, contrive, contrive, converge, archbishop, arrival, arrival, aristocrat, aristocrat, aristocrat
+
+Cluster 26
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/37/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: betimes, betimes, betimes, converge, assailant, arborescent, archbishop, archbishop, archbishop, aristocrat
+
+Cluster 27
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/5/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: acumen, acumen, acumen, assailant, assailant, arrival, arrival, arrival, aristocrat, converge
+
+Cluster 28
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/32/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: alienable, alienable, alienable, converge, archbishop, archbishop, archbishop, aristocrat, aristocrat, aristocrat
+
+Cluster 29
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/17/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: circulate, circulate, circulate, converge, arborescent, arborescent, archbishop, archbishop, archbishop, aristocrat
+
+Cluster 30
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/24/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: Calvary, Calvary, Calvary, converge, arborescent, arborescent, archbishop, archbishop, archbishop, aristocrat
+
+Cluster 31
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/33/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: assailant, assailant, assailant, converge, arborescent, arborescent, archbishop, archbishop, archbishop, aristocrat
+
+Cluster 32
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/12/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: arborescent, arborescent, arborescent, converge, archbishop, archbishop, archbishop, aristocrat, aristocrat, aristocrat
+
+Cluster 33
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/21/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: adroit, adroit, adroit, assassin, archbishop, archbishop, archbishop, aristocrat, aristocrat, aristocrat
+
+Cluster 34
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/15/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: condescend, condescend, condescend, converge, apprehensible, arborescent, arborescent, arborescent, archbishop, archbishop
+
+Cluster 35
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/27/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: conjoin, conjoin, conjoin, converge, aristocrat, arrival, arrival, aristocrat, aristocrat, assailant
+
+Cluster 36
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/4/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: bureaucracy, bureaucracy, bureaucracy, converge, assailant, arborescent, archbishop, archbishop, archbishop, aristocrat
+
+Cluster 37
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/29/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: cantata, cantata, cantata, converge, arborescent, arborescent, archbishop, archbishop, archbishop, aristocrat
+
+Cluster 38
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/31/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: benefactor, benefactor, benefactor, converge, assailant, arborescent, arborescent, archbishop, archbishop, archbishop
+
+Cluster 39
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/40-ary_toy_dataset/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: assassin, assassin, assassin, converge, assailant, arborescent, arborescent, archbishop, archbishop, archbishop
+
+
+Total silhouette score: 1.0
+Total frequency drop score: 1.0000000000000004
+Total ensemble score: 1.0000000000000002

@@ -184,6 +184,7 @@ def plot_extension_pie(extensions, num_slices,
     for x in range(num_slices):
         labels.append(sorted_exts[x])
         sizes.append(sorted_counts[x])
+
     plt.figure("pie")
     plt.clf()
     plt.pie(sizes,labels=labels)

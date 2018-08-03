@@ -1,0 +1,15 @@
+csv
+pdf
+xml
+xls
+txt
+readme
+jpg
+zip
+doc
+png
+gz
+dat
+ds_store
+xlsx
+html

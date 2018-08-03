@@ -1,0 +1,301 @@
+Cluster 0
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/2/2/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: consort, consort, consort, contingency, archaeology, antiphon, antiphon, antiphon, apex, apex
+
+Cluster 1
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/0/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: Antichrist, Antichrist, Antichrist, avarice, archaeology, antiphon, antiphon, antiphon, apex, apex
+
+Cluster 2
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/0/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: antiphon, antiphon, antiphon, contingency, beatitude, apex, apex, apex, archaeology, archaeology
+
+Cluster 3
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/2/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: confiscate, confiscate, confiscate, contingency, Antichrist, antiphon, antiphon, antiphon, apex, apex
+
+Cluster 4
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/2/1/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: candid, candid, candid, contingency, archaeology, antiphon, antiphon, apex, apex, apex
+
+Cluster 5
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/0/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: aroma, aroma, aroma, contingency, archaeology, antiphon, antiphon, antiphon, apex, apex
+
+Cluster 6
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/1/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: consummate, consummate, consummate, contingency, archaeology, antiphon, antiphon, antiphon, apex, apex
+
+Cluster 7
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/1/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: alley, alley, alley, contingency, archaeology, antiphon, apex, apex, apex, archaeology
+
+Cluster 8
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/2/0/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: confluent, confluent, confluent, contingency, Antichrist, antiphon, antiphon, antiphon, apex, apex
+
+Cluster 9
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/1/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: connive, connive, connive, archaeology, antiphon, antiphon, antiphon, apex, apex, apex
+
+Cluster 10
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/2/1/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: apex, apex, apex, contingency, beatitude, antiphon, antiphon, antiphon, archaeology, archaeology
+
+Cluster 11
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/1/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: bleak, bleak, bleak, contingency, archaeology, antiphon, antiphon, apex, apex, apex
+
+Cluster 12
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/2/2/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: braggart, braggart, braggart, contingency, archaeology, antiphon, antiphon, apex, apex, apex
+
+Cluster 13
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/2/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: canary, canary, canary, contingency, archaeology, antiphon, antiphon, apex, apex, apex
+
+Cluster 14
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/2/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: beatitude, beatitude, beatitude, archaeology, antiphon, antiphon, antiphon, apex, apex, apex
+
+Cluster 15
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/2/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: ache, ache, ache, contingency, aroma, antiphon, apex, apex, apex, archaeology
+
+Cluster 16
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/2/0/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: comparable, comparable, comparable, contingency, Antichrist, antiphon, antiphon, antiphon, apex, apex
+
+Cluster 17
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/2/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: ante, ante, ante, contingency, archaeology, antiphon, apex, apex, apex, archaeology
+
+Cluster 18
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/0/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: acknowledge, acknowledge, acknowledge, contingency, aroma, antiphon, apex, apex, apex, archaeology
+
+Cluster 19
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/1/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: cantonment, cantonment, cantonment, autopsy, autopsy, avarice, Antichrist, antiphon, antiphon, antiphon
+
+Cluster 20
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/0/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: archaeology, archaeology, archaeology, beatitude, antiphon, antiphon, antiphon, apex, apex, apex
+
+Cluster 21
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/2/1/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: adulterant, adulterant, adulterant, antiphon, apex, apex, apex, archaeology, archaeology, archaeology
+
+Cluster 22
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/2/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: autopsy, autopsy, autopsy, contingency, archaeology, antiphon, antiphon, antiphon, apex, apex
+
+Cluster 23
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/0/1/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: contingency, contingency, contingency, accustom, archaeology, antiphon, antiphon, apex, apex, apex
+
+Cluster 24
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/2/0/2/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: Briticism, Briticism, Briticism, antiphon, antiphon, apex, apex, apex, archaeology, archaeology
+
+Cluster 25
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/1/0/1/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: accustom, accustom, accustom, archaeology, antiphon, antiphon, apex, apex, apex, archaeology
+
+Cluster 26
+20 files 
+1 unique directories
+Avg dir frequency: 20.0
+Median dir frequency: 20.0
+Std-dev dir frequency: 0.0
+Nearest shared directory: /home/ubuntu/3-ary_toy_dataset/2/2/0/
+Silhouette score: 1.0
+Frequency drop score: 1
+Top 10 words: avarice, avarice, avarice, archaeology, antiphon, antiphon, antiphon, apex, apex, apex
+
+
+Total silhouette score: 1.0
+Total frequency drop score: 0.9999999999999993
+Total ensemble score: 0.9999999999999997

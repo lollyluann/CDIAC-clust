@@ -8,6 +8,7 @@ from test_options import load_arguments
 from shuffle_directory import shuffle
 
 import schema_clustering
+import DFS
 
 import multiprocessing
 import sys
@@ -74,23 +75,50 @@ def main():
     #===================================================================
     #=#: Shuffle and cluster, recording the ensemble score. 
     #===================================================================
+
+    shuffle_tracker = []
+
+    # get a list of the paths to every file in the dataset
+    # rooted at "dataset_path"
+    filepaths = DFS.DFS(dataset_path)
+
+    # generate path to the new root of our test dataset
+    shuffled_dataset_name = "shuffled_" + dataset_name
+    shuffled_dataset_path = os.path.join(dest, shuffled_dataset_name)
+    print("clustering: ", shuffled_dataset_path)
+   
+    # copy dataset to this new location
+    os.system("cp -r " + dataset_path + " " + shuffled_dataset_path) 
     
     # we gradually increase the proportion of the test dataset
     # which is shuffled
     shuffle_ratio = 0.0
     while shuffle_ratio <= 1.0:
 
-        # generate path to the new root of our test dataset
-        shuffled_dataset_name = "shuffled_" + dataset_name
-        shuffled_dataset_path = os.path.join(dest, shuffled_dataset_name)
-        print("clustering: ", shuffled_dataset_path)
+        # define the write path for the entire program
+        write_path = "../../cluster-datalake-outputs/" + shuffled_dataset_name + "--output/"
        
-        # copy dataset to this new location
-        os.system("cp -r " + dataset_path + " " + shuffled_dataset_path) 
+        # get converted file location and output location
+        out_dir = os.path.join(shuffled_dataset_path, 
+                               "../" + "converted-" + shuffled_dataset_name)
+
+
+        if not os.path.isdir(write_path):
+            os.system("mkdir " + write_path)
+        
+        if not os.path.isdir(out_dir):
+            os.system("mkdir " + out_dir)
+        csv_path = os.path.join(out_dir, "csv/")
+        if not os.path.isdir(csv_path):
+            os.system("mkdir " + csv_path)
+        txt_path = os.path.join(out_dir, "txt/")
+        if not os.path.isdir(txt_path):
+            os.system("mkdir " + txt_path)
+
 
         # shuffle and convert the test dataset
-        shuffle(shuffled_dataset_path, shuffle_ratio, False)
-        convert(shuffled_dataset_path, num_top_exts, num_processes)
+        shuffle_tracker = shuffle(shuffled_dataset_path, shuffle_ratio, False, shuffle_tracker, filepaths)
+        DFS.extension_indexer(shuffled_dataset_path, num_top_exts, write_path)
 
         # cluster the shuffled test dataset
         scores = schema_clustering.runflow(shuffled_dataset_path, 
@@ -107,17 +135,11 @@ def main():
                 + format(scores[2], '.3f') + ","
                 + '\n')
 
-        # get converted file location and output location
-        out_dir = os.path.join(shuffled_dataset_path, 
-                               "../" + "converted-" + shuffled_dataset_name)
         
-        # define the write path for the entire program
-        write_path = "../../cluster-datalake-outputs/" + shuffled_dataset_name + "--output/"
         
         # delete the shuffled dataset, outputs, and converted files
         os.system("rm -r " + write_path) 
-        os.system("rm -r " + out_dir)
-        os.system("rm -r " + shuffled_dataset_path)
+        os.system("rm -r " + out_dir) 
 
         shuffle_ratio += args.step
 

@@ -32,7 +32,7 @@ def parse_args():
 #FUNCTIONS
 # DOES: randomly shuffles the location of the files in 
 #       "dataset_path". 
-def shuffle(dataset_path, shuffle_ratio, warning):
+def shuffle(dataset_path, shuffle_ratio, warning, old_shuffle_tracker, filepaths):
     if warning == True:
         if (confirm(prompt="Warning, this will scramble the directory "
                     + "structure of all files and folders in " + dataset_path
@@ -45,52 +45,76 @@ def shuffle(dataset_path, shuffle_ratio, warning):
         if (confirm(prompt="Super duper sure???")):
             print("Ok.")
         else: exit()
-    
+
+
+
     # get a list of the paths to every file in the dataset
     # rooted at "dataset_path"
-    filepaths = DFS.DFS(dataset_path)
-    num_files = len(filepaths)
+    new_filepaths = DFS.DFS(dataset_path)
+
+    num_files = len(new_filepaths)
     print("Number of files: ", num_files)
+
+    while len(old_shuffle_tracker) < len(filepaths):
+        old_shuffle_tracker.append(0)  
     
     # we randomly shuffle the list of filepaths
-    random.shuffle(filepaths) 
     num_to_shuffle = math.floor(num_files * shuffle_ratio)
     print(num_to_shuffle)
 
     # only shuffle part of the dataset
-    filepaths = filepaths[0:num_to_shuffle] 
-    
-    # list of the parent directories of every file in 
-    # "filepaths". 
-    directory_list = []
-    
-    # for each file
-    for filepath in filepaths:
-        
-        # get its parent directory
-        directory = remove_path_end(filepath)
-        
-        # and add it to our list of parent directories
-        directory_list.append(directory)
+    paths_to_shuffle = new_filepaths[0:num_to_shuffle] 
     
     # generate a permutation of the number of files
     perm = np.random.permutation(num_to_shuffle)
-    
-    # for each index
+    perm2 = np.random.permutation(num_to_shuffle)
+
+    # "num_to_shuffle" randomly chosen parent directories
+    directory_list = []
+   
+    # for each file
     for i in range(num_to_shuffle):
         
         # get the image of the index under our permutation
         permuted_index = perm[i]
         
+        # get its parent directory
+        directory = remove_path_end(new_filepaths[permuted_index])
+        
+        # and add it to our list of parent directories
+        directory_list.append(directory)
+    
+    # moves a random file somewhere in "directory_list" 
+    for i in range(num_to_shuffle):
+        
+        # get the image of the index under our permutation
+        permuted_index2 = perm2[i]
+        
         # get the file we're moving
-        next_file = filepaths[i]
+        next_file = "iiiiiiiiiiiiiiiiii"
+        files_checked = 0
+        while old_shuffle_tracker[permuted_index2] == 1:
+            next_file = new_filepaths[permuted_index2]
+            files_checked += 1
+            if files_checked > 2000:
+                break
         
         # get the randomly chosen destination directory
-        dest_dir = directory_list[permuted_index]
+        dest_dir = directory_list[i]
         
         # move the file, only if dest dir isn't parent of next_file
         if remove_path_end(next_file) != dest_dir:
-            os.system("mv " + next_file + " " + dest_dir)
+            os.system("mv \"" + next_file + "\" \"" + dest_dir + "\"")
+
+    # create shuffle tracker 
+    shuffled_DFS = DFS.DFS(dataset_path)
+    shuffle_tracker = []
+    for i in range(min([len(shuffled_DFS), len(filepaths)])):
+        if shuffled_DFS[i] != filepaths[i]:
+            shuffle_tracker.append(1)
+        else:
+            shuffle_tracker.append(old_shuffle_tracker[i])
+    return shuffle_tracker
 
 #=========1=========2=========3=========4=========5=========6=========7=
 

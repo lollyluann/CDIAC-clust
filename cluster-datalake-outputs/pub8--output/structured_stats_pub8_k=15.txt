@@ -1,0 +1,136 @@
+Directory distribution for cluster 0
+Number of unique directories: 50
+Mean frequency: 2.56
+Median frequency: 1.0
+Standard deviation of frequencies: 2.631805463935357
+Closest common ancestor of all directories: /pub8/oceans
+Silhouette score: -0.15647588376232402
+Frequency drop score: 0.1171875
+
+Directory distribution for cluster 1
+Number of unique directories: 38
+Mean frequency: 3.973684210526316
+Median frequency: 4.0
+Standard deviation of frequencies: 2.422339474940694
+Closest common ancestor of all directories: /pub8/oceans/Moorings
+Silhouette score: -0.007193094056337832
+Frequency drop score: 0.0728476821192053
+
+Directory distribution for cluster 2
+Number of unique directories: 68
+Mean frequency: 4.397058823529412
+Median frequency: 4.0
+Standard deviation of frequencies: 3.646673366727353
+Closest common ancestor of all directories: /pub8/oceans/Moorings
+Silhouette score: -0.16829199500964315
+Frequency drop score: 0.08397681369443993
+
+Directory distribution for cluster 3
+Number of unique directories: 4
+Mean frequency: 2.5
+Median frequency: 2.0
+Standard deviation of frequencies: 1.5
+Closest common ancestor of all directories: /pub8/oceans/Tully_1989
+Silhouette score: 0.32253278607293867
+Frequency drop score: 0.5
+
+Directory distribution for cluster 4
+Number of unique directories: 39
+Mean frequency: 2.6666666666666665
+Median frequency: 1.0
+Standard deviation of frequencies: 3.421900306759639
+Closest common ancestor of all directories: /pub8/oceans/VOS_Falstaff_Line
+Silhouette score: 0.02685282232018443
+Frequency drop score: 0.14141105984439611
+
+Directory distribution for cluster 5
+Number of unique directories: 35
+Mean frequency: 3.1142857142857143
+Median frequency: 1.0
+Standard deviation of frequencies: 5.192144773303108
+Closest common ancestor of all directories: /pub8/oceans/CEND
+Silhouette score: 0.011776659882838792
+Frequency drop score: 0.22018348623853212
+
+Directory distribution for cluster 6
+Number of unique directories: 60
+Mean frequency: 9.05
+Median frequency: 7.0
+Standard deviation of frequencies: 8.17399331212515
+Closest common ancestor of all directories: /pub8/oceans
+Silhouette score: -0.05057148603951141
+Frequency drop score: 0.10910544303171281
+
+Directory distribution for cluster 7
+Number of unique directories: 409
+Mean frequency: 1.4767726161369192
+Median frequency: 1.0
+Standard deviation of frequencies: 3.962547567793374
+Closest common ancestor of all directories: /pub8/oceans
+Silhouette score: -0.022945218515367752
+Frequency drop score: 0.15447088480762391
+
+Directory distribution for cluster 8
+Number of unique directories: 1
+Mean frequency: 7.0
+Median frequency: 7.0
+Standard deviation of frequencies: 0.0
+Closest common ancestor of all directories: /pub8/oceans/Moorings/Heron_152E_23S/
+Silhouette score: 1.0
+Frequency drop score: 1
+
+Directory distribution for cluster 9
+Number of unique directories: 1
+Mean frequency: 2.0
+Median frequency: 2.0
+Standard deviation of frequencies: 0.0
+Closest common ancestor of all directories: /pub8/oceans/SOOP_Roger_Revelle/RR2016/
+Silhouette score: 1.0
+Frequency drop score: 1
+
+Directory distribution for cluster 10
+Number of unique directories: 163
+Mean frequency: 7.828220858895706
+Median frequency: 2.0
+Standard deviation of frequencies: 16.985592990157716
+Closest common ancestor of all directories: /pub8/oceans
+Silhouette score: -0.0209998250588969
+Frequency drop score: 0.1481191222570533
+
+Directory distribution for cluster 11
+Number of unique directories: 4
+Mean frequency: 3.25
+Median frequency: 3.0
+Standard deviation of frequencies: 1.920286436967152
+Closest common ancestor of all directories: /pub8/oceans/VOS_Polarstern
+Silhouette score: 0.40025135905560205
+Frequency drop score: 0.10477911292217319
+
+Directory distribution for cluster 12
+Number of unique directories: 43
+Mean frequency: 2.2325581395348837
+Median frequency: 1.0
+Standard deviation of frequencies: 6.472974979391556
+Closest common ancestor of all directories: /pub8/oceans
+Silhouette score: -0.04488390230322487
+Frequency drop score: 0.4583333333333333
+
+Directory distribution for cluster 13
+Number of unique directories: 42
+Mean frequency: 4.976190476190476
+Median frequency: 2.0
+Standard deviation of frequencies: 10.769197908050831
+Closest common ancestor of all directories: /pub8/oceans/VOS_Ronald_Brown
+Silhouette score: -0.10540570530679459
+Frequency drop score: 0.3349282296650718
+
+Directory distribution for cluster 14
+Number of unique directories: 2
+Mean frequency: 2.0
+Median frequency: 2.0
+Standard deviation of frequencies: 1.0
+Closest common ancestor of all directories: /pub8/oceans
+Silhouette score: -0.18289987664473686
+Frequency drop score: 0.75
+
+Total_silhouette: 0.4795900584993411Total_frequency drop: 0.1585717625812849Total ensemble score: 0.319080910540313Total naive score: 0.19159315957176232
