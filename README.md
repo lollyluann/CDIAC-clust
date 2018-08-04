@@ -1,24 +1,17 @@
-# This readme hasn't been updated in aeons -- we'll get to it eventually :(
 # CDIAC-clust
 
-Information about files and folders in this directory:
-## paths\_work
-Contains all the work that has been done on either clustering based only on paths, or preprocessing the dataset. 
+Only two scripts from `src` are currently intended to be run: `main.py` and `ensemble_test.py`. 
 
-## old\_scripts
-Contains deprecated scripts that may be useful in the future. 
+## main.py
 
-## old\_outputs
-Pretty self-explanatory, contains old outputs of our scripts, only for reference. 
+This runs the entire clustering and cleanliness evaluation pipeline. All the possible arguments are in `options.py`. It does not modify, rename, or delete any files in the source dataset. However, it does make copies of some files and place them in a separate directory in order to convert data to a single format. It has the ability to analyze the file extension composition of the dataset, preprocess data for clustering, cluster all tabular and text data, print the results and cluster distributions to a `.pdf`, and compute an estimate of the cleanliness of the dataset. 
 
-## tables\_clustering
-Contains scripts for clustering tabular files like `.csv`,`.xls`,etc...
+Example usage:
+`python3 main.py --dataset_path ~/pub8/ --plot_extensions y --convert y --cluster_struct y --cluster_text y  --minibatch_kmeans y --num_clusters_start 5 --num_clusters_end 30`
 
-## text\_clustering
-Contains scripts for clustering text files like `.txt`,`.doc`,`.pdf`,etc...
+## ensemble\_test.py
 
-## README.md 
-What you're currently reading. 
+This runs a comparison of the frequency drop score, silhouette score, and naive tree distance cohesion score on the specified dataset. It will print the results to a `.csv` file. It makes a copy of the dataset and progressively shuffles this copy so as to see how well the scores measure the loss in organizational structure. 
 
 ## commit\_work.py
 First argument: string in quotes for commit message. 
