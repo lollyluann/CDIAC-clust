@@ -1,12 +1,13 @@
 # CDIAC-clust
 
-Only two scripts from `src` are currently intended to be run: `main.py` and `ensemble_test.py`. 
+A library for large scientific dataset analysis and evaluation of a new method for quantifying chaos in large heterogeneous data repositories. Only two scripts from `src` are currently intended to be run: `main.py` and `ensemble_test.py`. 
 
 ## main.py
 
 This runs the entire clustering and cleanliness evaluation pipeline. All the possible arguments are in `options.py`. It does not modify, rename, or delete any files in the source dataset. However, it does make copies of some files and place them in a separate directory in order to convert data to a single format. It has the ability to analyze the file extension composition of the dataset, preprocess data for clustering, cluster all tabular and text data, print the results and cluster distributions to a `.pdf`, and compute an estimate of the cleanliness of the dataset. 
 
 Example usage:
+
 `python3 main.py --dataset_path ~/pub8/ --plot_extensions y --convert y --cluster_struct y --cluster_text y  --minibatch_kmeans y --num_clusters_start 5 --num_clusters_end 30`
 
 ## ensemble\_test.py
