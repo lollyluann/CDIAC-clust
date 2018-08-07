@@ -517,11 +517,11 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
     
     if retokenize == "1":
         # multidimensional scaling: convert distance matrix into 3-dimensions
-        mds = MDS(n_components=2, dissimilarity="precomputed", random_state=1)
+        mds = MDS(n_components=3, dissimilarity="precomputed", random_state=1)
         print("\nFitting the distance matrix into 3 dimensions...")
         pos_save = mds.fit_transform(dist)  # shape (n_components, n_samples)
         np.save(os.path.join(file_place, "mds_pos_" + trailer_text + ".npy"), pos_save)
-    '''
+    
     position_array = np.load(os.path.join(file_place, "mds_pos_" + trailer_text + ".npy"))
     print("Loaded existing MDS fit.")
     pos = position_array
@@ -547,9 +547,9 @@ def main_function(num_clusters, retokenize, recluster, corpusdir, dataset_path, 
                 c=color, marker='o')
             ax.set_aspect('auto')
 
-    plt.savefig(os.path.join(file_place, "3D_document_cluster_" + trailer_text + ".png"), dpi=300)
-    print("Scatter plot written to \"3D_document_cluster_" + trailer_text + ".png\"")
-    '''   
+    plt.savefig(os.path.join(file_place, "3D_document_cluster_" + trailer_text + ".svg"), dpi=300)
+    print("Scatter plot written to \"3D_document_cluster_" + trailer_text + ".svg\"")
+      
        
     return frame, all_cluster_words, distinct_cluster_labels
 

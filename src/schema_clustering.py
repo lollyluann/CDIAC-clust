@@ -441,8 +441,8 @@ def runflow(dataset_path, num_clusters,
 
     # plot in 3D
     print("Plotting clusters in R^3. ")
-    #plot_clusters(jacc_matrix, labels, write_path, 
-    #              overwrite_plot, dataset_name, num_clusters)
+    plot_clusters(jacc_matrix, labels, write_path, 
+                  overwrite_plot, dataset_name, num_clusters)
  
     # generate results in pdf and text files
     print("Generating results. ")

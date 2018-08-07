@@ -58,8 +58,8 @@ def plot_clusters(jacc_matrix, labels, write_path,
 
     plot_3D_path = os.path.join(write_path, "3D_schema_cluster_" 
                                 + dataset_name 
-                                + "_k=" + str(num_clusters))
+                                + "_k=" + str(num_clusters)+".svg")
     plt.savefig(plot_3D_path, dpi=300)
-    print("scatter plot written to \"3D_schema_cluster.png\"")
+    print("scatter plot written to \"3D_schema_cluster.svg\"")
     return
 
