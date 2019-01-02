@@ -1,4 +1,4 @@
-# CDIAC-clust
+# cluster-datalake
 
 A library for large scientific dataset analysis and evaluation of a new method for quantifying chaos in large heterogeneous data repositories. Only two scripts from `src` are currently intended to be run: `main.py` and `ensemble_test.py`. 
 
