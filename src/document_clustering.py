@@ -3,10 +3,10 @@ matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 import matplotlib.backends.backend_pdf
 
-import numpy as np
-import pandas as pd
 import time
 import queue
+import numpy as np
+import pandas as pd
 from time import time
 from tqdm import tqdm
 from glob import glob
@@ -18,17 +18,17 @@ from multiprocessing import Pool
 import nltk, re, os, codecs, mpld3, sys, random
 from nltk.stem.snowball import SnowballStemmer
 
+from sklearn.manifold import MDS
 from sklearn.cluster import KMeans
-from sklearn.cluster import MiniBatchKMeans
 from sklearn.externals import joblib
 from sklearn import feature_extraction
+from mpl_toolkits.mplot3d import Axes3D
+from sklearn.cluster import MiniBatchKMeans
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.manifold import MDS
-from mpl_toolkits.mplot3d import Axes3D
 
-import frequencydrop
 import silhouette
+import frequencydrop
 import path_utilities
 
 #=========1=========2=========3=========4=========5=========6=========7=
@@ -98,6 +98,7 @@ def get_document_contents(directory, dataset_path):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
+@deprecated
 def tokenize_action(text):
     stemmer = SnowballStemmer("english")
     # tokenize by sentence, then by word so punctuation is its own token
@@ -114,6 +115,32 @@ def tokenize_action(text):
     # stems the tokens
     stems = [stemmer.stem(t) for t in filtered_tokens]    
     return [filtered_tokens, stems]
+
+@deprecated 
+''' PARAMETER: the text of a document
+    RETURN: list of filtered tokens and a list of stems
+    DOES: splits a document into a list of tokens & stems each token '''
+def tokenize_and_stem(text):
+    tokens = [word for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
+    
+    # filter out tokens without letters (e.g., numbers, punctuation)
+    filtered_tokens = []
+    for token in tokens:
+        if re.search('[a-zA-Z]', token):
+            # removes tokens with length 1
+            if len(token)>1:
+               filtered_tokens.append(token)
+    
+    # stems the tokens
+    stems = [stemmer.stem(t) for t in filtered_tokens]    
+    return filtered_tokens, stems
+
+@deprecated
+''' PARAMETER: the text of a document
+    RETURN: a list of stems
+    DOES: for use with Tfidf Vectorizer '''
+def tokenize_and_stem_call(text):
+    return tokenize_action(text)[1] 
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -159,30 +186,6 @@ def tokenize_action_par(dataset, input_queue, output_queue):
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
-''' PARAMETER: the text of a document
-    RETURN: list of filtered tokens and a list of stems
-    DOES: splits a document into a list of tokens & stems each token '''
-def tokenize_and_stem(text):
-    tokens = [word for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
-    
-    # filter out tokens without letters (e.g., numbers, punctuation)
-    filtered_tokens = []
-    for token in tokens:
-        if re.search('[a-zA-Z]', token):
-            # removes tokens with length 1
-            if len(token)>1:
-               filtered_tokens.append(token)
-    
-    # stems the tokens
-    stems = [stemmer.stem(t) for t in filtered_tokens]    
-    return filtered_tokens, stems
-
-''' PARAMETER: the text of a document
-    RETURN: a list of stems
-    DOES: for use with Tfidf Vectorizer '''
-def tokenize_and_stem_call(text):
-    return tokenize_action(text)[1] 
-
 ''' PARAMETER: the path leading to the dataset
     RETURNS: the name of the dataset and the output path '''
 def initialize_output_location(dataset_path):
@@ -198,12 +201,14 @@ def initialize_output_location(dataset_path):
         os.mkdir(file_place)
     return dataset_name, file_place
     
-#=========1=========2=========3=========4=========5=========6=========7=
-
 def mkproc(func, arguments):
     p = mp.Process(target=func, args=arguments)
     p.start()
     return p
+
+# returns a list of lists of tokens
+def pass_tokens(tokens_by_doc):
+    return tokens_by_doc
 
 #=========1=========2=========3=========4=========5=========6=========7=
 
@@ -288,6 +293,7 @@ def to_retokenize(retokenize, corpusdir, dataset_path, num_processes):
         # lists of tokens and stems for whole dataset
         tokens = []
         stems = []
+        stems_by_doc = []
 
         # for each tuple ((tokens_for_doc, stems_for_doc),iteration)
         for two_tuple in sorted_tokens_stems_2tuple:
@@ -300,6 +306,7 @@ def to_retokenize(retokenize, corpusdir, dataset_path, num_processes):
             # extend the list of tokens and stems for whole dataset
             tokens.extend(tokens_for_doc)
             stems.extend(stems_for_doc)
+            stems_by_doc.append(stems_for_doc)
 
         print("We're done. ")
 
@@ -310,7 +317,7 @@ def to_retokenize(retokenize, corpusdir, dataset_path, num_processes):
         totalvocab_stemmed = stems
         totalvocab_tokenized = tokens
 
-        ''''
+        '''
         for i in tqdm(dataset):
             # for each item in the dataset, tokenize and stem
             allwords_tokenized, allwords_stemmed = tokenize_and_stem(i)
@@ -332,11 +339,11 @@ def to_retokenize(retokenize, corpusdir, dataset_path, num_processes):
         #define vectorizer parameters
         tfidf_vectorizer = TfidfVectorizer(max_df=1.0, max_features=200000,
                               min_df=1, stop_words='english', use_idf=True, 
-                              tokenizer=tokenize_and_stem_call, ngram_range=(1,3))
+                              tokenizer=pass_tokens, ngram_range=(1,3))
         
         #fits the vectorizer to the dataset
         print("\nFitting vectorizer to data...")
-        tfidf_matrix = tfidf_vectorizer.fit_transform(dataset) 
+        tfidf_matrix = tfidf_vectorizer.fit_transform(stems_by_doc) 
         np.save(os.path.join(file_place, "tfidf_matrix_" + dataset_name + ".npy"), tfidf_matrix)
         
         # the list of all feature names (tokens)
